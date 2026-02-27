@@ -1,4 +1,3 @@
-```markdown
 # Architecture Overview
 
 This document provides a high‑level overview of the Emergency Publishing System architecture. It aligns with the repository’s structure and the three‑layer transport model used across all modules. The system is designed to deliver critical information reliably under censorship, network instability, and adversarial interference.
@@ -92,4 +91,3 @@ Each model enables or disables specific transport layers based on regional condi
 ## Summary
 
 The Emergency Publishing System integrates six protocols, three transport layers, region‑aware routing, and redundant storage into a unified architecture. The Emergency Channel coordinates all components to ensure reliable content delivery across diverse and adversarial environments. The three‑layer transport model and layer‑level fallback logic form the foundation of the system’s resilience.
-```
