@@ -1,91 +1,103 @@
 # System Overview
 
-The Emergency Publishing System is a censorship‑resistant communication architecture designed to deliver critical information under hostile network conditions.  
-It is built around a single core subsystem — the **Emergency Channel** — supported by multiple ingestion, access, and content‑generation modules.
+The Emergency Publishing System is a censorship‑resistant publishing architecture designed for high‑risk environments where network interference, surveillance, and targeted blocking are expected. Its purpose is to ensure that critical information can be ingested, sanitized, stored, and distributed reliably, even when adversaries attempt to suppress or manipulate access.
 
-This document provides a high‑level overview of the system’s structure, major components, and operational model.
+At the center of the system is the **Emergency Channel**, a unified processing and distribution core that provides secure, metadata‑minimized, multi‑protocol delivery of published content.
 
----
-
-## Core System: Emergency Channel
-
-The **Emergency Channel** is the backbone of the entire architecture.  
-It is responsible for:
-
-- Multi‑protocol message delivery  
-- Multi‑hop routing  
-- Region‑aware distribution  
-- Sanitization and metadata minimization  
-- Secure storage of published content  
-- Fallback transports for high‑risk environments  
-
-All content — whether aggregated news, pseudonymous posts, or emergency alerts — ultimately flows into and through the Emergency Channel.
-
-The Emergency Channel defines the system’s runtime behavior and ensures resilience under censorship.
+This document introduces the system’s high‑level structure, major components, and operational model.
 
 ---
 
-## Supporting Modules
+## Core Architecture
 
-Supporting subsystems are located under `modules/` and operate independently while integrating seamlessly with the core system.
+The system is organized into three major layers that operate independently but integrate through stable, well‑defined contracts.
 
-### **1. vpn-access-layer/**
-Provides covert access to the system using VPN‑like transports.  
-Includes protocol obfuscation, fallback routing, and region‑aware entry points.
+### 1. Ingestion Layer
+Responsible for converting external sources and user‑generated submissions into normalized internal messages.
 
-### **2. news-aggregation/**
-Ingests external news sources, normalizes content, removes duplicates, and classifies topics.  
-Feeds curated content into the Emergency Channel for distribution.
+Modules include:
 
-### **3. anonymous-bbs/**
-Provides pseudonymous posting with account‑based access control.  
-Users authenticate with lightweight accounts, but all public identity is system‑generated (name + avatar).  
-Posts are sanitized and forwarded into the Emergency Channel.
+- **news-aggregation/** — fetches, parses, deduplicates, and classifies external news sources.
+- **anonymous-bbs/** — provides pseudonymous posting with strict sanitization and metadata minimization.
 
----
+All ingestion modules output a unified internal message format consumed by the Emergency Channel.
 
-## High-Level Architecture
+### 2. Emergency Channel (Core Processing Layer)
+The **Emergency Channel** is the backbone of the entire system. It performs:
 
-The system is composed of four layers:
+- Content sanitization and metadata stripping
+- Region‑aware routing
+- Multi‑protocol transport selection
+- Storage and retrieval
+- Fallback logic under censorship
+- Multi‑hop delivery across heterogeneous networks
 
-### **1. Access Layer**
-- vpn-access-layer/  
-- Provides covert entry points and fallback transports  
-- Ensures users can reach the system even under active blocking
+All content — regardless of origin — flows into and through the Emergency Channel. It defines the system’s runtime behavior and ensures resilience under adversarial conditions.
 
-### **2. Ingestion Layer**
-- news-aggregation/  
-- anonymous-bbs/  
-- Converts external sources and user posts into normalized internal messages
+### 3. Distribution Layer
+Handles outbound delivery using:
 
-### **3. Core Processing Layer**
-- emergency-channel/  
-- Routing, sanitization, storage, multi-hop delivery  
-- Applies censorship‑resistant strategies and metadata minimization
+- Region‑specific routing profiles
+- Multiple independent transport families
+- Automatic fallback chains
+- Low‑bandwidth and offline formats
+- Opportunistic relays and multi‑hop paths
 
-### **4. Distribution Layer**
-- Part of emergency-channel/  
-- Region‑aware delivery  
-- Multi‑protocol fallback  
-- Offline and low‑bandwidth formats
-
-This layered design ensures modularity, extensibility, and operational resilience.
+This layer is tightly integrated with the Emergency Channel and does not exist as a standalone module.
 
 ---
 
-## Data Flow Summary
+## Transport Architecture
+
+The system uses multiple independent transport families to ensure resilience, indistinguishability, and regional adaptability.
+
+The transport layer provides:
+
+- Several protocol classes with distinct network signatures
+- Fingerprint‑resistant behavior
+- Region‑aware selection
+- Automatic fallback under blocking
+- Go‑native implementations for operational simplicity
+
+The Emergency Channel dynamically selects transports based on region profiles, network conditions, and censorship pressure.
+
+---
+
+## Module Overview
+
+Supporting modules live under `modules/` and integrate with the Emergency Channel through stable contracts.
+
+### vpn-access-layer/
+Provides covert entry points using multiple transport families.
+
+Responsibilities include:
+
+- Protocol obfuscation
+- Entry‑point discovery
+- Region‑aware access routing
+- Multi‑protocol fallback
+
+### news-aggregation/
+Fetches and normalizes external news sources. Outputs sanitized, deduplicated, classified messages into the Emergency Channel.
+
+### anonymous-bbs/
+Provides pseudonymous posting with system‑generated identities. All posts undergo sanitization and metadata removal before entering the Emergency Channel.
+
+---
+
+## High‑Level Data Flow
 
 Content enters the system through one of two ingestion paths:
 
-### **News Aggregation Path**
+### News Aggregation Path
 Source registry → Fetcher → Parser → Deduplication → Classification  
-→ Emergency Channel → Distribution
+→ **Emergency Channel** → Region‑aware distribution
 
-### **Pseudonymous BBS Path**
+### Pseudonymous BBS Path
 Account login → Pseudonym generation → Sanitization → Storage  
-→ Emergency Channel → Distribution
+→ **Emergency Channel** → Multi‑protocol delivery
 
-Both paths converge in the Emergency Channel, which handles all routing and delivery.
+Both paths converge in the Emergency Channel, which handles all routing, storage, and outbound delivery.
 
 ---
 
@@ -93,29 +105,28 @@ Both paths converge in the Emergency Channel, which handles all routing and deli
 
 The system is built on the following principles:
 
-- **Resilience under censorship**  
-  Multi‑protocol transports, fallback chains, and region‑aware routing.
+### Resilience Under Censorship
+Multiple transport families, fallback chains, and region‑aware routing ensure continuity even under active blocking.
 
-- **Separation of concerns**  
-  Access, ingestion, core processing, and distribution are clearly separated.
+### Strict Separation of Concerns
+Ingestion, core processing, and distribution are isolated to reduce attack surface and simplify reasoning.
 
-- **Modularity and extensibility**  
-  Supporting modules evolve independently without breaking the core system.
+### Metadata Minimization
+All modules operate under a “minimum viable metadata” rule. The Emergency Channel enforces sanitization boundaries.
 
-- **Stealth and indistinguishability**  
-  Traffic patterns mimic legitimate usage to evade detection.
+### Modularity and Extensibility
+Supporting modules evolve independently without affecting the core system.
 
-- **Security by design**  
-  Metadata minimization, encryption, and trust‑boundary isolation.
+### Stealth and Indistinguishability
+Traffic patterns mimic legitimate usage to evade detection and fingerprinting.
 
-- **Operational simplicity**  
-  Deployable in constrained environments with minimal configuration.
+### Operational Simplicity
+Deployable in constrained environments with minimal configuration and low operational overhead.
 
 ---
 
 ## Summary
 
-The Emergency Publishing System is centered around the **Emergency Channel**, which provides secure, censorship‑resistant delivery of critical information.  
-Supporting modules — vpn-access-layer, news-aggregation, and anonymous-bbs — feed content into the core system, enabling a unified, resilient communication ecosystem.
+The Emergency Publishing System is centered around the **Emergency Channel**, which provides secure, censorship‑resistant processing and distribution of critical information. Ingestion modules feed normalized content into the core, while the transport layer ensures resilient, region‑aware delivery across diverse network conditions.
 
 This overview establishes the conceptual foundation for understanding the system’s architecture and runtime behavior.
