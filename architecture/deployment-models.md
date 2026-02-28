@@ -1,143 +1,99 @@
 # Deployment Models
 
-This document describes the deployment models of the Emergency Publishing System. Different regions require different operational strategies, levels of resilience, and infrastructure footprints. The system is designed to operate across environments with varying censorship intensity, network stability, and security risks.
+This document describes the deployment models supported by the Emergency Publishing System. Each model enables different components of the architecture based on regional risk, network stability, and operational constraints. All deployments share the same core architecture centered on the Emergency Channel, but differ in storage, routing, and distribution strategies.
 
-Deployment models are categorized into four tiers:
-1. Standard Deployment
-2. Resilient Deployment
-3. High‑Risk Deployment
-4. Offline and Hybrid Deployment
-
-All models share the same core architecture but adjust transports, routing rules, and retention policies based on regional conditions.
+The system is language‑agnostic. Multi‑language support is implemented in the ingestion modules.
 
 ---
 
-# 1. Standard Deployment
+## Standard Deployment
 
-Used in regions with moderate or low censorship.
+### Characteristics
+- Full system functionality enabled  
+- High‑performance caching and storage  
+- Standard redundancy and routing policies  
+- Complete distribution capabilities  
+- Minimal operational constraints  
 
-## Characteristics
-- Stable network conditions
-- Minimal blocking or throttling
-- Standard HTTPS transports available
-- CDN‑backed delivery is reliable
+### Components
+- Full Emergency Channel feature set  
+- Regional caching nodes (full capacity)  
+- Standard sanitization and metadata minimization  
+- Full distribution paths, including high‑performance routes  
 
-## Components
-- Emergency Channel (full features)
-- vpn-access-layer (optional)
-- news-aggregation module
-- anonymous-bbs module
-
-## Operational Notes
-- HTTPS and CDN‑backed delivery are preferred
-- Routing is optimized for throughput rather than evasion
-- Retention policies can be longer
-- Monitoring focuses on performance and availability
-
-This model provides the highest performance and lowest operational complexity.
+### Operational Notes
+- Suitable for low‑risk, stable regions  
+- Can serve as the default deployment mode  
+- Requires routine monitoring but no special safeguards  
 
 ---
 
-# 2. Resilient Deployment
+## Resilient Deployment
 
-Used in regions with active censorship but not extreme suppression.
+### Characteristics
+- Enhanced redundancy and content replication  
+- Region‑aware adaptive routing  
+- Selective caching based on risk level  
+- Camouflaged transports preferred  
+- Opportunistic synchronization enabled  
 
-## Characteristics
-- DPI and selective blocking present
-- Intermittent throttling
-- Some transports unreliable or unstable
+### Components
+- Adaptive routing module within the Emergency Channel  
+- Medium‑capacity regional caching nodes  
+- Strengthened redundancy encoding  
+- Camouflaged distribution paths  
 
-## Components
-- Emergency Channel with fallback routing enabled
-- vpn-access-layer required
-- Obfuscated transports enabled
-- Region‑aware routing rules active
-
-## Operational Notes
-- Transport selection becomes adaptive
-- Obfuscation and mimicry patterns are used
-- Retention policies become shorter
-- Distribution uses multiple parallel transports
-
-This model balances performance and resilience.
+### Operational Notes
+- Suitable for medium‑risk regions  
+- Maintains content availability during intermittent instability  
+- Requires monitoring of regional risk to adjust behavior dynamically  
 
 ---
 
-# 3. High‑Risk Deployment
+## High‑Risk Deployment
 
-Used in regions with heavy censorship, surveillance, or targeted disruption.
+### Characteristics
+- Aggressive metadata minimization  
+- Reduced caching to limit exposure  
+- Emergency Channel prioritizes survivability over performance  
+- Emergency transports enabled by default  
+- Emphasis on delay‑tolerant distribution  
 
-## Characteristics
-- Aggressive DPI and protocol fingerprinting
-- Active probing of endpoints
-- Frequent blocking of known transports
-- High surveillance risk for users
+### Components
+- Advanced sanitization and anonymization modules  
+- Minimal caching nodes (essential content only)  
+- Delay‑tolerant storage (DTN bundles)  
+- High‑risk distribution paths  
 
-## Components
-- Emergency Channel with strict sanitization
-- vpn-access-layer with covert entry points
-- Covert transports enabled by default
-- anonymous-bbs with enhanced pseudonymity
-- Region‑specific fallback chains
-
-## Operational Notes
-- Standard transports are rarely used
-- Covert channels and DNS‑based tunneling become primary
-- Routing is randomized and multi‑hop
-- Retention policies are minimal
-- Distribution favors small, redundant message chunks
-
-This model prioritizes survivability over performance.
+### Operational Notes
+- Designed for regions with persistent censorship, surveillance, or degradation  
+- Performance is intentionally reduced to maximize survivability  
+- Requires strict security monitoring and rapid response capability  
 
 ---
 
-# 4. Offline and Hybrid Deployment
+## Offline & Hybrid Deployment
 
-Used in regions with unstable connectivity or near‑total network shutdowns.
+### Characteristics
+- Bundle‑based distribution  
+- Peer‑to‑peer relay  
+- Delay‑tolerant storage and synchronization  
+- Minimal reliance on real‑time networks  
+- Regional nodes operate in partially disconnected mode  
 
-## Characteristics
-- Intermittent or no internet access
-- Local networks may still function
-- Users rely on opportunistic sync
+### Components
+- Offline bundle generator  
+- P2P relay module  
+- Regional DTN storage nodes  
+- Weak‑connectivity synchronization mechanisms  
 
-## Components
-- Emergency Channel with offline mode
-- Local caching nodes
-- Delay‑tolerant message bundles
-- Region‑aware sync rules
-
-## Operational Notes
-- Messages are stored locally until sync is possible
-- Sync occurs opportunistically through any available transport
-- Distribution uses compact, low‑bandwidth formats
-- Routing avoids assumptions about connectivity
-
-This model ensures the system continues functioning even during large‑scale outages.
+### Operational Notes
+- Suitable for network outages, infrastructure collapse, or intentional shutdowns  
+- Can be combined with other deployment models  
+- Requires manual or semi‑automated content relay chains  
 
 ---
 
-# Deployment Selection Logic
+## Summary
 
-The system selects a deployment model based on:
-
-- Region
-- Censorship intensity
-- Network stability
-- Transport availability
-- User risk level
-
-## Selection Process
-
-    1. Evaluate region profile
-    2. Determine censorship level
-    3. Select appropriate deployment tier
-    4. Enable or disable modules accordingly
-    5. Apply region‑specific routing and retention rules
-
-Deployment models can switch dynamically if conditions change.
-
----
-
-# Summary
-
-The Emergency Publishing System supports multiple deployment models to adapt to different censorship environments. Standard deployments prioritize performance, resilient deployments balance speed and evasion, high‑risk deployments maximize survivability, and offline deployments ensure continuity during network collapse. All models share the same core architecture but adjust transports, routing, and retention policies to match regional conditions.
+The Emergency Publishing System provides flexible deployment models that adapt to regional risk and network conditions. Whether operating in stable environments or hostile, high‑risk regions, the system maintains consistent behavior through the Emergency Channel while adjusting storage, routing, and distribution strategies to ensure reliable content delivery.
