@@ -1,4 +1,4 @@
-# Architecture Overview 
+# Architecture Overview
 
 This document provides a high‑level overview of the Emergency Publishing System architecture. It describes the system’s core components, data flow, module boundaries, and deployment considerations. The architecture is designed to ensure reliable content delivery under censorship, network instability, and adversarial interference.
 
@@ -8,7 +8,9 @@ This document provides a high‑level overview of the Emergency Publishing Syste
 
 The Emergency Publishing System is a censorship‑resistant publishing architecture designed for high‑risk environments. It enables secure ingestion, processing, storage, and distribution of critical information. The system is not a VPN or messaging tool; it is a publishing and distribution platform optimized for adversarial networks.
 
-All modules integrate into a unified core subsystem: the **Emergency Channel**.
+All modules integrate into a unified core subsystem: the Emergency Channel.
+
+The system is language‑agnostic. Multi‑language support is implemented in the ingestion modules.
 
 ---
 
@@ -60,20 +62,16 @@ The storage layer ensures continuity during outages through:
 - Redundant chunk distribution  
 - Metadata minimization  
 
-The Emergency Channel orchestrates storage behavior across regions.
-
 ---
 
 ## Distribution Architecture
 
 The distribution layer delivers content across diverse network conditions:
 
-- Low‑risk regions use high‑performance transports  
-- Medium‑risk regions use camouflaged transports  
-- High‑risk regions rely on emergency transports and opportunistic sync  
-- Offline environments use bundle‑based distribution  
-
-This ensures that content remains accessible even under severe censorship.
+- High‑performance transports in low‑risk regions  
+- Camouflaged transports in medium‑risk regions  
+- Emergency transports and opportunistic sync in high‑risk regions  
+- Offline bundles where networks are unavailable  
 
 ---
 
@@ -81,12 +79,12 @@ This ensures that content remains accessible even under severe censorship.
 
 The system integrates six protocols, each providing distinct evasion and performance characteristics:
 
-- **REALITY** — certificate camouflage  
-- **uTLS** — Chrome/Firefox fingerprint mimicry  
-- **XTLS‑Vision** — dynamic padding and statistical DPI evasion  
-- **XHTTP** — HTTP/3‑like behavioral camouflage (Stream and Packet modes)  
-- **VLESS** — universal carrier layer  
-- **TUIC v5** — high‑performance UDP transport  
+- REALITY — certificate camouflage  
+- uTLS — Chrome/Firefox fingerprint mimicry  
+- XTLS‑Vision — dynamic padding and statistical DPI evasion  
+- XHTTP — HTTP/3‑like behavioral camouflage (Stream and Packet modes)  
+- VLESS — universal carrier layer  
+- TUIC v5 — high‑performance UDP transport  
 
 These protocols operate as layered modes within the transport architecture.
 
