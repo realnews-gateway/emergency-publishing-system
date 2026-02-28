@@ -1,156 +1,112 @@
 # Data Flow
 
-This document describes the end‑to‑end data flow of the Emergency Publishing System. It explains how content enters the system, how it is normalized and sanitized, how it moves through the Emergency Channel, and how it is distributed under hostile network conditions.
-
-The system has two ingestion paths:
-1. News Aggregation Path
-2. Pseudonymous BBS Path
-
-Both paths converge in the Emergency Channel.
+This document describes the end‑to‑end data flow of the Emergency Publishing System. It explains how content enters the system, how it is processed by the Emergency Channel, how it is stored, and how it is ultimately distributed across diverse and adversarial network environments.
 
 ---
 
-## High‑Level Flow Summary
+## Overview
 
-    External Sources
-        ↓
-    news-aggregation module
-        ↓
-    Emergency Channel
-        ↓
-    Multi‑Protocol Distribution
+All content—whether aggregated news or pseudonymous user submissions—passes through a unified processing pipeline. The Emergency Channel orchestrates this pipeline, ensuring that content remains safe, normalized, redundant, and deliverable under hostile conditions.
 
-    User Devices
-        ↓
-    anonymous-bbs module
-        ↓
-    Emergency Channel
-        ↓
-    Multi‑Protocol Distribution
+The system is language‑agnostic. Multi‑language support is implemented in the ingestion modules.
 
 ---
 
-# 1. News Aggregation Path
+## 1. Ingestion
 
-## 1.1 Source Registry
-- Maintains a list of feeds and region‑specific sources
-- Supports dynamic updates and failover
-- Defines fetch intervals, parsing rules, and region profiles
+Content enters the system through two independent ingestion paths:
 
-## 1.2 Fetcher
-- Retrieves raw content from registered sources
-- Handles retries, timeouts, and fallback URLs
-- Uses vpn-access-layer for region‑aware routing
-- Ensures consistent behavior under partial blocking
+### News Aggregation Path
+- Fetches content from external news sources  
+- Normalizes encoding and structure  
+- Removes tracking elements  
+- Extracts text, metadata, and media references  
+- Produces a sanitized, standardized content object  
 
-## 1.3 Parser
-- Converts HTML, JSON, or XML into structured internal objects
-- Extracts title, body, timestamp, and media
-- Removes tracking parameters and fingerprintable elements
-- Normalizes encoding and text structure
+### Anonymous BBS Path
+- Accepts user‑submitted text  
+- Strips metadata and identifiers  
+- Applies safety and content rules  
+- Normalizes formatting  
+- Produces a pseudonymous content object  
 
-## 1.4 Deduplication
-- Performs hash‑based and semantic similarity checks
-- Prevents mirrored, repeated, or syndicated duplicates
-- Ensures downstream modules receive clean, unique content
-
-## 1.5 Classification
-- Assigns topic labels
-- Applies region‑aware classification rules
-- Produces normalized metadata for routing and filtering
-
-## 1.6 Handoff to Emergency Channel
-
-    type: news
-    region: <region>
-    topic: <topic>
-    content: <text>
-    metadata: <normalized metadata>
+Both ingestion paths output a **Unified Content Envelope**, which is passed to the Emergency Channel.
 
 ---
 
-# 2. Pseudonymous BBS Path
+## 2. Emergency Channel Processing
 
-## 2.1 Account Login
-- Lightweight account system
-- No personal identifiers required
-- Region‑aware access rules and rate limits
+The Emergency Channel is the system’s core processing layer. It transforms the Unified Content Envelope into a form suitable for global distribution.
 
-## 2.2 Pseudonym Generation
-- System‑generated display name and avatar
-- Prevents identity correlation across posts
-- Ensures uniformity across regions
+Key processing steps include:
 
-## 2.3 Post Creation
-- User writes a message
-- Client strips local metadata
-- Server sanitizes HTML, markup, and embedded content
+- **Sanitization**  
+  Removes unsafe elements, normalizes structure, and ensures content integrity.
 
-## 2.4 Sanitization
-- Removes dangerous markup
-- Normalizes text and formatting
-- Ensures no fingerprintable artifacts remain
-- Produces a clean internal message object
+- **Metadata Minimization**  
+  Retains only essential metadata (timestamp, region tags, language tag).
 
-## 2.5 Handoff to Emergency Channel
+- **Chunking**  
+  Splits content into small, transport‑friendly segments.
 
-    type: bbs
-    region: <region>
-    author: <generated pseudonym>
-    content: <text>
-    metadata: <normalized metadata>
+- **Redundancy Encoding**  
+  Adds forward‑error‑correction and multi‑path redundancy.
+
+- **Region‑Aware Routing Preparation**  
+  Assigns routing hints based on risk level and network conditions.
+
+- **Storage & Distribution Coordination**  
+  Determines which storage nodes and distribution paths will receive the content.
+
+The output of this stage is a **Processed Content Bundle**.
 
 ---
 
-# 3. Emergency Channel Processing
+## 3. Storage Layer
 
-## 3.1 Sanitization Layer
-- Removes remaining metadata
-- Normalizes timestamps and region fields
-- Ensures all messages conform to a unified internal schema
+The Processed Content Bundle is stored using a combination of:
 
-## 3.2 Storage Layer
-- Stores messages in encrypted form
-- Applies region‑aware retention policies
-- Maintains minimal metadata required for routing
-- Ensures no user‑identifiable information is retained
+- **Regional Caching Nodes**  
+  Provide fast access in low‑risk and medium‑risk regions.
 
-## 3.3 Routing Layer
-- Determines delivery path based on region and threat level
-- Applies multi‑hop routing rules
-- Selects fallback transports when primary paths are blocked
-- Ensures consistent behavior under adversarial conditions
+- **Delay‑Tolerant Bundles**  
+  Enable synchronization in unstable or intermittent networks.
 
-## 3.4 Distribution Layer
-- Converts messages into multiple output formats
-- Selects protocol family based on region profile
-- Supports offline, low‑bandwidth, and opportunistic modes
-- Produces final deliverable artifacts for user devices
+- **Redundant Chunk Distribution**  
+  Ensures survivability even if nodes are lost or compromised.
+
+- **Region‑Aware Retention Policies**  
+  Adjust storage duration based on local risk and legal constraints.
+
+Storage is coordinated by the Emergency Channel but executed by distributed nodes.
 
 ---
 
-# 4. Multi‑Protocol Distribution
+## 4. Distribution Layer
 
-The Emergency Channel outputs content through multiple independent transport families, including:
+The distribution layer delivers content to clients across diverse environments:
 
-- HTTPS (stealth mode)
-- DNS‑based tunneling
-- CDN‑backed distribution
-- Covert channels (timing, padding, mimicry)
-- Region‑specific fallback transports
+- **Low‑risk regions**  
+  Use high‑performance transports and full caching.
 
-Transport selection factors include:
+- **Medium‑risk regions**  
+  Use camouflaged transports and selective caching.
 
-- Network conditions
-- Censorship intensity
-- User region
-- Protocol availability
-- Fingerprint resistance requirements
+- **High‑risk regions**  
+  Use emergency transports, opportunistic sync, and minimal metadata.
 
-The system dynamically adapts to ensure reliable delivery under hostile network conditions.
+- **Offline environments**  
+  Use bundle‑based distribution and peer‑to‑peer relay.
+
+Clients reconstruct the original content by:
+
+1. Fetching available chunks  
+2. Applying redundancy correction  
+3. Reassembling the content envelope  
+4. Rendering the final content  
 
 ---
 
-# Summary
+## Summary
 
-The Emergency Publishing System processes data through two ingestion paths: news aggregation and pseudonymous posting. Both paths converge in the Emergency Channel, which performs sanitization, storage, routing, and multi‑protocol distribution. This unified flow ensures secure, resilient, and region‑aware delivery of published content, even in adversarial environments.
+The system’s data flow is built around the Emergency Channel, which unifies ingestion, processing, storage, and distribution into a single resilient pipeline. By minimizing metadata, applying redundancy, and coordinating region‑aware routing, the system ensures that critical information remains accessible even under severe censorship and network degradation.
