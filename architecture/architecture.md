@@ -1,4 +1,4 @@
-# Architecture Overview
+# Architecture Overview 
 
 This document provides a high‑level overview of the Emergency Publishing System architecture. It describes the system’s core components, data flow, module boundaries, and deployment considerations. The architecture is designed to ensure reliable content delivery under censorship, network instability, and adversarial interference.
 
