@@ -109,6 +109,33 @@ Transport selection adapts dynamically to censorship intensity and network condi
 
 ---
 
+## Storage Layer
+
+The **storage/** directory implements encrypted, tamper‑resistant, and region‑aware storage for processed content.  
+It ensures durability, confidentiality, and secure retrieval under adversarial conditions.  
+Key responsibilities include:
+
+- Encrypted content persistence  
+- Metadata minimization in storage records  
+- Region‑aware replication and fallback  
+- Secure retrieval APIs for distribution layer  
+
+---
+
+## Distribution Layer
+
+The **distribution/** directory handles multi‑path, multi‑region delivery of content.  
+It ensures reliable dissemination even under severe censorship pressure.  
+Key responsibilities include:
+
+- Adaptive routing across multiple transports  
+- Fallback scheduling for degraded networks  
+- Covert distribution modes for high‑risk regions  
+- Integration with Emergency Channel outputs  
+- Delivery verification and redundancy  
+
+---
+
 ## Documentation Overview
 
 Key documents are located in **architecture/**:
