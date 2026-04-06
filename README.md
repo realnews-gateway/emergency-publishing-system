@@ -102,7 +102,7 @@ It replaces legacy VPN‑based models with a modern, multi‑protocol architectu
   - TUIC v5 (optimized for low‑latency and mobile switching)
 
 - **Emergency Layer (extreme censorship)**  
-  - XHTTP Packet + TLS 1.3 + ECH + Cloudflare Enterprise  
+  - VLESS + XHTTP Packet + TLS 1.3 + ECH + Cloudflare Enterprise  
   - TUIC v5 + Cloudflare Spectrum  
 
 Transport selection adapts dynamically to censorship intensity and network conditions.
