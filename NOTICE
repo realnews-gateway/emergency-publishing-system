@@ -1,0 +1,63 @@
+Empus — Emergency Publishing System
+Copyright (c) 2026 realnews-gateway
+All rights reserved.
+
+This project includes original work developed specifically for Empus (Emergency Publishing System).
+All contributions to this project are made exclusively by invited developers under contractual
+agreement. No unsolicited or volunteer contributions are accepted. As a result, all Empus-specific
+code is owned by realnews-gateway unless otherwise stated.
+
+---
+
+Third-Party Components
+----------------------
+
+Empus may include or integrate third-party open-source components. These components remain the
+intellectual property of their respective authors and are licensed under their original terms.
+The corresponding licenses and copyright notices for all third-party components are located
+in the `third_party/` directory.
+
+Use of any third-party component in Empus does not imply endorsement, sponsorship, or affiliation
+between Empus and the original authors or maintainers of those components.
+
+Empus does not claim ownership of any third-party code, nor does it modify or override the
+licensing terms under which such components are distributed.
+
+---
+
+No Association or Endorsement
+-----------------------------
+
+Empus is an independent project. It is not affiliated with, endorsed by, or associated with any
+third-party software project whose components may be used or integrated within Empus.
+
+The names, trademarks, and branding of any third-party projects remain the property of their
+respective owners. Their inclusion in Empus does not grant any rights to use or imply association
+with those names or trademarks.
+
+---
+
+Modifications
+-------------
+
+If Empus includes modified versions of third-party components, such modifications are clearly
+identified in the corresponding directories. Original authors retain full copyright over
+their work; Empus claims ownership only over modifications created by its contracted developers.
+
+---
+
+Distribution
+------------
+
+Empus is distributed under the terms of the license provided in the LICENSE file. This NOTICE
+file is provided for attribution, transparency, and compliance with third-party licensing
+requirements.
+
+---
+
+Disclaimer
+----------
+
+This NOTICE does not grant any rights beyond those explicitly provided in the LICENSE file.
+It exists solely to acknowledge third-party components and clarify ownership of Empus-specific
+code.
