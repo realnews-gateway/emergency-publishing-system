@@ -1,4 +1,6 @@
+# -------------------------
 # Go build artifacts
+# -------------------------
 bin/
 build/
 dist/
@@ -17,20 +19,96 @@ vendor/
 go.work
 go.work.sum
 
+# -------------------------
+# Python (if used in tools/scripts)
+# -------------------------
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.env
+.venv/
+venv/
+
+# -------------------------
+# Node / JS tooling (if used)
+# -------------------------
+node_modules/
+npm-debug.log
+yarn-error.log
+.pnpm-store/
+
+# -------------------------
 # Temporary files
+# -------------------------
 *.tmp
 *.log
 *.cache/
 .tmp/
+cache/
+temp/
+tmp/
 
+# -------------------------
 # OS-specific
+# -------------------------
 .DS_Store
 Thumbs.db
 
+# -------------------------
 # Editor settings
+# -------------------------
 .vscode/
 .idea/
+*.swp
+*.swo
 
+# -------------------------
 # Documentation tools
+# -------------------------
 docs/.cache/
 docs/.temp/
+docs/build/
+docs/_site/
+
+# -------------------------
+# Build / packaging artifacts
+# -------------------------
+*.tar
+*.gz
+*.zip
+*.tgz
+
+# -------------------------
+# Project-specific
+# -------------------------
+# Ignore local config overrides
+config/local/
+config/*.local.yaml
+config/*.override.yaml
+
+# Ignore generated artifacts
+generated/
+artifacts/
+output/
+
+# Ignore coverage reports
+coverage/
+*.coverprofile
+*.lcov
+
+# Ignore lockfiles if not used
+Pipfile.lock
+poetry.lock
+package-lock.json
+yarn.lock
+
+# -------------------------
+# Security / sensitive
+# -------------------------
+# Never commit secrets
+secrets/
+*.key
+*.pem
+*.crt
+*.p12
