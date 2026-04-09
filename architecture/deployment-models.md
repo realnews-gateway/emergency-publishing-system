@@ -1,8 +1,10 @@
 # Deployment Models
 
-This document describes the deployment models supported by the Emergency Publishing System. Each model enables different components of the architecture based on regional risk, network stability, and operational constraints. All deployments share the same core architecture centered on the Emergency Channel, but differ in storage, routing, and distribution strategies.
+This document describes the deployment models supported by **Empus**.  
+Each model enables different components of the architecture based on regional risk, network stability, and operational constraints.  
+All deployments share the same core architecture centered on the Emergency Channel, but differ in storage, routing, and distribution strategies.
 
-The system is language‑agnostic. Multi‑language support is implemented in the ingestion modules.
+The system is language‑agnostic; multi‑language handling is implemented in ingestion modules.
 
 ---
 
@@ -96,4 +98,5 @@ The system is language‑agnostic. Multi‑language support is implemented in th
 
 ## Summary
 
-The Emergency Publishing System provides flexible deployment models that adapt to regional risk and network conditions. Whether operating in stable environments or hostile, high‑risk regions, the system maintains consistent behavior through the Emergency Channel while adjusting storage, routing, and distribution strategies to ensure reliable content delivery.
+Empus provides flexible deployment models that adapt to regional risk and network conditions.  
+Whether operating in stable environments or hostile, high‑risk regions, Empus maintains consistent behavior through the Emergency Channel while adjusting storage, routing, and distribution strategies to ensure reliable content delivery.
