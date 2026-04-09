@@ -1,9 +1,9 @@
 > **Note:** This repository was previously named `realnews-free-publish-core`.  
 > It has been renamed to reflect the system’s expanded scope as a full censorship‑resistant publishing architecture.
 
-# Emergency Publishing System
+# Emergency Publishing System (Empus)
 
-The Emergency Publishing System is a censorship‑resistant publishing architecture designed for high‑risk and adversarial environments. It provides secure ingestion, sanitization, encrypted storage, and multi‑path distribution of critical information, ensuring that public‑interest content remains accessible even under severe network interference. All subsystems converge into a unified and resilient core: the **Emergency Channel**.
+The Empus is a censorship‑resistant publishing architecture designed for high‑risk and adversarial environments. It provides secure ingestion, sanitization, encrypted storage, and multi‑path distribution of critical information, ensuring that public‑interest content remains accessible even under severe network interference. All subsystems converge into a unified and resilient core: the **Emergency Channel**.
 
 This repository contains the complete architecture, documentation, roadmap, and module structure for review and development.
 
