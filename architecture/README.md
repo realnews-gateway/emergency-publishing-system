@@ -1,6 +1,6 @@
 # Architecture Module
 
-The Architecture module provides a complete, system‑level description of the Emergency Publishing System.  
+The Architecture module provides a complete, system‑level description of the Empus.  
 It explains how the core subsystem — the **Emergency Channel** — interacts with supporting modules, how data flows through the system, and how security and resilience are maintained under hostile network conditions.
 
 This module is intended for reviewers, funders, architects, and developers who need to understand the system’s design principles and operational model.
