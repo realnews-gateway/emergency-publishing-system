@@ -1,6 +1,6 @@
 # Security Policy
 
-The Emergency Publishing System is designed for hostile environments with strong adversaries.  
+The Empus is designed for hostile environments with strong adversaries.  
 Security is a core requirement for all development, deployment, and review activities.
 
 ---
