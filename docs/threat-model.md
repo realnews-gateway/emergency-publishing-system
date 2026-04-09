@@ -1,76 +1,106 @@
 # Threat Model
 
-This document outlines the threat model for RealNews Free Publish Core. The system is designed for environments with strong, adaptive, state‑level censorship and surveillance.
+This document describes the high‑level threat model for **Empus**.  
+It outlines the adversaries the system is designed to resist, the assumptions it makes about hostile environments, and the safety guarantees it aims to provide for users and content.
 
-## Protocol Strategy
+Empus is built for regions facing strong, adaptive, state‑level censorship and surveillance.
 
-The system consistently maintains six core protocols (Hysteria2, Reality, VLESS, Trojan, XTLS, XHTTP). Future protocols may be added, but these six remain the foundation.
+---
 
-## Accounts and Anonymity
+## Adversary Capabilities
 
-- Accounts are required for system access.  
-- Anonymity is also required: account identity is strictly separated from publishing identity.  
-- This ensures controlled access while preserving anonymous publishing.
+Empus assumes adversaries may possess the following capabilities:
 
-## Adversaries
+### Network‑Level Interference
+- IP, domain, and SNI blocking  
+- Deep packet inspection (DPI)  
+- Active probing of suspected endpoints  
+- Traffic fingerprinting and protocol classification  
+- Throttling or selective degradation  
+- Regional infrastructure interference  
 
-### 1. State‑Level Censors
-Capabilities:
-- Deep Packet Inspection (DPI)
-- Active probing
-- Traffic fingerprinting
-- IP/domain blocking
-- TLS fingerprinting
-- Platform takedowns
+### Surveillance and Monitoring
+- Metadata collection  
+- Traffic correlation and timing analysis  
+- Device monitoring on compromised networks  
+- Social graph inference  
 
-Mitigations:
-- Six protocols maintained and updated
-- TLS 1.3 camouflage
-- Low‑fingerprint transport
-- Multi‑node routing and fallback
+### Platform‑Level Suppression
+- Automated content removal  
+- Hash‑based media filtering  
+- Keyword or pattern‑based detection  
+- Takedown of centralized services  
 
-### 2. Surveillance Agencies
-Capabilities:
-- Metadata collection
-- Device monitoring
-- Traffic correlation
-- Social graph analysis
+These capabilities reflect real‑world censorship and surveillance conditions in high‑risk regions.
 
-Mitigations:
-- Metadata stripping
-- Anonymous submission channels (account/identity separation)
-- Automatic encryption
-- Decentralized storage (IPFS/Arweave)
+---
 
-### 3. Platform Moderation Systems
-Capabilities:
-- Automated content removal
-- Hash‑based media filtering
-- Keyword detection
+## Out‑of‑Scope Adversary Capabilities
 
-Mitigations:
-- Multi‑mirror distribution
-- Decentralized persistence
-- Content deduplication and re‑encoding
+Empus does **not** assume adversaries can:
+
+- Compromise both sender and receiver devices simultaneously  
+- Break modern cryptography  
+- Deploy hardware implants or baseband‑level exploits  
+- Perform physical coercion  
+- Exploit zero‑day vulnerabilities across all user devices  
+
+These threats exceed the scope of software‑level protections.
+
+---
 
 ## User Risks
+
+Users in high‑risk regions may face:
 
 - Device seizure  
 - Account compromise  
 - Network monitoring  
 - Social graph exposure  
+- Intermittent or unstable connectivity  
 
-Mitigations:
-- Account/identity separation  
-- Automatic encryption  
-- Minimal client footprint  
+Empus mitigates these risks through metadata minimization, pseudonymity, encrypted transports, and region‑aware routing.
+
+---
+
+## System‑Level Mitigations
+
+Empus incorporates multiple defensive strategies:
+
+### Metadata Minimization
+- No IP addresses stored  
+- No device identifiers retained  
+- No persistent routing identifiers  
+- Coarse‑grained timestamps  
+- Sanitized ingestion pipeline  
+
+### Transport Security
+- Multi‑layer transport stack  
+- REALITY, uTLS, XTLS‑Vision, XHTTP, VLESS, TUIC v5  
+- Encrypted payloads  
+- Behavioral camouflage  
+- Region‑aware fallback chains  
+
+### Routing and Distribution
+- Multi‑hop routing  
+- Randomized path selection  
+- Redundant delivery attempts  
+- Delay‑tolerant synchronization  
+- Region‑aware retention policies  
+
+### Pseudonymity
+- System‑generated pseudonyms  
 - No persistent identifiers  
+- No linkability across sessions  
+- Sanitized submissions  
 
-## Out‑of‑Scope Threats
+These mitigations ensure that Empus remains operational even under severe censorship pressure.
 
-- Compromised user devices  
-- Hardware implants  
-- Zero‑day OS exploits  
-- Physical coercion  
+---
 
-These threats exceed the scope of software‑level protections.
+## Threat Model Summary
+
+Empus is designed for adversarial environments where censorship, surveillance, and network disruption are routine.  
+The system assumes strong state‑level adversaries but relies on strict data minimization, encrypted transports, pseudonymity, and region‑aware routing to maintain availability and protect users.
+
+This threat model provides the foundation for Empus’s architecture and security design.
