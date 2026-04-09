@@ -1,9 +1,9 @@
-# Documentation Module
+# Documentation
 
-The Documentation module provides high‑level, funder‑facing and reviewer‑facing explanations of the system.  
-It is designed to give non‑technical and semi‑technical audiences a clear understanding of the project’s goals, threat model, architecture, and operational model.
+This directory provides high‑level, reviewer‑facing and funder‑facing documentation for **Empus**.  
+It focuses on conceptual understanding, system purpose, and threat context, rather than technical or implementation details.
 
-This module complements the Architecture and Modules directories by offering narrative explanations, conceptual overviews, and context for why the system exists and how it is intended to be used.
+The documents here complement the **architecture/** and **modules/** directories by offering narrative explanations suitable for non‑technical and semi‑technical audiences.
 
 ---
 
@@ -12,40 +12,30 @@ This module complements the Architecture and Modules directories by offering nar
 This directory contains the following documents:
 
 - **overview.md**  
-  A high‑level introduction to the system, its purpose, and its core capabilities.
+  A high‑level introduction to Empus, its purpose, and its core capabilities.
 
 - **threat-model.md**  
-  A detailed description of the adversaries the system is designed to resist, including censorship, surveillance, and active probing.
+  A description of the adversaries Empus is designed to resist, including censorship, surveillance, and active probing.
 
-- **funding-notes.md**  
-  Context for funders, including impact goals, deployment considerations, and sustainability notes.
-
-- **modules.md**  
-  A conceptual overview of all major modules in the system, explaining their roles and how they interact.
-
-- **emergency-publishing.md**  
-  A narrative explanation of the Emergency Publishing Channel, including use cases and operational flow.
+These documents provide the conceptual foundation needed to understand why Empus exists and how it operates in hostile environments.
 
 ---
 
-## Purpose of This Module
+## Purpose of This Directory
 
-The Documentation module serves several key purposes:
+The documentation in this directory is designed to:
 
 - **Provide context for reviewers and funders**  
-  Explains the “why” behind the system, not just the “how”.
+  Explain the motivation, goals, and real‑world relevance of Empus.
 
 - **Bridge technical and non‑technical audiences**  
-  Converts complex architecture into understandable narratives.
+  Present system concepts without requiring deep technical background.
 
 - **Support onboarding**  
-  Helps new contributors understand the system’s goals and structure.
+  Help new contributors understand the system’s purpose and threat environment.
 
 - **Clarify threat assumptions**  
-  Ensures all stakeholders share the same understanding of risks.
-
-- **Guide reading order**  
-  Helps readers navigate the broader repository.
+  Ensure all stakeholders share the same understanding of risks.
 
 ---
 
@@ -54,25 +44,16 @@ The Documentation module serves several key purposes:
 For new readers:
 
 1. **overview.md**  
-   Understand the system’s purpose and high‑level design.
+   Understand the system’s purpose, scope, and high‑level behavior.
 
 2. **threat-model.md**  
-   Learn what adversaries the system is built to resist.
+   Learn the adversary capabilities Empus is designed to withstand.
 
-3. **modules.md**  
-   Get a conceptual map of all major components.
-
-4. **emergency-publishing.md**  
-   Dive into the core MVP use case.
-
-5. **funding-notes.md**  
-   Review deployment, impact, and sustainability considerations.
+Readers who need deeper technical detail should continue with the **architecture/** directory.
 
 ---
 
 ## Summary
 
-The Documentation module provides the narrative and conceptual foundation for understanding the system.  
-It explains the motivation, threat environment, and high‑level structure, enabling funders, reviewers, and contributors to evaluate the system’s design and impact.
-
-This module is the recommended starting point for anyone new to the project.
+The documentation in this directory provides the narrative and conceptual context for Empus.  
+It explains the system’s purpose, threat environment, and high‑level behavior, serving as the recommended starting point for reviewers, funders, and new contributors.
