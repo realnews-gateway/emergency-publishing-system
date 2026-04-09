@@ -52,7 +52,8 @@ This repository contains the complete architecture, documentation, roadmap, and 
 ### Root Files
 
 - README.md  
-- LICENSE  
+- LICENSE
+- NOTICE
 - SECURITY.md  
 - CONTRIBUTING.md  
 - CODEOFCONDUCT.md  
