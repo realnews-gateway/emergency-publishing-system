@@ -1,20 +1,22 @@
 # Data Flow
 
-This document describes the end‑to‑end data flow of the Emergency Publishing System. It explains how content enters the system, how it is processed by the Emergency Channel, how it is stored, and how it is ultimately distributed across diverse and adversarial network environments.
+This document describes the end‑to‑end data flow of **Empus**.  
+It explains how content enters the system, how it is transformed by the Emergency Channel, how it is stored across distributed nodes, and how it is ultimately delivered under diverse and adversarial network conditions.
 
 ---
 
 ## Overview
 
-All content—whether aggregated news or pseudonymous user submissions—passes through a unified processing pipeline. The Emergency Channel orchestrates this pipeline, ensuring that content remains safe, normalized, redundant, and deliverable under hostile conditions.
+All content—whether aggregated news or pseudonymous submissions—passes through a unified processing pipeline.  
+The **Emergency Channel** orchestrates this pipeline, ensuring that content remains safe, normalized, redundant, and deliverable even under severe censorship pressure.
 
-The system is language‑agnostic. Multi‑language support is implemented in the ingestion modules.
+The system is language‑agnostic; multi‑language handling is implemented in ingestion modules.
 
 ---
 
 ## 1. Ingestion
 
-Content enters the system through two independent ingestion paths:
+Content enters Empus through two independent ingestion paths:
 
 ### News Aggregation Path
 - Fetches content from external news sources  
@@ -36,12 +38,13 @@ Both ingestion paths output a **Unified Content Envelope**, which is passed to t
 
 ## 2. Emergency Channel Processing
 
-The Emergency Channel is the system’s core processing layer. It transforms the Unified Content Envelope into a form suitable for global distribution.
+The Emergency Channel is the core processing layer of Empus.  
+It transforms the Unified Content Envelope into a form suitable for global, censorship‑resistant distribution.
 
 Key processing steps include:
 
 - **Sanitization**  
-  Removes unsafe elements, normalizes structure, and ensures content integrity.
+  Removes unsafe elements and normalizes structure.
 
 - **Metadata Minimization**  
   Retains only essential metadata (timestamp, region tags, language tag).
@@ -67,16 +70,16 @@ The output of this stage is a **Processed Content Bundle**.
 The Processed Content Bundle is stored using a combination of:
 
 - **Regional Caching Nodes**  
-  Provide fast access in low‑risk and medium‑risk regions.
+  Fast access for low‑risk and medium‑risk regions.
 
 - **Delay‑Tolerant Bundles**  
-  Enable synchronization in unstable or intermittent networks.
+  Synchronization for unstable or intermittent networks.
 
 - **Redundant Chunk Distribution**  
-  Ensures survivability even if nodes are lost or compromised.
+  Survivability even if nodes are lost or compromised.
 
 - **Region‑Aware Retention Policies**  
-  Adjust storage duration based on local risk and legal constraints.
+  Storage duration adapts to local risk and legal constraints.
 
 Storage is coordinated by the Emergency Channel but executed by distributed nodes.
 
@@ -84,19 +87,19 @@ Storage is coordinated by the Emergency Channel but executed by distributed node
 
 ## 4. Distribution Layer
 
-The distribution layer delivers content to clients across diverse environments:
+The distribution layer delivers content across diverse environments:
 
 - **Low‑risk regions**  
-  Use high‑performance transports and full caching.
+  High‑performance transports and full caching.
 
 - **Medium‑risk regions**  
-  Use camouflaged transports and selective caching.
+  Camouflaged transports and selective caching.
 
 - **High‑risk regions**  
-  Use emergency transports, opportunistic sync, and minimal metadata.
+  Emergency transports, opportunistic sync, and minimal metadata.
 
 - **Offline environments**  
-  Use bundle‑based distribution and peer‑to‑peer relay.
+  Bundle‑based distribution and peer‑to‑peer relay.
 
 Clients reconstruct the original content by:
 
@@ -109,4 +112,5 @@ Clients reconstruct the original content by:
 
 ## Summary
 
-The system’s data flow is built around the Emergency Channel, which unifies ingestion, processing, storage, and distribution into a single resilient pipeline. By minimizing metadata, applying redundancy, and coordinating region‑aware routing, the system ensures that critical information remains accessible even under severe censorship and network degradation.
+Empus unifies ingestion, processing, storage, and distribution into a single resilient pipeline centered on the Emergency Channel.  
+By minimizing metadata, applying redundancy, and coordinating region‑aware routing, Empus ensures that critical information remains accessible even under severe censorship and network degradation.
