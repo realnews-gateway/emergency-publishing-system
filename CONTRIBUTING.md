@@ -1,6 +1,6 @@
 # Contributing Guide
 
-Thank you for your interest in contributing to the Emergency Publishing System.  
+Thank you for your interest in contributing to the Empus.  
 This project is designed for high-risk environments and requires careful attention to security, documentation quality, and architectural consistency.
 
 ---
