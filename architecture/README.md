@@ -32,7 +32,7 @@ This directory contains the following documents:
 
 The Architecture module defines:
 
-- The structural foundation of the Emergency Publishing System  
+- The structural foundation of the Empus  
 - How the Emergency Channel operates as the system’s core  
 - How supporting modules integrate with the core  
 - How data moves from ingestion to distribution  
@@ -95,4 +95,4 @@ Then proceed to:
 The Architecture module documents the system’s structural foundation.  
 It explains how the Emergency Channel functions as the core subsystem, how supporting modules feed into it, how data moves through the system, and how security and resilience are maintained.
 
-This module is the authoritative reference for understanding and extending the Emergency Publishing System.
+This module is the authoritative reference for understanding and extending the Empus.
