@@ -1,26 +1,73 @@
 # Overview
 
-RealNews Free Publish Core is a censorship‑resistant publishing infrastructure designed to ensure that individuals in restricted environments can safely and reliably share public‑interest information. Even under severe censorship, it provides a secure pathway for eyewitness reports, media documentation, and civic information to reach the outside world.
+**Empus** is a censorship‑resistant publishing and distribution system designed to ensure that critical, public‑interest information can be safely transmitted, stored, and accessed under hostile network conditions.  
+It provides a secure pathway for news ingestion, pseudonymous submissions, and resilient global distribution, even in regions facing severe censorship or network degradation.
 
-The system consists of four major components:
+Empus is not a traditional circumvention tool.  
+Its focus is **publishing**, not personal access.  
+The system ensures that essential information can be ingested, processed, and delivered—regardless of regional restrictions or adversarial interference.
 
-1. **Emergency Publishing Channel**  
-   A secure, anonymous, censorship‑resistant pipeline for publishing sensitive content.
+---
 
-2. **Modern Anti‑Censorship Access Layer**  
-   A unified access layer integrating six advanced protocols: Hysteria2, Reality, VLESS, Trojan, XTLS, and XHTTP.
+## Core Components
 
-3. **Resilient News Aggregation Module**  
-   A censorship‑resistant aggregator for independent journalism and mirror sources.
+Empus consists of four major components:
 
-4. **Lightweight Anonymous BBS**  
-   A minimal, privacy‑friendly discussion board for low‑risk community interaction.
+### 1. Emergency Channel  
+The core subsystem responsible for sanitization, metadata minimization, chunking, redundancy, routing, storage coordination, and multi‑transport distribution.  
+It unifies all modules and ensures consistent behavior across regions.
 
-This project is designed as foundational infrastructure for information freedom, not a traditional circumvention tool. It focuses on safe publishing, resilient distribution, and long‑term sustainability under adversarial conditions.
+### 2. Access Layer  
+A region‑aware entry layer that provides covert, censorship‑resistant access paths for clients.  
+It integrates modern transports such as REALITY, uTLS, XTLS‑Vision, XHTTP, VLESS, and TUIC v5.
 
-## Difference from Traditional VPN/Proxies
+### 3. News Aggregation Module  
+A resilient ingestion pipeline for independent journalism, mirror sources, and region‑aware content fetching.  
+It normalizes, sanitizes, and standardizes external content before passing it to the Emergency Channel.
 
-- **Beginner‑friendly**: Traditional proxy services (“airports”) require complex node selection and configuration. This system provides a unified six‑protocol access layer, simplifying usage for non‑technical users.  
-- **Resilience against service shutdowns**: Traditional proxy services often suffer from node shutdowns or provider exit (“runaway airports”). This system uses multi‑node mirroring and automatic routing to ensure stability.  
-- **Technical advancement**: Traditional VPN/proxy services rely on outdated protocols such as **vmess**, while this system consistently maintains six advanced protocols (Hysteria2, Reality, VLESS, Trojan, XTLS, XHTTP) with stronger censorship resistance.  
-- **Different focus**: Traditional VPN/proxy tools mainly solve “access.” This system’s core is “publishing”—ensuring suppressed content can be safely transmitted and persistently stored.
+### 4. Anonymous BBS  
+A lightweight, pseudonymous submission system designed for high‑risk environments.  
+It strips metadata, enforces safety rules, and provides a minimal interface for community reporting.
+
+---
+
+## Purpose and Design Philosophy
+
+Empus is designed as foundational infrastructure for information freedom.  
+Its goals include:
+
+- Ensuring that suppressed content can be safely published  
+- Providing resilient distribution across adversarial networks  
+- Maintaining availability during censorship events  
+- Minimizing metadata and exposure for users  
+- Operating reliably under unstable or intermittent connectivity  
+
+The system emphasizes long‑term survivability, not short‑term circumvention.
+
+---
+
+## How Empus Differs from Traditional VPN/Proxy Tools
+
+Empus is fundamentally different from VPNs, proxies, and “airport”‑style services:
+
+- **Different purpose**  
+  VPNs solve “access.” Empus solves “publishing” and “distribution.”
+
+- **Different threat model**  
+  Empus is designed for censorship, surveillance, and network disruption—not for general browsing privacy.
+
+- **Different architecture**  
+  Empus uses a multi‑layer transport stack with region‑aware routing, redundancy, and chunk‑based distribution.
+
+- **Different guarantees**  
+  Empus minimizes metadata, avoids persistent identifiers, and prioritizes survivability over throughput.
+
+Empus is infrastructure for information flow under pressure, not a personal privacy tool.
+
+---
+
+## Summary
+
+Empus provides a unified, censorship‑resistant system for ingesting, processing, storing, and distributing critical information.  
+Its architecture is built around the Emergency Channel, supported by resilient ingestion modules and a modern transport stack.  
+The system is purpose‑built for environments where traditional communication channels fail, ensuring that essential information continues to reach the world.
