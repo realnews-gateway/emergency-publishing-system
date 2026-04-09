@@ -182,7 +182,7 @@ The system emphasizes:
 
 ## Summary
 
-The Emergency Publishing System is a resilient, censorship‑resistant publishing platform built around the Emergency Channel. It provides:
+The Empus is a resilient, censorship‑resistant publishing platform built around the Emergency Channel. It provides:
 
 - Secure ingestion  
 - Content sanitization  
