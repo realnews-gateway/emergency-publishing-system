@@ -1,6 +1,5 @@
-```markdown
-＊＊＊
-# Test Block — Final Stable Format
+```＊＊＊
+# Test Block — Stable Format v2
 
 Event Format:
 
