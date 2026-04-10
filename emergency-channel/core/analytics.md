@@ -1,110 +1,116 @@
 # Emergency Channel — Analytics Module
 
+The Analytics module provides internal, system-level metrics for the
+Emergency Channel. It focuses on transport viability, routing behavior,
+redundancy effectiveness, storage health, and region-level availability.
+No user-level analytics or behavioral tracking is performed.
+
+---
+
 ## 1. Purpose
 
-The Analytics Module provides non-intrusive, aggregated insights into the operation of the Emergency Channel.  
-It focuses on system performance, content distribution patterns, and resource utilization, without tracking individual users.  
-Analytics is used for optimization, reliability improvements, and capacity planning, not for user profiling or behavioral targeting.
+The module provides:
+- Operational visibility into routing and transport performance
+- Reliability metrics for chunk delivery and redundancy
+- Region-aware availability insights
+- Health indicators for storage, sanitizer, and distributor
+
+All analytics are aggregated and anonymized.
 
 ---
 
 ## 2. Responsibilities
 
-The Analytics Module is responsible for three major areas:
+### Transport and Routing Metrics
+- Viability scores for REALITY, uTLS, XTLS-Vision, XHTTP Stream/Packet,
+  VLESS, TUIC v5
+- Fallback frequency and fallback chains
+- Multi-hop routing success rates
+- Region-specific degradation patterns
 
-### 2.1 System Metrics Aggregation
+### Chunk Delivery and Redundancy
+- Chunk delivery success and failure ratios
+- Redundancy reconstruction success rate
+- DTN bundle latency
+- Retry patterns
 
-- Message throughput (per minute, hour, and day)  
-- Average and percentile processing latency  
-- Storage backend usage and growth trends  
-- Node availability and uptime statistics  
+### Storage and Sync
+- Regional storage availability
+- DTN sync success rate
+- Retention policy compliance
+- Storage backend health
 
-### 2.2 Content Distribution Statistics
+### Sanitizer and Validation
+- Sanitizer rejection rate (system-level)
+- Validation failures (format, structure, chunk map)
+- Escalation categories
 
-- Content type distribution (text, image, video, document)  
-- File size distribution across predefined buckets  
-- Sanitizer escalation frequency and categories  
-- Distributor delivery success and failure ratios  
+### System Health
+- Module failure trends
+- Pipeline latency
+- Region-level availability degradation
+- Impact of routing or transport configuration changes
 
-### 2.3 Operational Insights
-
-- Peak traffic periods and seasonal patterns  
-- Failure rate trends across modules  
-- Routing efficiency and path utilization  
-- Impact of configuration changes or deployments
+---
 
 ## 3. Data Flow
 
-Analytics receives asynchronous events from all major modules in the system.  
-These events are collected in a non-blocking manner to ensure that analytics processing never interferes with the main publishing pipeline.
+Events are sent asynchronously from:
+core, router, sanitizer, storage, distributor, monitoring.
 
-    core        → analytics
-    router      → analytics
-    sanitizer   → analytics
-    storage     → analytics
-    distributor → analytics
-    monitoring  → analytics
-
-Analytics operates in a best-effort mode: missing or delayed events must not affect system correctness.
+Analytics must never block the pipeline.
 
 ---
 
 ## 4. Data Model
 
-### 4.1 Event Format
+### Event Format
+{
+  "event_type": "string",
+  "timestamp": <unix>,
+  "source": "core|router|sanitizer|storage|distributor|monitoring",
+  "payload": { ... }
+}
 
-Analytics events follow a lightweight, structured format suitable for aggregation and long-term storage.
+### Aggregated Metrics
+{
+  "metric": "transport_viability",
+  "window": "1h",
+  "avg": 0.92,
+  "p95": 0.75,
+  "samples": 1842
+}
 
-    {
-      "event_type": "string",
-      "timestamp": 1712345678,
-      "source_module": "core|router|sanitizer|storage|distributor|monitoring",
-      "payload": {
-        "key": "value"
-      }
-    }
-
-### 4.2 Aggregated Metrics
-
-Aggregated metrics are computed over fixed time windows (e.g., 1m, 5m, 1h, 24h).
-
-    {
-      "metric": "processing_latency_ms",
-      "window": "1h",
-      "avg": 123,
-      "p95": 200,
-      "p99": 350,
-      "count": 1024
-    }
+---
 
 ## 5. Dashboards (Optional)
 
-The Analytics Module may feed one or more operational dashboards to help maintainers understand system behavior and long-term trends.  
-Typical dashboards include:
-
-- Processing latency dashboard  
-- Storage usage and growth dashboard  
-- Routing efficiency and failure dashboard  
-- Sanitizer escalation and rejection dashboard  
-- Distributor delivery success dashboard  
-
-Dashboards are intended for system operators and maintainers, not for end users.
+Possible dashboards:
+- Transport viability
+- Fallback chain visualization
+- Chunk delivery success
+- Redundancy effectiveness
+- DTN sync latency
+- Sanitizer rejection
+- Storage availability
 
 ---
 
 ## 6. Privacy and Safety
 
-- No user-level analytics or profiling is performed  
-- Only aggregated, anonymized metrics are stored  
-- Raw content is never inspected beyond metadata and size  
-- Analytics data must follow retention and deletion policies  
-- Access to analytics data must be restricted and auditable  
+- No user-level analytics
+- No behavioral tracking
+- No content inspection
+- Only aggregated metrics
+- Strict retention policies
+- Access must be restricted and auditable
 
 ---
 
 ## 7. Future Extensions
 
-- Predictive scaling based on historical traffic patterns  
-- Anomaly detection on failure rates and latency  
-- Multi-region traffic forecasting and capacity planning  
-- Integration with external observability or monitoring platforms.
+- Predictive routing
+- Censorship anomaly detection
+- Region availability forecasting
+- Automated fallback tuning
+- Optional integration with observability systems
