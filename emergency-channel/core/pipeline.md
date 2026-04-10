@@ -115,43 +115,53 @@ The pipeline uses strict, versioned data contracts.
 
 ### 3.1 SanitizedContent
 
+```
 {
   "normalized_blob": <binary>,
   "content_size": <int>,
   "sanitization_report": { ... }
 }
+```
 
 ### 3.2 ChunkBundle
 
+```
 {
   "chunks": [ ... ],
   "chunk_map": { ... },
   "bundle_id": "string"
 }
+```
 
 ### 3.3 RedundantBundle
 
+```
 {
   "redundant_chunks": [ ... ],
   "redundancy_level": <int>,
   "reconstruction_rules": { ... }
 }
+```
 
 ### 3.4 RoutingHints
 
+```
 {
   "primary_routes": [ ... ],
   "fallback_routes": [ ... ],
   "transport_scores": { ... }
 }
+```
 
 ### 3.5 PersistedRecord
 
+```
 {
   "storage_regions": [ ... ],
   "dtn_bundles": [ ... ],
   "integrity_hash": "string"
 }
+```
 
 All contracts exclude identity, account data, or submission metadata.
 
