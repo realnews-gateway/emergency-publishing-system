@@ -65,12 +65,15 @@ Analytics must never block the pipeline.
 ## 4. Data Model
 
 ### Event Format
+
+```
 {
   "event_type": "string",
   "timestamp": <unix>,
   "source": "core|router|sanitizer|storage|distributor|monitoring",
   "payload": { ... }
 }
+```
 
 ### Aggregated Metrics
 {
