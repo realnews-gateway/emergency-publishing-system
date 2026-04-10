@@ -203,6 +203,7 @@ The system emphasizes:
 
 The Empus is a resilient, censorship‑resistant publishing platform built around the Emergency Channel.  
 A system‑wide anonymous account layer provides pseudonyms, personal content management, and optional recovery features without exposing identity to the Emergency Channel.  
+
 It provides:
 
 - Secure ingestion  
