@@ -1,225 +1,212 @@
-## Pipeline Overview
+# Emergency Channel — Pipeline
 
-The Emergency Channel Pipeline defines the end‑to‑end processing sequence for all incoming submissions. It ensures that every piece of content passes through a consistent, secure, and verifiable workflow before reaching storage or distribution layers.
+The Emergency Channel Pipeline defines the internal processing sequence
+for sanitized, identity‑free content. It transforms normalized input into
+a censorship‑resistant, redundantly encoded, globally deliverable format.
 
-The pipeline is designed to operate under hostile network conditions, guaranteeing anonymity, integrity, and resilience throughout the entire submission lifecycle.
+The pipeline does not handle user accounts, submission interfaces, or
+identity‑linked metadata. All content entering the pipeline has already
+been sanitized upstream.
 
-## Pipeline Stages
+---
 
-The Emergency Channel Pipeline consists of six sequential stages. Each stage enforces strict security, consistency, and anonymity guarantees before passing data to the next component.
+## 1. Pipeline Overview
 
-### 1. Submission Intake
-- Receives encrypted payloads from authenticated users.
-- Validates submission tokens and rate limits.
-- Strips all transport‑layer metadata before processing.
+The pipeline consists of five deterministic stages:
 
-### 2. Pre‑Sanitization Validation
-- Confirms file type, size, and structural integrity.
-- Rejects malformed or dangerous payloads.
-- Normalizes input into a unified internal format.
+1. Sanitized Input  
+2. Chunking  
+3. Redundancy Encoding  
+4. Routing Preparation  
+5. Storage & Distribution Coordination  
 
-### 3. Sanitization
-- Removes EXIF, IPTC, XMP, PDF metadata, and embedded thumbnails.
-- Re‑encodes media to eliminate hidden fingerprints.
-- Ensures no device, location, or software identifiers remain.
+Each stage enforces strict consistency, integrity, and anonymity
+guarantees.
 
-### 4. Content Processing
-- Computes cryptographic hashes for deduplication.
-- Classifies content type (text, image, video, mixed).
-- Generates routing metadata for downstream modules.
+---
 
-### 5. Routing & Delivery Preparation
-- Selects mirror nodes based on trust, latency, and availability.
-- Applies fallback logic for unstable networks.
-- Prepares multi‑hop anonymized routing envelopes.
+## 2. Pipeline Stages
 
-### 6. Persistence & Distribution
-- Stores content in encrypted local storage or decentralized networks (IPFS/Arweave).
-- Notifies NGO/media partners when applicable.
-- Publishes to public mirrors and prepares optional offline bundles.
+### 2.1 Sanitized Input
 
-## Data Contracts
+The pipeline begins only after upstream sanitization is complete.
 
-Each stage of the pipeline exchanges data through strict, versioned data contracts. These contracts ensure consistency, verifiability, and forward‑compatibility across all submodules.
+Input guarantees:
 
-### 1. SubmissionPayload
-Represents the raw encrypted content submitted by the user.
+- No metadata (EXIF, XMP, IPTC, PDF, headers)
+- No device, location, or software identifiers
+- No user identifiers or account linkage
+- Normalized, safe binary format
 
-Fields:
-- `encrypted_blob` — Encrypted binary payload.
-- `submission_token` — Temporary token validating the session.
-- `timestamp` — Client‑side submission time.
-- `transport_metadata` — Stripped immediately after intake.
+The Core never receives raw or untrusted content.
 
-### 2. SanitizedContent
-Represents content after metadata removal and format normalization.
+---
 
-Fields:
-- `content_type` — text | image | video | document | mixed.
-- `normalized_blob` — Cleaned and re‑encoded content.
-- `sanitization_report` — Metadata removed, transformations applied.
-- `size_bytes` — Final size after normalization.
+### 2.2 Chunking
 
-### 3. ProcessedContent
-Represents content after classification and deduplication.
+Content is split into deterministic, transport‑friendly chunks.
 
-Fields:
-- `content_hash` — Cryptographic hash for deduplication.
-- `content_class` — text | image | video | mixed.
-- `routing_metadata` — Node selection hints.
-- `processing_report` — Classification and hash details.
+Properties:
 
-### 4. RoutingEnvelope
-Represents the routing‑ready package prepared for mirror nodes.
+- Fixed or adaptive chunk size depending on transport conditions
+- Deterministic ordering for reproducibility
+- Chunk map generated for reconstruction
+- Suitable for unstable, high‑loss networks
 
-Fields:
-- `target_nodes` — Selected mirror nodes.
-- `fallback_nodes` — Backup nodes for unstable networks.
-- `multi_hop_path` — Optional anonymized routing chain.
-- `payload` — ProcessedContent packaged for delivery.
+Chunking is the foundation for redundancy and multi‑path delivery.
 
-### 5. PersistedRecord
-Represents the final stored or distributed content.
+---
 
-Fields:
-- `storage_location` — local | ipfs | arweave.
-- `mirror_ids` — Nodes that successfully replicated the content.
-- `distribution_channels` — NGO/media, public mirrors, offline bundles.
-- `record_hash` — Final integrity hash.
+### 2.3 Redundancy Encoding
 
-## Error Handling & Recovery
+Forward‑error‑correction and multi‑path redundancy are applied.
 
-The Emergency Channel Pipeline is designed to remain operational even under partial failure, network interference, or corrupted submissions. Each stage includes explicit error‑handling logic and recovery paths.
+Capabilities:
 
-### 1. Intake Errors
-Common causes:
-- Invalid or expired submission token
-- Corrupted encrypted payload
-- Excessive submission rate
+- Reed‑Solomon or fountain‑code style redundancy
+- Reconstruction possible even with partial chunk loss
+- Region‑aware redundancy levels
+- DTN‑compatible bundle generation
 
-Recovery:
-- Reject with a generic failure message (no diagnostic details)
-- Regenerate a new submission token when appropriate
-- Apply exponential backoff for rate‑limited clients
+This stage ensures survivability under censorship and packet loss.
 
-### 2. Sanitization Errors
-Common causes:
-- Unsupported file format
-- Damaged media files
-- Failure during re‑encoding
+---
 
-Recovery:
-- Attempt fallback sanitization routines
-- Convert to a safe intermediate format when possible
-- Reject only when all sanitization paths fail
+### 2.4 Routing Preparation
 
-### 3. Processing Errors
-Common causes:
-- Hash computation failure
-- Classification model timeout
-- Inconsistent content structure
+Routing metadata is generated based on:
 
-Recovery:
-- Retry with a secondary hashing or classification method
-- Fallback to minimal classification (text/image/video)
-- Log anonymized error metadata for debugging
+- Transport viability (REALITY, uTLS, XTLS‑Vision, XHTTP Stream/Packet,
+  VLESS, TUIC v5)
+- Region‑specific fallback chains
+- Network degradation signals from Monitoring
+- Multi‑path delivery opportunities
 
-### 4. Routing Errors
-Common causes:
-- No available mirror nodes
-- Network instability
-- Multi‑hop path construction failure
+Output includes:
 
-Recovery:
-- Switch to fallback node list
-- Reduce routing complexity (single‑hop mode)
-- Queue the payload for delayed delivery
+- Primary routing hints
+- Fallback routing hints
+- Transport scoring
+- Region‑aware delivery strategies
 
-### 5. Persistence Errors
-Common causes:
-- Local storage write failure
-- IPFS/Arweave node unavailability
-- Integrity mismatch after replication
+No user identity or submission metadata is included.
 
-Recovery:
+---
+
+### 2.5 Storage & Distribution Coordination
+
+The final stage prepares content for persistence and delivery.
+
+Responsibilities:
+
+- Store chunk bundles in regional storage backends
+- Generate DTN bundles for intermittent networks
+- Coordinate multi‑transport distribution
+- Ensure integrity verification before replication
+- Maintain redundant copies across regions
+
+This stage ensures long‑term availability and global accessibility.
+
+---
+
+## 3. Data Contracts
+
+The pipeline uses strict, versioned data contracts.
+
+### 3.1 SanitizedContent
+
+{
+  "normalized_blob": <binary>,
+  "content_size": <int>,
+  "sanitization_report": { ... }
+}
+
+### 3.2 ChunkBundle
+
+{
+  "chunks": [ ... ],
+  "chunk_map": { ... },
+  "bundle_id": "string"
+}
+
+### 3.3 RedundantBundle
+
+{
+  "redundant_chunks": [ ... ],
+  "redundancy_level": <int>,
+  "reconstruction_rules": { ... }
+}
+
+### 3.4 RoutingHints
+
+{
+  "primary_routes": [ ... ],
+  "fallback_routes": [ ... ],
+  "transport_scores": { ... }
+}
+
+### 3.5 PersistedRecord
+
+{
+  "storage_regions": [ ... ],
+  "dtn_bundles": [ ... ],
+  "integrity_hash": "string"
+}
+
+All contracts exclude identity, account data, or submission metadata.
+
+---
+
+## 4. Error Handling & Recovery
+
+### Chunking Errors
+- Fallback to smaller chunk size
+- Regenerate chunk map
+- Reject only if input is structurally invalid
+
+### Redundancy Errors
+- Reduce redundancy level
+- Retry encoding
+- Switch to minimal redundancy mode
+
+### Routing Errors
+- Switch to fallback routes
+- Reduce routing complexity
+- Queue for delayed delivery
+
+### Storage Errors
 - Retry with exponential backoff
-- Switch to alternative storage backend
-- Mark record as “pending replication” and continue pipeline
+- Switch to alternate region
+- Mark as pending replication
 
-### 6. Distribution Errors
-Common causes:
-- NGO/media endpoint unreachable
-- Mirror sync timeout
-- Offline bundle generation failure
+### Distribution Errors
+- Retry on next cycle
+- Defer until connectivity improves
+- Use DTN‑only mode
 
-Recovery:
-- Retry on next sync cycle
-- Defer distribution until connectivity returns
-- Provide fallback to local-only persistence
+---
 
-## Performance Considerations
+## 5. Security Notes
 
-The Emergency Channel Pipeline is optimized for low‑bandwidth, high‑latency, and intermittently connected environments. Each stage is designed to minimize computational overhead while maintaining strong security guarantees.
+- No identity linkage at any stage
+- No account identifiers or submission metadata
+- All content processed in sanitized form
+- Deterministic transformations for auditability
+- Integrity verified at every stage
+- Logs contain no content or routing metadata
 
-### 1. Lightweight Sanitization
-- Uses streaming‑based metadata removal to avoid loading full files into memory.
-- Re‑encodes media only when necessary to preserve performance.
-- Applies format normalization selectively based on content type.
+The pipeline is designed to operate safely under active surveillance and
+network interference.
 
-### 2. Efficient Hashing
-- Employs fast cryptographic hash functions suitable for large media files.
-- Uses incremental hashing to reduce memory usage.
-- Caches intermediate results to avoid redundant computation.
+---
 
-### 3. Adaptive Routing
-- Prioritizes low‑latency mirror nodes when available.
-- Falls back to minimal routing paths in unstable networks.
-- Uses compact routing metadata to reduce payload size.
+## 6. Key Principles
 
-### 4. Storage Optimization
-- Compresses content before decentralized storage when safe.
-- Uses parallel upload streams for IPFS/Arweave when bandwidth allows.
-- Deduplicates content early to reduce storage load.
+- Deterministic, reproducible processing
+- Region‑aware routing and fallback
+- Multi‑path redundancy for survivability
+- Strict separation from user identity and accounts
+- Storage and distribution optimized for hostile environments
 
-### 5. Asynchronous Distribution
-- NGO/media delivery runs asynchronously to avoid blocking the pipeline.
-- Mirror synchronization is batched to reduce network overhead.
-- Offline bundle generation is deferred during peak load.
-
-These optimizations ensure that the pipeline remains responsive and reliable even under severe network constraints.
-
-## Security Notes
-
-The Emergency Channel Pipeline enforces strict security controls at every stage to protect users operating under hostile conditions. These notes summarize the mandatory safeguards that must never be bypassed.
-
-### 1. No Identity Linkage
-- Submission tokens must never encode user identity.
-- Account identifiers must not appear in any downstream data contract.
-- Logs must exclude IPs, device IDs, and session identifiers.
-
-### 2. Mandatory Encryption
-- All payloads must remain encrypted during transit and storage.
-- Decryption is permitted only within the sanitization sandbox.
-- Routing envelopes must not expose content or metadata.
-
-### 3. Metadata Elimination
-- Sanitization must remove all EXIF, XMP, IPTC, PDF, and embedded metadata.
-- Re‑encoding must strip hidden fingerprints and steganographic markers.
-- No original file headers may survive after sanitization.
-
-### 4. Integrity Verification
-- Every stage must validate hashes before passing data forward.
-- Any mismatch requires immediate rejection and regeneration.
-- Mirror nodes must verify integrity before replication.
-
-### 5. Minimal Logging
-- Only anonymized operational metrics may be logged.
-- No content, hashes, or routing metadata may be stored in logs.
-- Logs must be purgeable and never written to persistent storage in hostile deployments.
-
-### 6. Fail‑Closed Behavior
-- If a stage encounters an unrecoverable error, it must fail closed.
-- No partially processed content may continue through the pipeline.
-- The system must never leak diagnostic details to the client.
-
-These security notes ensure that the pipeline remains safe, anonymous, and censorship‑resistant even under active surveillance or targeted attacks.
+The Emergency Channel Pipeline is the backbone of censorship‑resistant
+content delivery.
