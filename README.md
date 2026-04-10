@@ -13,6 +13,9 @@ This repository contains the complete architecture, documentation, roadmap, and 
 
 ### Core System Layers
 
+- **accounts/**
+  System‑wide anonymous account layer providing pseudonyms, personal content management, and optional recovery features.
+
 - **network-access-layer/**  
   Access Layer — censorship‑resistant entry layer providing multi‑protocol transport paths.
 
