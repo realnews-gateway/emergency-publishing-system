@@ -66,6 +66,21 @@ This repository contains the complete architecture, documentation, roadmap, and 
 
 ## Core Concepts
 
+### System‑Wide Anonymous Account Layer
+
+Empus includes a lightweight, privacy‑preserving account system shared across all applications.
+Accounts allow users to:
+
+- Maintain a persistent pseudonym (system‑generated name + avatar)
+- View and manage their own posts
+- Save favorites across applications
+- Optionally add an email for password recovery
+- Optionally enable 2FA for account protection
+
+No phone numbers or personal information are required.
+No IPs, device identifiers, or behavioral data are stored.
+The account layer is fully isolated from the Emergency Channel.
+
 ### Emergency Channel
 
 The Emergency Channel is the system’s central processing and distribution core, responsible for:
