@@ -13,7 +13,7 @@ This repository contains the complete architecture, documentation, roadmap, and 
 
 ### Core System Layers
 
-- **accounts/**
+- **accounts/**  
   System‑wide anonymous account layer providing pseudonyms, personal content management, and optional recovery features.
 
 - **network-access-layer/**  
