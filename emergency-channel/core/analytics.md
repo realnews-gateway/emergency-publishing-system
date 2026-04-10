@@ -76,6 +76,8 @@ Analytics must never block the pipeline.
 ```
 
 ### Aggregated Metrics
+
+```
 {
   "metric": "transport_viability",
   "window": "1h",
@@ -83,6 +85,7 @@ Analytics must never block the pipeline.
   "p95": 0.75,
   "samples": 1842
 }
+```
 
 ---
 
