@@ -1,228 +1,259 @@
-## Validation Overview
+# Emergency Channel — Validation Module
 
-The Validation module ensures that all incoming submissions meet the minimum structural, security, and format requirements before entering the main processing pipeline. It acts as the first defensive layer, preventing malformed, dangerous, or suspicious payloads from reaching downstream components.
+The Validation module ensures that all sanitized inputs entering the
+Emergency Channel Core are structurally sound, safe to process, and
+compatible with the downstream pipeline. It acts as the first defensive
+layer inside the trusted environment, preventing malformed or corrupted
+content from reaching chunking, redundancy, routing, or storage stages.
 
-Validation is intentionally strict to protect the system from adversarial inputs, corrupted files, and metadata‑bearing formats that could compromise user anonymity.
+Validation does not process user submissions, account data, or transport
+metadata. All identity‑linked information is removed upstream.
 
-## Validation Stages
+---
 
-The Validation module performs four sequential checks to ensure that all submissions entering the pipeline are structurally sound, safe to process, and free of identifiable metadata.
+## 1. Purpose
 
-### 1. Structural Validation
-- Confirms that the payload conforms to the SubmissionPayload contract.
-- Verifies required fields: encrypted_blob, submission_token, timestamp.
-- Rejects malformed or incomplete payloads.
+The Validation module provides:
 
-### 2. Cryptographic Validation
-- Validates the submission token using a time‑bound signature.
-- Ensures the encrypted blob has not been tampered with.
-- Applies rate‑limit checks to prevent abuse.
+- Structural verification of sanitized input
+- Format consistency checks
+- Detection of corrupted or incomplete content
+- Early rejection of unsafe or incompatible data
+- Protection of downstream modules from malformed inputs
 
-### 3. Format Validation
-- Detects file type using magic‑byte inspection (not user‑provided extensions).
-- Rejects unsupported or dangerous formats (e.g., executables, archives).
-- Normalizes ambiguous formats into a safe intermediate representation.
+It ensures that only clean, well‑formed, identity‑free content enters the
+pipeline.
 
-### 4. Metadata Pre‑Check
-- Performs a shallow scan for EXIF, XMP, IPTC, PDF metadata.
-- Flags content that requires deep sanitization.
-- Rejects files containing unremovable or suspicious metadata structures.
+---
 
-## Rejected Payload Categories
+## 2. Validation Stages
 
-The Validation module rejects any submission that poses structural, security, or anonymity risks. Rejections are intentionally conservative to protect users and downstream components.
+### 2.1 Structural Validation
 
-### 1. Malformed Payloads
-Submissions that fail basic structural or cryptographic checks.
-Examples:
-- Missing required fields
-- Corrupted encrypted blobs
-- Invalid or expired submission tokens
+Checks that the sanitized input conforms to the expected internal
+contract.
 
-### 2. Dangerous File Formats
-Files that cannot be safely sanitized or pose execution risks.
-Examples:
-- Executables (EXE, ELF, MACH‑O)
-- Archives (ZIP, RAR, 7Z)
-- Scripts (JS, SH, BAT, PS1)
+Validates:
 
-### 3. Unsupported Media Types
-Formats that the sanitization module cannot reliably process.
-Examples:
-- Proprietary camera RAW formats
-- Encrypted PDFs
-- DRM‑protected documents
+- Presence of normalized binary blob
+- Valid size fields
+- Internal structure consistency
+- No residual metadata fields
 
-### 4. Metadata‑Heavy Files
-Files containing metadata structures that cannot be fully removed.
-Examples:
-- PDF files with embedded object streams
-- Images with proprietary EXIF blocks
-- Videos with unremovable GPS tracks
+Rejects:
 
-### 5. Oversized Submissions
-Payloads exceeding safe processing limits.
-Examples:
-- Extremely large video files
-- Multi‑gigabyte documents
-- Payloads exceeding configured thresholds
+- Missing or malformed fields
+- Corrupted binary structures
+- Incomplete or truncated content
 
-### 6. Suspicious or Adversarial Inputs
-Content exhibiting patterns associated with attacks or deanonymization attempts.
-Examples:
-- Steganographic payloads
-- Files with mismatched magic bytes and extensions
-- Payloads designed to trigger sanitization failures.
+---
 
-## Validation Data Contracts
+### 2.2 Format Validation
 
-The Validation module exchanges data with upstream and downstream components using strict, versioned data contracts. These contracts ensure that only safe, well‑structured submissions enter the main pipeline.
+Ensures that the normalized content is compatible with downstream
+processing.
 
-### 1. ValidationInput
-Represents the raw submission received from the access layer.
+Checks:
 
-Fields:
-- `encrypted_blob` — Raw encrypted payload.
-- `submission_token` — Time‑bound authentication token.
-- `timestamp` — Client‑provided submission time.
-- `client_metadata` — Transport‑layer metadata (removed after validation).
+- Magic‑byte inspection for format consistency
+- Detection of ambiguous or unsupported formats
+- Verification that content can be chunked safely
 
-### 2. ValidationResult
-Represents the outcome of the validation process.
+Rejects:
 
-Fields:
-- `is_valid` — Boolean indicating whether validation succeeded.
-- `reason` — Optional rejection reason (generic, non‑diagnostic).
-- `normalized_type` — Detected file type (text/image/video/document).
-- `requires_sanitization` — Whether deep sanitization is required.
-- `safe_blob` — Normalized content passed to the sanitization module.
+- Executables or script‑like structures
+- Ambiguous or proprietary formats
+- Encrypted or DRM‑protected blobs
 
-### 3. RejectionRecord
-Represents a rejected submission for internal auditing.
+---
 
-Fields:
-- `timestamp` — Time of rejection.
-- `category` — Rejection category (malformed, dangerous_format, etc.).
-- `anonymized_hash` — Hash of encrypted blob (cannot identify user).
-- `notes` — Minimal operational notes for debugging.
+### 2.3 Integrity Validation
 
-### 4. ValidationReport
-Represents a detailed internal report used only for system monitoring.
+Ensures that the sanitized content has not been corrupted during
+normalization.
 
-Fields:
-- `validation_time_ms` — Total time spent validating.
-- `detected_format` — File type detected via magic‑byte inspection.
-- `metadata_flags` — Flags indicating presence of metadata.
-- `risk_score` — Internal heuristic score for anomaly detection.
+Checks:
 
-## Error Handling
+- Hash consistency (if provided by upstream sanitization)
+- Binary integrity checks
+- Size consistency between declared and actual content
 
-The Validation module is designed to fail safely and predictably. Any ambiguity, corruption, or suspicious behavior results in immediate rejection with minimal information disclosed to the client.
+Rejects:
 
-### 1. Structural Errors
-Triggered when the payload does not match the expected SubmissionPayload contract.
+- Hash mismatches
+- Corrupted or partially decoded content
+- Inconsistent size fields
+
+---
+
+### 2.4 Metadata Pre‑Check
+
+Ensures that sanitization was complete and no metadata remains.
+
+Checks:
+
+- EXIF, XMP, IPTC, PDF remnants
+- Embedded thumbnails or object streams
+- Hidden GPS or device identifiers
+
+Rejects:
+
+- Any detectable metadata structure
+- Any format requiring deeper sanitization
+- Any content with unremovable metadata
+
+---
+
+## 3. Rejection Categories
+
+### 3.1 Malformed Content
 
 Examples:
-- Missing encrypted_blob
-- Invalid timestamp format
-- Malformed submission_token
 
-Handling:
-- Reject with a generic “invalid submission” response
-- Do not expose which field failed
+- Missing normalized_blob
+- Invalid size fields
+- Corrupted binary structure
 
-### 2. Cryptographic Errors
-Triggered when authentication or integrity checks fail.
+### 3.2 Dangerous or Unsupported Formats
 
 Examples:
-- Expired submission token
-- Signature mismatch
-- Tampered encrypted blob
 
-Handling:
-- Reject immediately
-- Regenerate a new token only when safe
-- Log anonymized failure metadata
+- Executables or scripts
+- Archives or container formats
+- Encrypted or DRM‑protected documents
 
-### 3. Format Errors
-Triggered when the file type is unsupported or dangerous.
+### 3.3 Metadata‑Heavy Content
 
 Examples:
-- Executable or script detected
-- Archive file detected
-- Magic‑byte mismatch
 
-Handling:
-- Reject without attempting sanitization
-- Do not reveal detected file type to the client
-
-### 4. Metadata Errors
-Triggered when metadata structures cannot be safely removed.
-
-Examples:
-- Embedded GPS tracks
-- Proprietary EXIF blocks
 - PDF object streams
+- Proprietary EXIF blocks
+- Embedded GPS tracks
 
-Handling:
-- Reject with a generic “unsafe content” response
-- Flag for internal monitoring
-
-### 5. Size Errors
-Triggered when payload exceeds configured limits.
+### 3.4 Corrupted or Incomplete Content
 
 Examples:
-- Oversized video files
-- Multi‑gigabyte documents
 
-Handling:
-- Reject and instruct client to reduce size (generic wording)
-- Do not reveal system thresholds
+- Hash mismatch
+- Truncated binary data
+- Failed decoding during sanitization
 
-### 6. Adversarial Behavior
-Triggered when content appears intentionally crafted to bypass validation.
+### 3.5 Oversized Content
 
 Examples:
-- Steganographic payloads
-- Files designed to crash sanitization
-- Repeated malformed submissions
+
+- Extremely large media files
+- Content exceeding configured limits
+
+Validation does not apply rate limits or user‑level controls.
+
+---
+
+## 4. Data Contracts
+
+### 4.1 ValidationInput
+
+Represents sanitized content entering the Validation module.
+
+Fields:
+
+- normalized_blob — Clean binary content  
+- content_size — Declared size  
+- sanitization_report — Metadata removed, transformations applied  
+
+### 4.2 ValidationResult
+
+Represents the outcome of validation.
+
+Fields:
+
+- is_valid — Whether validation succeeded  
+- reason — Generic rejection reason  
+- safe_blob — Content passed to chunking  
+- requires_resanitization — Whether upstream sanitization must retry  
+
+### 4.3 RejectionRecord
+
+Internal record for debugging and monitoring.
+
+Fields:
+
+- timestamp — Time of rejection  
+- category — Rejection category  
+- integrity_flags — Hash or size mismatch indicators  
+- notes — Minimal operational notes  
+
+### 4.4 ValidationReport
+
+Internal diagnostic report.
+
+Fields:
+
+- validation_time_ms  
+- detected_format  
+- metadata_flags  
+- integrity_flags  
+
+No identity, account, or submission metadata is included.
+
+---
+
+## 5. Error Handling
+
+### Structural Errors
+
+Triggered by malformed or incomplete content.
 
 Handling:
-- Reject and apply temporary rate limiting
-- Log anonymized adversarial indicators.
 
-## Security Notes
+- Reject immediately  
+- Provide generic failure reason  
 
-The Validation module enforces strict security guarantees to protect user anonymity and prevent malicious inputs from entering the system. These safeguards must never be bypassed or weakened.
+### Format Errors
 
-### 1. Zero Identity Leakage
-- No client identifiers may be stored or forwarded.
-- Transport metadata must be discarded immediately after validation.
-- Validation logs must never include IPs, device IDs, or session tokens.
+Triggered by unsupported or dangerous formats.
 
-### 2. Strict Format Enforcement
-- Only explicitly approved formats may proceed to sanitization.
-- Ambiguous or proprietary formats must be rejected by default.
-- Magic‑byte detection must override user‑provided file extensions.
+Handling:
 
-### 3. Metadata Sensitivity
-- Any presence of unremovable metadata requires immediate rejection.
-- Validation must not attempt partial sanitization.
-- Metadata flags must be passed to downstream modules for deep cleaning.
+- Reject without attempting deeper processing  
 
-### 4. Fail‑Closed Behavior
-- Any uncertainty or anomaly results in rejection.
-- No partially validated content may enter the pipeline.
-- Error messages must remain generic to avoid leaking internal logic.
+### Integrity Errors
 
-### 5. Minimal Logging
-- Only anonymized operational metrics may be recorded.
-- No content, hashes, or metadata details may appear in logs.
-- Logs must be purgeable and non‑persistent in hostile deployments.
+Triggered by corrupted or inconsistent content.
 
-### 6. Defense Against Adversarial Inputs
-- Validation must detect and reject steganographic or malformed payloads.
-- Repeated adversarial submissions must trigger temporary rate limiting.
-- Internal risk scoring must remain isolated from client‑visible behavior.
+Handling:
 
-These rules ensure that the Validation module remains a robust, anonymous, and attack‑resistant entry point for the Emergency Channel.
+- Reject and request upstream resanitization  
+
+### Metadata Errors
+
+Triggered by detectable metadata remnants.
+
+Handling:
+
+- Reject with “unsafe content”  
+- Never attempt partial sanitization  
+
+### Size Errors
+
+Triggered by oversized content.
+
+Handling:
+
+- Reject with generic size warning  
+
+Validation never reveals internal thresholds.
+
+---
+
+## 6. Security Notes
+
+- No identity or account data enters Validation  
+- No transport metadata is processed  
+- No logs contain content or metadata details  
+- All failures are generic and non‑diagnostic  
+- Validation must fail‑closed under uncertainty  
+- Only sanitized, identity‑free content is accepted  
+
+The Validation module ensures that the Emergency Channel pipeline
+remains safe, deterministic, and resistant to adversarial inputs.
