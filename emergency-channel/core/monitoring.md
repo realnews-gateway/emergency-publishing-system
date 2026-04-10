@@ -128,20 +128,24 @@ Monitoring never blocks content based on identity or behavior.
 
 ### 6.1 Input (internal signals)
 
+```
 {
   "component": "router|transport|storage|sanitizer|distributor",
   "timestamp": 1712345678,
   "status": "ok|degraded|failed",
   "details": { ... }
 }
+```
 
 ### 6.2 Output (health actions)
 
+```
 {
   "action": "fallback|reroute|degrade_mode|sync_now|safe_mode",
   "target": "transport|router|storage|sanitizer|distributor",
   "reason": "string"
 }
+```
 
 ---
 
