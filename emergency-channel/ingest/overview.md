@@ -2,11 +2,13 @@
 
 ## Purpose
 
-The Ingest module is the entry point of the Emergency Channel pipeline.  
-Its primary role is to receive raw, untrusted content from external sources and prepare it for downstream processing.  
-It ensures that all incoming content is collected, validated, normalized, and safely forwarded to the Sanitizer module.
+The Ingest module is the entry point of the Emergency Channel pipeline.
+Its primary role is to receive raw, untrusted content from external
+sources, perform initial validation, normalize formats, strip sensitive
+metadata, and forward the cleaned input to the Sanitizer module.
 
-The module establishes strict trust boundaries and prevents malformed or harmful content from entering the system.
+The module enforces strict isolation between untrusted input and all
+internal components of the Emergency Channel.
 
 ---
 
@@ -15,19 +17,22 @@ The module establishes strict trust boundaries and prevents malformed or harmful
 The Ingest module is responsible for:
 
 - **Source intake**  
-  Receiving content from user submissions, crawlers, partner feeds, mirror nodes, and fallback channels.
+  Receiving content from user submissions, automated crawlers, mirrored
+  content streams, and fallback sources.
 
 - **Initial validation**  
-  Ensuring the content is well‑formed and not obviously malicious.
+  Ensuring the content is structurally valid and not obviously malicious.
 
 - **Normalization**  
   Converting diverse formats into a consistent internal representation.
 
-- **Metadata extraction**  
-  Extracting non‑sensitive metadata such as timestamps, language, and source type.
+- **Metadata stripping**  
+  Removing sensitive or identifying metadata before any internal
+  processing.
 
 - **Forwarding to Sanitizer**  
-  Passing normalized content to the Sanitizer module for deep cleaning and verification.
+  Passing normalized content to the Sanitizer module for deep cleaning
+  and verification.
 
 ---
 
@@ -42,7 +47,8 @@ The Ingest module does **not** perform:
 - Storage  
 - Distribution  
 
-These responsibilities belong to downstream modules such as Sanitizer, Core, Router, Storage, and Distributor.
+These responsibilities belong to downstream modules such as Sanitizer,
+Core, Router, Storage, and Distributor.
 
 ---
 
@@ -52,11 +58,11 @@ The module supports multiple intake channels:
 
 - User submissions  
 - Automated crawlers  
-- Partner or institutional feeds  
-- Mirror nodes  
+- Mirrored content streams  
 - Opportunistic or fallback sources  
 
-Each source type has its own validation rules and trust boundaries.
+All sources are treated as untrusted.  
+No source receives elevated trust or special handling.
 
 ---
 
@@ -64,12 +70,14 @@ Each source type has its own validation rules and trust boundaries.
 
 The Ingest module operates at the lowest trust level:
 
-- All incoming content is considered untrusted  
-- No assumptions about source reliability  
+- All incoming content is untrusted  
+- No assumptions are made about source reliability  
 - Validation and normalization occur before any internal processing  
 - Sensitive metadata is stripped or minimized  
+- No identity, transport, or behavioral metadata is retained  
 
-This ensures that malicious or malformed content cannot compromise the system.
+This ensures that malformed or malicious content cannot compromise the
+system.
 
 ---
 
@@ -77,8 +85,11 @@ This ensures that malicious or malformed content cannot compromise the system.
 
 The Ingest module is the first stage of the Emergency Channel pipeline:
 
-Ingest → Sanitizer → Core → Router → Distributor → Publisher  
+Ingest → Sanitizer → Core → Router → Distributor  
                      ↘ Storage
+
+The Ingest module interacts only with the Sanitizer module and does not
+access internal state, accounts, or transport metadata.
 
 ---
 
@@ -86,10 +97,11 @@ Ingest → Sanitizer → Core → Router → Distributor → Publisher
 
 The Ingest module provides:
 
-- A secure and reliable entry point for raw content  
+- A secure and isolated entry point for raw content  
 - Early validation and normalization  
-- Strong trust boundaries  
+- Strict metadata minimization  
 - Extensibility for diverse ingestion sources  
 - Seamless integration with the Sanitizer module  
 
-It ensures that all content entering the Emergency Channel is handled safely and consistently.
+It ensures that all content entering the Emergency Channel is handled
+safely, consistently, and without identity leakage.
