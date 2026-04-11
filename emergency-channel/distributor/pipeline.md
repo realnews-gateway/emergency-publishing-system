@@ -2,10 +2,14 @@
 
 ## Overview
 
-The Distribution Pipeline defines the end‑to‑end process for delivering sanitized content to users and external distribution partners.  
-It ensures that all outgoing content is verified, routed, and propagated through reliable and censorship‑resistant channels.
+The Distribution Pipeline defines the end‑to‑end workflow for delivering
+sanitized, redundancy‑encoded content to all downstream distribution
+endpoints. It ensures that content is delivered reliably, efficiently,
+and in a censorship‑resistant manner across multiple transports, with
+region‑aware fallback and DTN support.
 
-The pipeline is deterministic, auditable, and designed to operate under unstable or adversarial network conditions.
+The pipeline is deterministic, auditable, and designed to operate under
+unstable or adversarial network conditions.
 
 ---
 
@@ -13,118 +17,120 @@ The pipeline is deterministic, auditable, and designed to operate under unstable
 
 The distribution pipeline consists of the following stages:
 
-1. **Input from Core**  
-   Sanitized content enters the Distributor module after passing all validation and integrity checks.
+1. Input from Emergency Channel Core  
+2. Redundancy Bundle Preparation  
+3. Transport Scoring and Selection  
+4. Region‑Aware Routing  
+5. Multi‑Transport Delivery  
+6. DTN and Fallback Delivery  
+7. Delivery Verification and Reporting  
 
-2. **Signature Verification**  
-   The Distributor re‑verifies signatures to ensure content integrity before distribution.
-
-3. **Partner Selection**  
-   The system selects the appropriate distribution partners based on availability, trust level, region, and bandwidth.
-
-4. **Content Packaging**  
-   Content is prepared for delivery, ensuring no metadata leakage and no partner‑specific modifications.
-
-5. **Multi‑Path Delivery**  
-   Content is delivered through multiple partners and routes to maximize reach and resilience.
-
-6. **Fallback Delivery**  
-   If primary and secondary paths fail, the system uses opportunistic or low‑bandwidth channels.
-
-7. **Monitoring and Reporting**  
-   Delivery results are logged (anonymously) for health checks and partner evaluation.
+Each stage is identity‑free and operates only on sanitized content.
 
 ---
 
-## 1. Input from Core
+## 1. Input from Emergency Channel Core
 
 The Distributor receives:
 
 - Sanitized content  
-- Metadata required for routing (non‑sensitive)  
-- Integrity signatures  
-- Distribution policies (e.g., priority, region, urgency)  
+- Redundancy‑encoded bundles  
+- Routing hints (region, urgency, degradation signals)  
+- Storage references for retrieval  
 
-No untrusted content may enter this stage.
-
----
-
-## 2. Signature Verification
-
-Before distribution, the Distributor must:
-
-- Validate the signature of every content item  
-- Reject any content that fails verification  
-- Ensure no partner receives unsigned or tampered content  
-
-This prevents downstream corruption or manipulation.
+No user metadata, account identifiers, or submission information enters
+this stage.
 
 ---
 
-## 3. Partner Selection
+## 2. Redundancy Bundle Preparation
 
-Partner selection is based on:
+The Distributor prepares bundles for delivery:
 
-- Partner type (mirror, relay, CDN‑like, community, institutional)  
-- Trust level  
-- Geographic region  
-- Bandwidth availability  
+- Chunking and redundancy encoding (already performed upstream)
+- Packaging for transport‑agnostic delivery
+- Ensuring no metadata leakage
+- Ensuring bundles remain identical across all transports
+
+No transport‑specific modifications are applied.
+
+---
+
+## 3. Transport Scoring and Selection
+
+The Distributor evaluates available transports:
+
+- REALITY  
+- uTLS  
+- XTLS‑Vision  
+- XHTTP (Stream / Packet)  
+- VLESS  
+- TUIC v5  
+
+Scoring is based on:
+
+- Regional network conditions  
 - Historical reliability  
-- Current health‑check status  
+- Latency and throughput signals  
+- Censorship intensity  
+- Degradation indicators  
 
 The selection algorithm is deterministic and auditable.
 
 ---
 
-## 4. Content Packaging
+## 4. Region‑Aware Routing
 
-Content is packaged with:
+Routing decisions incorporate:
 
-- Verified signatures  
-- Minimal metadata  
-- No tracking identifiers  
-- No partner‑specific modifications  
+- Regional transport availability  
+- Localized degradation signals  
+- Preferred fallback chains  
+- Storage node proximity  
+- DTN suitability  
 
-Packaging ensures that all partners receive identical, integrity‑preserving content.
+Routing is stateless and does not store identity or behavioral data.
 
 ---
 
-## 5. Multi‑Path Delivery
+## 5. Multi‑Transport Delivery
 
-The Distributor uses multiple delivery paths:
+The Distributor performs parallel delivery across multiple transports:
 
-- **Primary paths** for high‑trust, high‑bandwidth partners  
-- **Secondary paths** for mirrors, relays, and community nodes  
-- **Parallel delivery** to maximize reach  
-- **Redundant delivery** to avoid single points of failure  
+- Simultaneous multi‑path delivery  
+- Redundant transmission to avoid single points of failure  
+- High‑bandwidth delivery when available  
+- Transport‑agnostic content packaging  
 
 This ensures resilience under censorship or network disruption.
 
 ---
 
-## 6. Fallback Delivery
+## 6. DTN and Fallback Delivery
 
-If primary and secondary paths fail, the system uses:
+If real‑time delivery paths fail or are degraded, the system uses:
 
+- Delay‑Tolerant Networking bundles  
 - Opportunistic low‑bandwidth channels  
-- Delay‑tolerant delivery  
-- Peer‑to‑peer relays  
-- Region‑specific fallback nodes  
+- Local relay devices  
+- Offline bundle generators  
+- Region‑specific fallback transports  
 
-Fallback delivery ensures that content still reaches users even under extreme conditions.
+DTN bundles contain only sanitized, redundancy‑encoded content.
 
 ---
 
-## 7. Monitoring and Reporting
+## 7. Delivery Verification and Reporting
 
 The Distributor performs:
 
-- Delivery success/failure tracking  
-- Partner availability checks  
-- Latency and throughput measurements  
-- Content freshness verification  
+- Delivery success/failure checks  
+- Transport‑level health monitoring  
+- Region‑specific degradation reporting  
+- Integrity verification (bundle consistency)  
 
-All logs are anonymized and contain no user‑identifying information.
+All logs are internal, anonymized, and contain no user‑identifying
+information.
 
 ---
 
@@ -133,9 +139,10 @@ All logs are anonymized and contain no user‑identifying information.
 The Distribution Pipeline provides:
 
 - Deterministic, auditable content delivery  
-- Multi‑path and fallback routing  
+- Multi‑transport and region‑aware routing  
+- DTN and fallback support for extreme conditions  
 - Strong integrity guarantees  
-- High resilience under censorship pressure  
-- Seamless integration with distribution partners  
+- A resilient final stage of the Emergency Channel pipeline  
 
-It is the final and essential stage of the Emergency Channel’s end‑to‑end architecture.
+It ensures that sanitized content reaches all distribution endpoints
+safely, efficiently, and at scale.
