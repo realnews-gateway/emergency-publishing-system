@@ -2,10 +2,16 @@
 
 ## Purpose
 
-The Distributor module is responsible for delivering sanitized content to end users and external distribution partners.  
-It provides the final stage of the Emergency Channel pipeline, ensuring that content is propagated reliably, efficiently, and in a censorship‑resistant manner.
+The Distributor module is responsible for delivering sanitized,
+redundancy‑encoded content from the Emergency Channel to all downstream
+distribution endpoints. It forms the final stage of the Emergency
+Channel pipeline, ensuring that content is propagated reliably,
+efficiently, and in a censorship‑resistant manner.
 
-The module integrates with mirror nodes, relay nodes, CDN‑like partners, community nodes, and institutional partners to maximize reach and resilience.
+The module integrates with multiple endpoint types, including
+application endpoints, regional storage nodes, multi‑transport delivery
+targets, and offline bundle generators. No external partners, trust
+relationships, or institutional dependencies are required.
 
 ---
 
@@ -13,14 +19,17 @@ The module integrates with mirror nodes, relay nodes, CDN‑like partners, commu
 
 The Distributor module ensures:
 
-- Reliable delivery under unstable or adversarial network conditions  
-- Multi‑path distribution to avoid single points of failure  
-- High‑bandwidth propagation when available  
-- Regional distribution through diverse partner types  
-- Deterministic behavior for auditability  
-- Strict content integrity and signature enforcement  
+- Reliable delivery under unstable or adversarial network conditions
+- Multi‑transport distribution across REALITY, uTLS, XTLS‑Vision, XHTTP,
+  VLESS, and TUIC v5
+- Region‑aware routing and fallback behavior
+- High‑bandwidth propagation when available
+- DTN (Delay‑Tolerant Networking) support for intermittent connectivity
+- Deterministic and auditable behavior
+- Strict enforcement of content integrity (no modification, no metadata)
 
-It is the final safeguard ensuring that sanitized content reaches the public.
+It is the final safeguard ensuring that sanitized content reaches all
+distribution endpoints.
 
 ---
 
@@ -29,37 +38,44 @@ It is the final safeguard ensuring that sanitized content reaches the public.
 This directory contains the following files:
 
 - **overview.md**  
-  High‑level description of the Distributor module, its goals, and its role in the system.
+  High‑level description of the Distributor module, its goals, and its
+  role in the Emergency Channel.
 
 - **pipeline.md**  
-  Defines the end‑to‑end distribution pipeline, including partner selection, signature verification, and delivery logic.
+  Defines the end‑to‑end distribution workflow, including transport
+  selection, fallback logic, DTN behavior, and delivery verification.
 
-- **partners.md**  
-  Documents partner categories, trust boundaries, operational requirements, onboarding, monitoring, and removal procedures.
+- **endpoints.md**  
+  Documents distribution endpoints, including application endpoints,
+  regional storage nodes, multi‑transport delivery targets, and offline
+  bundle generators.
 
 Future expansions may include:
 
-- Regional distribution policies  
-- AI‑assisted partner selection  
-- Adaptive bandwidth allocation  
-- Multi‑hop distribution strategies  
+- Region‑specific delivery policies
+- Adaptive transport scoring
+- Multi‑hop distribution strategies
+- Opportunistic peer‑to‑peer DTN relays
 
 ---
 
 ## Distribution Model
 
-The Distributor module uses a multi‑layered distribution model:
+The Distributor module uses a transport‑centric distribution model:
 
-1. **Primary Distribution**  
-   Direct delivery to high‑trust partners and institutional nodes.
+1. **Multi‑Transport Delivery**  
+   Parallel delivery across REALITY, uTLS, XTLS‑Vision, XHTTP, VLESS,
+   and TUIC v5.
 
-2. **Secondary Distribution**  
-   Relay through mirror nodes, CDN‑like partners, and community nodes.
+2. **Region‑Aware Routing**  
+   Selection of optimal delivery paths based on regional network
+   conditions and degradation signals.
 
-3. **Fallback Distribution**  
-   Opportunistic delivery through low‑bandwidth or unstable paths.
+3. **DTN and Fallback Delivery**  
+   Delay‑Tolerant Networking bundles and opportunistic delivery paths for
+   extreme censorship or intermittent connectivity.
 
-This layered model ensures resilience even under severe censorship pressure.
+This model ensures resilience even under severe network pressure.
 
 ---
 
@@ -67,12 +83,12 @@ This layered model ensures resilience even under severe censorship pressure.
 
 All distributed content must:
 
-- Be signed by the Emergency Channel  
-- Pass signature verification before distribution  
-- Be served exactly as received  
-- Never include injected metadata or tracking identifiers  
+- Match the sanitized output produced by the Emergency Channel
+- Remain unmodified during distribution
+- Contain no injected metadata or tracking identifiers
+- Pass internal integrity checks before delivery
 
-Integrity is enforced at every stage of the distribution pipeline.
+Integrity is enforced at every stage of the distribution workflow.
 
 ---
 
@@ -80,9 +96,11 @@ Integrity is enforced at every stage of the distribution pipeline.
 
 The Distributor module provides:
 
-- Reliable, censorship‑resistant content delivery  
-- Multi‑path and multi‑partner distribution  
-- Strong integrity guarantees  
-- A resilient final stage of the Emergency Channel pipeline  
+- Reliable, censorship‑resistant content delivery
+- Multi‑transport and region‑aware routing
+- Strong integrity guarantees
+- DTN and fallback support for extreme conditions
+- A resilient final stage of the Emergency Channel pipeline
 
-It ensures that sanitized content reaches users and partners safely, efficiently, and at scale.
+It ensures that sanitized content reaches all distribution endpoints
+safely, efficiently, and at scale.
