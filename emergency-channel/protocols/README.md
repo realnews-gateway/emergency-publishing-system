@@ -1,88 +1,105 @@
 # Protocols Module
 
-The Protocols module defines the transport layer of the Emergency Channel system.  
-It provides a unified abstraction over six censorship‑resistant, high‑performance, and low‑fingerprint protocols:
+The Protocols module defines the transport foundations of the Empus
+Emergency Publishing System. It documents the six underlying transport
+protocols used by the system and the three operational layers that
+combine them into censorship‑resistant, high‑performance delivery
+strategies.
 
-- **XHTTP** — Hardened HTTP‑based encrypted transport with strong camouflage  
-- **XTLS** — High‑performance TLS transport with minimal fingerprint surface  
-- **Reality** — Real‑site mimicry with genuine TLS handshakes and active probing resistance  
-- **Hysteria2** — QUIC‑based, loss‑resistant, high‑throughput transport  
-- **VLESS** — Lightweight, extensible framing protocol used under TLS/XTLS/Reality  
-- **Trojan** — TLS‑camouflaged protocol indistinguishable from real HTTPS
-
-These protocols form the system’s multi‑path, censorship‑resistant communication layer.  
-The system dynamically selects, combines, or falls back between protocols based on network conditions and threat levels.
+This module does **not** define new protocols.  
+Instead, it documents how existing, widely deployed protocols are
+combined to achieve resilience under diverse network conditions.
 
 ---
 
-## Module Structure
+## Contents
 
-This directory contains the following files:
+This directory contains four documents:
 
 - **overview.md**  
-  High‑level description of the protocol stack, design goals, and selection logic.
+  High‑level introduction to the Six‑Protocol Transport Stack and the
+  Three Operational Layers.
 
-- **selection.md**  
-  Dynamic protocol selection, fallback chains, and adaptive behavior.
+- **source-protocols.md**  
+  Detailed descriptions of the six underlying transport protocols:
+  REALITY, uTLS, XTLS‑Vision, XHTTP, VLESS, and TUIC v5.
 
-- **integration.md**  
-  How protocols integrate with Router, Distributor, Publisher, and multi‑hop routing.
+- **operational-layers.md**  
+  Explanation of the three operational layers (Performance, High‑Performance
+  UDP, Emergency), including their design goals, advantages, and
+  recommended usage conditions.
 
-- **security.md**  
-  Security properties, threat model, and protocol‑specific defenses.
-
-- **xhttp.md**  
-  Specification for the XHTTP protocol.
-
-- **xtls.md**  
-  Specification for the XTLS transport layer.
-
-- **reality.md**  
-  Specification for Reality‑style real‑site mimicry.
-
-- **hysteria2.md**  
-  Specification for the Hysteria2 QUIC‑based protocol.
-
-- **vless.md**  
-  Specification for the VLESS framing protocol.
-
-- **trojan.md**  
-  Specification for the Trojan TLS‑camouflaged protocol.
+- **README.md**  
+  This file.
 
 ---
 
-## Key Features
+## Six‑Protocol Transport Stack
 
-The protocol stack provides:
+Empus uses six existing transport protocols as building blocks:
 
-- **Multi‑protocol redundancy**  
-  Multiple independent transports ensure resilience.
+- **REALITY** — certificate camouflage  
+- **uTLS** — Chrome/Firefox fingerprint mimicry  
+- **XTLS‑Vision** — dynamic padding and statistical DPI evasion  
+- **XHTTP** — HTTP/3‑like behavioral camouflage (Stream & Packet modes)  
+- **VLESS** — universal carrier layer  
+- **TUIC v5** — high‑performance UDP transport  
 
-- **Dynamic fallback**  
-  Automatic switching when a protocol is blocked or degraded.
+These protocols are not used in isolation.  
+They are combined into layered operational modes optimized for different
+censorship and performance environments.
 
-- **Stealth and camouflage**  
-  Reality, Trojan, and XHTTP blend into normal HTTPS/HTTP traffic.
+---
 
-- **High performance**  
-  XTLS and Hysteria2 provide optimized data paths for high‑bandwidth or lossy networks.
+## Three Operational Layers
 
-- **Extensibility**  
-  VLESS enables future protocol evolution without breaking compatibility.
+Empus organizes protocol usage into three layers:
 
-- **Multi‑hop diversity**  
-  Each hop may use a different protocol for maximum censorship resistance.
+### **1. Performance Layer (TCP)**  
+Optimized for high throughput and stable networks:
+
+- VLESS + REALITY + uTLS + XTLS‑Vision  
+- VLESS + REALITY + uTLS + XHTTP (Stream)
+
+### **2. High‑Performance UDP Layer**  
+Optimized for low latency and mobile switching:
+
+- TUIC v5
+
+### **3. Emergency Layer (Extreme Censorship)**  
+Designed for severe blocking and active interference:
+
+- VLESS + XHTTP Packet + TLS 1.3 + ECH + Cloudflare Enterprise  
+- TUIC v5 + Cloudflare Spectrum
+
+Each layer is documented in detail in `operational-layers.md`.
+
+---
+
+## Design Principles
+
+The protocol system follows three principles:
+
+- **Camouflage**  
+  Blend into high‑value, high‑volume traffic (TLS 1.3, HTTP/3, CDN flows).
+
+- **Resilience**  
+  Maintain connectivity under throttling, probing, and partial blackouts.
+
+- **Modularity**  
+  Combine existing protocols into layered strategies without modifying
+  their underlying specifications.
 
 ---
 
 ## Summary
 
-The Protocols module is the foundation of the Emergency Channel’s transport layer.  
-By combining six complementary protocols—each optimized for different environments—the system achieves:
+The Protocols module provides:
 
-- Strong censorship resistance  
-- High performance under adverse conditions  
-- Stealth against DPI and active probing  
-- Flexible, future‑proof architecture  
+- A unified view of the six transport protocols used by Empus  
+- A clear explanation of how these protocols are combined  
+- A structured three‑layer model for adapting to censorship conditions  
+- A clean, modern, reviewer‑friendly documentation layout  
 
-This module ensures reliable communication even in the most hostile network environments.
+All protocol details and operational strategies are defined in the
+accompanying documents.
