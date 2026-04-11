@@ -2,10 +2,14 @@
 
 ## Overview
 
-The Validation component ensures that all incoming content is safe, well‑formed, and suitable for downstream processing.  
-Since the Ingest module operates at the lowest trust boundary, validation is critical for preventing malformed, harmful, or abusive content from entering the Emergency Channel pipeline.
+The Validation component ensures that all incoming content is safe,
+well‑formed, and suitable for downstream processing. Since the Ingest
+module operates at the lowest trust level, validation is essential for
+preventing malformed, harmful, or abusive content from entering the
+Emergency Channel pipeline.
 
-This document defines the validation rules, rejection criteria, and trust boundaries applied to all ingestion sources.
+This document defines the validation rules and rejection criteria applied
+uniformly to all ingestion sources.
 
 ---
 
@@ -15,7 +19,7 @@ The validation process ensures:
 
 - Protection against malformed or malicious input  
 - Consistent structure for downstream modules  
-- Early rejection of unusable or harmful content  
+- Early rejection of unusable or dangerous content  
 - Enforcement of size, format, and structural constraints  
 - Preservation of system integrity and stability  
 
@@ -27,20 +31,13 @@ Validation is intentionally conservative to minimize risk.
 
 The validation process consists of:
 
-1. **Format Validation**  
-   Ensures the content conforms to expected structural rules.
+1. Format Validation  
+2. Size Validation  
+3. Structural Validation  
+4. Safety Checks  
+5. Metadata Stripping (pre‑sanitization)  
 
-2. **Size Validation**  
-   Rejects content that exceeds predefined limits.
-
-3. **Structural Validation**  
-   Confirms that required fields or components are present.
-
-4. **Safety Checks**  
-   Detects obviously harmful or abusive patterns.
-
-5. **Source‑Specific Rules**  
-   Applies additional validation depending on the ingestion source.
+All stages operate on untrusted input.
 
 ---
 
@@ -62,8 +59,8 @@ Invalid formats are rejected immediately.
 To prevent abuse and resource exhaustion, the Ingest module enforces:
 
 - Maximum content size  
-- Maximum metadata size  
-- Maximum submission rate (per source type)  
+- Maximum attachment size  
+- Maximum metadata size (before stripping)  
 
 Oversized submissions are rejected with a clear error code.
 
@@ -73,10 +70,10 @@ Oversized submissions are rejected with a clear error code.
 
 Structural validation checks for:
 
-- Required fields (e.g., text body, timestamp)  
-- Valid metadata structure  
+- Minimal viable content  
 - Supported content types  
-- Presence of minimal viable content  
+- Basic structural coherence  
+- Absence of malformed fields  
 
 Submissions missing essential components are rejected.
 
@@ -90,23 +87,25 @@ Safety checks detect:
 - Dangerous payloads  
 - Script injection attempts  
 - Known abusive patterns  
-- Invalid or suspicious metadata  
+- Invalid or suspicious embedded data  
 
 These checks are lightweight and occur before deep sanitization.
 
 ---
 
-## 5. Source‑Specific Rules
+## 5. Metadata Stripping
 
-Different ingestion sources have different validation requirements:
+Before forwarding content to the Sanitizer, the Ingest module removes:
 
-- **User submissions**: strictest validation  
-- **Crawlers**: structural consistency checks  
-- **Partner feeds**: schema validation and signature checks (if provided)  
-- **Mirror nodes**: duplicate detection and timestamp validation  
-- **Opportunistic sources**: minimal validation due to unreliable structure  
+- Identity‑related metadata  
+- Transport metadata  
+- Behavioral metadata  
+- Device or environment identifiers  
 
-Source‑specific rules ensure appropriate handling of diverse inputs.
+Only minimal, non‑sensitive metadata required for processing may be
+retained (e.g., timestamp, source type).
+
+No identifying information is preserved.
 
 ---
 
@@ -117,23 +116,23 @@ Content is rejected if:
 - It fails format or structural validation  
 - It exceeds size limits  
 - It contains unsupported or dangerous payloads  
-- It violates source‑specific rules  
 - It is clearly malformed or unusable  
 
 Rejected content does not enter the pipeline.
 
 ---
 
-## Trust Boundaries
+## Trust Model
 
 The Ingest module treats all incoming content as untrusted:
 
 - No assumptions about source reliability  
-- No sensitive metadata is preserved  
+- No source‑specific trust boundaries  
+- No partner‑specific validation rules  
 - Validation occurs before any internal processing  
 - Only normalized, validated content is forwarded  
 
-This ensures system safety and prevents contamination of downstream modules.
+This uniform trust model strengthens security and simplifies ingestion.
 
 ---
 
@@ -143,8 +142,9 @@ The Validation component provides:
 
 - Strong protection against malformed or harmful input  
 - Consistent structure for downstream processing  
-- Source‑aware validation rules  
+- Uniform validation rules across all sources  
 - Early rejection of unusable content  
 - A secure foundation for the entire ingestion pipeline  
 
-Validation is the first and most critical defense layer in the Emergency Channel.
+Validation is the first and most critical defense layer in the Emergency
+Channel.
