@@ -2,9 +2,10 @@
 
 ## Overview
 
-The Ingest module supports multiple external sources for receiving raw content.  
-Each source type has its own trust boundary, validation rules, and operational requirements.  
-This document defines all supported ingestion sources and their characteristics.
+The Ingest module accepts raw, untrusted content from multiple external
+sources. All sources are treated equally with no trust assumptions, no
+special handling, and no partner-specific logic. This document defines
+the supported ingestion sources and their characteristics.
 
 ---
 
@@ -13,42 +14,43 @@ This document defines all supported ingestion sources and their characteristics.
 The system supports the following categories of ingestion sources:
 
 - **User Submissions**  
-  Direct submissions from individuals through web forms, apps, or secure channels.
+  Direct submissions from individuals through web forms, apps, or
+  anonymous channels.
 
 - **Automated Crawlers**  
-  Scheduled or event‑driven crawlers that fetch content from predefined sources.
+  Scheduled or event-driven crawlers that fetch content from predefined
+  locations.
 
-- **Partner Feeds**  
-  Content provided by trusted or semi‑trusted institutional partners.
+- **Mirrored Content Streams**  
+  External content streams replicated from decentralized or
+  censorship-resistant ecosystems.
 
-- **Mirror Nodes**  
-  Distributed nodes that replicate or forward content from external ecosystems.
+- **Opportunistic or Fallback Sources**  
+  Low-bandwidth or intermittent channels used during network disruption.
 
-- **Opportunistic Sources**  
-  Low‑bandwidth or fallback channels used during network disruption.
-
-Each category is handled differently based on reliability, trust, and expected content format.
+All sources are treated as untrusted and must pass validation and
+normalization before entering the pipeline.
 
 ---
 
 ## 1. User Submissions
 
-User submissions are the most diverse and least predictable source type.
+User submissions are the most diverse and unpredictable source type.
 
 Characteristics:
 
 - Highly unstructured  
 - Potentially malicious  
 - Requires strict validation  
-- Often includes mixed formats (text, images, metadata)  
+- May include mixed formats (text, images, attachments)  
 
-User submissions must always be treated as untrusted input.
+User submissions always operate at the lowest trust level.
 
 ---
 
 ## 2. Automated Crawlers
 
-Crawlers fetch content from predefined URLs or APIs.
+Crawlers fetch content from predefined URLs, feeds, or APIs.
 
 Characteristics:
 
@@ -61,73 +63,69 @@ Crawler output is still considered untrusted until validated.
 
 ---
 
-## 3. Partner Feeds
+## 3. Mirrored Content Streams
 
-Partner feeds come from organizations or institutions with established relationships.
+Mirrored streams replicate content from external ecosystems such as:
 
-Characteristics:
-
-- More structured  
-- Higher reliability  
-- May include metadata or signatures  
-- Requires partner‑specific validation rules  
-
-Partner feeds operate under a medium trust boundary.
-
----
-
-## 4. Mirror Nodes
-
-Mirror nodes replicate content from distributed ecosystems.
+- Decentralized networks  
+- Public archives  
+- Community-maintained mirrors  
 
 Characteristics:
 
-- Useful for decentralized or censorship‑resistant environments  
 - May include duplicate or outdated content  
-- Requires deduplication downstream  
-- Trust level varies by node type  
+- Structure varies by source  
+- Requires normalization  
+- Trust level is always low  
 
-Mirror nodes help increase resilience and coverage.
+Mirrored streams improve resilience and coverage but remain untrusted.
 
 ---
 
-## 5. Opportunistic Sources
+## 4. Opportunistic or Fallback Sources
 
 Opportunistic sources are used during extreme network disruption.
 
 Examples:
 
-- Low‑bandwidth relays  
+- Low-bandwidth relays  
 - Offline submissions  
-- Delay‑tolerant networks  
+- Delay-tolerant networks  
 - Emergency fallback channels  
 
-These sources prioritize availability over structure or reliability.
+Characteristics:
+
+- Highly variable structure  
+- Low reliability  
+- Prioritizes availability over format consistency  
+
+These sources ensure the system remains operational under adverse
+conditions.
 
 ---
 
-## Trust Boundaries
+## Trust Model
 
-Each source type has a defined trust boundary:
+All ingestion sources share the same trust model:
 
-- **User submissions**: lowest trust  
-- **Crawlers**: low trust  
-- **Mirror nodes**: variable trust  
-- **Partner feeds**: medium trust  
-- **Opportunistic sources**: lowest trust, high uncertainty  
+- All content is untrusted  
+- No source receives elevated trust  
+- No partner-specific rules or trust boundaries  
+- All content must pass validation and normalization  
+- No identity, transport, or behavioral metadata is retained  
 
-All content must pass through validation and normalization before entering the pipeline.
+This uniform trust model simplifies ingestion and strengthens security.
 
 ---
 
 ## Summary
 
-The Ingest module supports diverse content sources, each with unique characteristics:
+The Ingest module supports diverse content sources, including:
 
-- User submissions for direct input  
-- Crawlers for automated collection  
-- Partner feeds for structured content  
-- Mirror nodes for decentralized replication  
-- Opportunistic sources for fallback scenarios  
+- User submissions  
+- Automated crawlers  
+- Mirrored content streams  
+- Opportunistic fallback sources  
 
-These sources ensure that the Emergency Channel can operate reliably across a wide range of environments.
+All sources are treated as untrusted and must pass validation and
+normalization before entering the Emergency Channel pipeline.
