@@ -2,10 +2,13 @@
 
 ## Overview
 
-The Ingest module is responsible for receiving raw content from various sources and preparing it for sanitization and processing within the Emergency Channel pipeline.  
-It serves as the system’s entry point, ensuring that all incoming content is collected, normalized, validated, and safely forwarded to the Sanitizer module.
+The Ingest module is the entry point of the Emergency Channel pipeline.
+It receives raw content from multiple sources, performs initial
+validation, normalizes formats, strips sensitive metadata, and forwards
+cleaned input to the Sanitizer module for deep processing.
 
-The module supports multiple ingestion sources, including user submissions, automated crawlers, partner feeds, and mirrored content streams.
+All incoming content is treated as untrusted. The Ingest module enforces
+strict isolation between external sources and internal processing.
 
 ---
 
@@ -13,11 +16,12 @@ The module supports multiple ingestion sources, including user submissions, auto
 
 The Ingest module ensures:
 
-- Reliable and consistent intake of raw content  
-- Strict separation between untrusted input and internal processing  
-- Early-stage validation to prevent malformed or malicious data  
-- Format normalization for downstream compatibility  
-- Extensibility for new ingestion sources and protocols  
+- Reliable and consistent intake of raw content
+- Strict separation between untrusted input and internal components
+- Early-stage validation to reject malformed or dangerous input
+- Format normalization for downstream compatibility
+- Metadata minimization to preserve anonymity
+- Extensibility for new ingestion sources and protocols
 
 It is the first safeguard in the Emergency Channel pipeline.
 
@@ -25,26 +29,29 @@ It is the first safeguard in the Emergency Channel pipeline.
 
 ## Module Structure
 
-This directory may contain the following files:
+This directory contains the following files:
 
 - **overview.md**  
-  High-level description of the Ingest module and its role in the system.
+  High-level description of the Ingest module, its responsibilities, and
+  its trust model.
 
 - **pipeline.md**  
-  Defines the end-to-end ingestion pipeline, including validation, normalization, and forwarding.
+  Defines the ingestion workflow, including intake, validation,
+  normalization, metadata stripping, and forwarding.
 
 - **sources.md**  
-  Documents supported ingestion sources (user submissions, crawlers, partner feeds, etc.).
+  Documents supported ingestion sources (user submissions, crawlers,
+  mirrored content streams, fallback sources).
 
 - **validation.md**  
-  Describes input validation rules, trust boundaries, and rejection criteria.
+  Describes validation rules, rejection criteria, and safety boundaries.
 
 Future expansions may include:
 
-- AI-assisted content classification at ingest time  
-- Rate limiting and abuse prevention  
-- Multi-region ingestion nodes  
-- Encrypted or anonymous submission channels  
+- AI-assisted content classification
+- Rate limiting and abuse prevention
+- Multi-region ingestion nodes
+- Encrypted or anonymous submission channels
 
 ---
 
@@ -56,16 +63,19 @@ The ingestion pipeline consists of:
    Raw content is received from one of the supported ingestion sources.
 
 2. **Initial Validation**  
-   Basic checks ensure the content is well-formed and not obviously malicious.
+   Basic structural and safety checks ensure the content is well-formed
+   and not obviously malicious.
 
 3. **Normalization**  
-   Content is converted into a consistent internal format for downstream modules.
+   Content is converted into a consistent internal format for downstream
+   modules.
 
-4. **Metadata Extraction**  
-   Non-sensitive metadata (timestamps, source type, language) is extracted.
+4. **Metadata Stripping**  
+   Sensitive or identifying metadata is removed or minimized.
 
 5. **Forwarding to Sanitizer**  
-   The normalized content is passed to the Sanitizer module for deep cleaning and verification.
+   Normalized content is passed to the Sanitizer module for deep
+   cleaning, verification, and transformation.
 
 The pipeline is deterministic and auditable.
 
@@ -75,12 +85,14 @@ The pipeline is deterministic and auditable.
 
 The Ingest module operates at the lowest trust level:
 
-- All incoming content is considered untrusted  
-- No assumptions are made about source reliability  
-- Validation and normalization occur before any internal processing  
-- Sensitive metadata is stripped or minimized  
+- All incoming content is untrusted
+- No assumptions are made about source reliability
+- Validation and normalization occur before any internal processing
+- Sensitive metadata is stripped or minimized
+- No identity, transport, or behavioral metadata is retained
 
-This ensures that malicious or malformed content cannot compromise the system.
+This ensures that malicious or malformed content cannot compromise the
+system.
 
 ---
 
@@ -88,10 +100,11 @@ This ensures that malicious or malformed content cannot compromise the system.
 
 The Ingest module provides:
 
-- A secure and reliable entry point for raw content  
-- Early validation and normalization  
-- Strong trust boundaries  
-- Extensibility for diverse ingestion sources  
-- Seamless integration with the Sanitizer module  
+- A secure and reliable entry point for raw content
+- Early validation and normalization
+- Strong trust boundaries and metadata minimization
+- Extensibility for diverse ingestion sources
+- Seamless integration with the Sanitizer module
 
-It is the foundation of the Emergency Channel’s end-to-end content pipeline.
+It forms the foundation of the Emergency Channel’s end-to-end content
+pipeline.
