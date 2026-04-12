@@ -2,25 +2,68 @@
 
 ## Overview
 
-The Router module is responsible for selecting the optimal delivery path for sanitized content within the Emergency Channel.  
-It performs node selection, load balancing, failover handling, and multi‑path routing to ensure reliable and censorship‑resistant distribution.
+The Router module is the **content‑level decision layer** of the Emergency
+Channel pipeline.  
+Its role is to determine the optimal **content delivery path** within the
+system — selecting which internal components should handle each piece of
+sanitized content.
 
-The Router acts as the system’s decision‑making layer, determining how and where content should be delivered under varying network conditions.
+The Router does **not** perform network routing, proxy selection, or
+transport‑layer decisions.  
+Those responsibilities belong to the `network-access-layer`.
+
+Instead, the Router focuses exclusively on **content flow routing**:
+choosing the appropriate distributor, storage path, fallback route, or
+emergency micro‑feed channel based on system state and content
+characteristics.
 
 ---
 
-## Goals
+## Responsibilities
 
-The Router module ensures:
+The Router module is responsible for:
 
-- Reliable delivery across unstable or adversarial networks  
-- Intelligent node selection based on performance and availability  
-- Automatic failover when nodes become unreachable  
-- Load balancing across multiple paths  
-- Deterministic routing decisions for auditability  
-- Extensibility for future routing strategies and node types  
+- **Content route selection**  
+  Choosing the appropriate internal path (e.g., distributor, storage,
+  micro‑feed).
 
-It is a critical component for maintaining system resilience and continuity.
+- **Content node selection**  
+  Selecting which *content‑handling component* should process or deliver
+  the item next.
+
+- **Fallback routing**  
+  Switching to alternative distributors or minimal‑path routes when
+  primary paths fail.
+
+- **Deterministic decision‑making**  
+  Ensuring identical inputs always produce identical routing outcomes.
+
+- **Load distribution across content paths**  
+  Balancing content across multiple distributors or storage backends.
+
+Router decisions operate entirely at the **content layer**, not the
+network layer.
+
+---
+
+## Non‑Responsibilities
+
+The Router module does **not** perform:
+
+- Network node selection  
+- Proxy or upstream selection  
+- Transport routing  
+- Exit node or region routing  
+- Bandwidth or link‑level failover  
+- Any network‑layer decision‑making  
+
+These responsibilities belong to:
+
+- `network-access-layer`  
+- `transport-layer`  
+- `entry-point selection`  
+
+This separation ensures a clean, auditable architecture.
 
 ---
 
@@ -31,22 +74,27 @@ This directory contains the following files:
 ### Routing Architecture
 
 - **design.md**  
-  Describes the overall routing architecture, including node types, trust boundaries, and routing strategies.
+  Describes the content‑routing architecture, decision flow, and routing
+  strategies.
 
-- **node-selection.md**  
-  Defines the algorithms and criteria used to select the best node for content delivery.
+- **route-selection.md**  
+  Defines how the Router selects the next content‑handling component
+  (distributor, storage, micro‑feed, fallback path).
 
 - **failover.md**  
-  Explains how the system detects node failures and performs seamless failover to maintain availability.
+  Explains how the Router detects content‑path failures and performs
+  fallback routing.
 
-### Additional Routing Components
+### Future Extensions
 
-Future expansions may include:
+Potential future enhancements include:
 
-- Multi‑hop routing strategies  
-- AI‑assisted path optimization  
-- Region‑aware routing policies  
-- Node reputation scoring  
+- Multi‑path content routing  
+- Priority‑based routing policies  
+- Content‑type‑aware routing  
+- Adaptive routing based on distributor health  
+
+All extensions remain strictly within the **content routing** domain.
 
 ---
 
@@ -55,24 +103,26 @@ Future expansions may include:
 Routing decisions must be deterministic:
 
 - Identical inputs must produce identical routing choices  
-- No randomness in node selection  
+- No randomness or probabilistic selection  
 - No environment‑dependent behavior  
-- No hidden heuristics that vary between runs  
+- No hidden heuristics  
 
-Determinism ensures predictable, auditable routing behavior.
+Determinism ensures predictable, auditable routing behavior across
+deployments.
 
 ---
 
 ## Security Boundary
 
-The Router module enforces strict security boundaries:
+The Router enforces strict security boundaries:
 
 - Only sanitized content may enter the routing layer  
-- Routing decisions must not leak sensitive metadata  
-- Nodes must be validated before use  
-- No execution of untrusted code or remote instructions  
+- Routing decisions must not leak internal metadata  
+- No untrusted code execution  
+- No external influence on routing decisions  
 
-These boundaries protect the system from malicious nodes or routing manipulation.
+The Router treats all downstream components as potentially unreliable and
+therefore routes conservatively and defensively.
 
 ---
 
@@ -80,10 +130,12 @@ These boundaries protect the system from malicious nodes or routing manipulation
 
 The Router module provides:
 
-- Intelligent, deterministic node selection  
-- Automatic failover and load balancing  
-- Strong resilience against network instability  
-- Clear routing architecture and trust boundaries  
-- A stable foundation for content distribution  
+- Deterministic, content‑level routing  
+- Reliable fallback and path selection  
+- Strong separation from network‑layer routing  
+- Clear architectural boundaries  
+- A stable foundation for content distribution within the Emergency
+  Channel
 
-It is a core component ensuring that the Emergency Channel remains reliable, censorship‑resistant, and operational under pressure.
+It ensures that sanitized content flows through the correct internal
+paths before reaching external publishing channels.
