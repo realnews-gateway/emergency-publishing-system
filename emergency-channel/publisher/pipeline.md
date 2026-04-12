@@ -2,10 +2,14 @@
 
 ## Overview
 
-The Publisher pipeline is responsible for transforming sanitized content into publishable artifacts and delivering them across multiple external channels.  
-It ensures reliability, redundancy, and censorship‑resistant delivery while maintaining strict metadata hygiene.
+The Publisher pipeline transforms sanitized, verified content into
+publishable artifacts and delivers them across multiple external
+channels.  
+It provides reliability, redundancy, and censorship‑resistant delivery
+while maintaining strict metadata hygiene.
 
-The pipeline is designed to be modular, allowing new publishing channels to be added without affecting upstream components.
+The pipeline is fully modular: new channels or adapters can be added
+without modifying upstream components.
 
 ---
 
@@ -13,26 +17,52 @@ The pipeline is designed to be modular, allowing new publishing channels to be a
 
 The Publisher pipeline consists of the following stages:
 
-1. **Input Reception**  
-   Receives finalized content from the Distributor module.
+### 1. Input Reception
+Receives finalized, sanitized content from the Distributor module.  
+No raw or unverified data is accepted at this stage.
 
-2. **Formatting**  
-   Converts internal content into publishable formats such as HTML, RSS, JSON, Markdown, or plaintext.
+### 2. Formatting
+Converts internal content into channel‑specific formats such as HTML,
+RSS, JSON, Markdown, or micro‑feeds.  
+Formatting is deterministic and non‑destructive.
 
-3. **Channel Selection**  
-   Determines which publishing channels to use based on content type, urgency, and availability.
+### 3. Channel Selection
+Determines which publishing channels to use based on:
 
-4. **Packaging**  
-   Prepares channel‑specific payloads (e.g., RSS items, HTML pages, JSON feeds).
+- Content type  
+- Urgency  
+- Network conditions  
+- Channel availability  
 
-5. **Delivery Execution**  
-   Sends the packaged content to external endpoints.
+Selection is deterministic but configurable per deployment.
 
-6. **Fallback and Redundancy**  
-   Retries delivery using alternative channels if primary delivery fails.
+### 4. Packaging
+Prepares channel‑specific payloads, such as:
 
-7. **Audit Logging**  
-   Records publishing actions for transparency and debugging.
+- RSS feed items  
+- HTML pages  
+- JSON API responses  
+- Minimal micro‑feed payloads  
+
+Packaging ensures each channel receives a correctly structured artifact.
+
+### 5. Delivery Execution
+Uses delivery adapters to transmit payloads to external endpoints.  
+Adapters abstract the underlying protocol (HTTP, email, IPFS, P2P, etc.).
+
+### 6. Fallback and Redundancy
+If delivery fails or network conditions degrade, the pipeline:
+
+- Retries with exponential backoff  
+- Switches to alternative channels  
+- Broadcasts through multiple channels  
+- Degrades to minimal payload mode  
+
+Fallback ensures delivery even under censorship or instability.
+
+### 7. Audit Logging
+Records publishing actions, channel decisions, and fallback events for
+transparency and debugging.
 
 ---
 
@@ -40,23 +70,28 @@ The Publisher pipeline consists of the following stages:
 
 The Publisher module receives content exclusively from the Distributor:
 
-Ingest → Sanitizer → Core → Router → Distributor → Publisher  
-                     ↘ Storage
+```
+Ingest → Sanitizer → Core → Router → Distributor → Publisher
+                           ↘ Storage
+```
 
-Publisher does not modify content semantics; it only prepares and delivers it.
+Publisher does not modify content semantics; it only prepares and
+delivers it.
 
 ---
 
 ## Error Handling and Fallback
 
-The Publisher module includes robust fallback mechanisms:
+The pipeline includes robust error‑handling mechanisms:
 
-- Automatic retries with exponential backoff  
-- Switching to alternative publishing channels  
-- Graceful degradation under partial network failure  
-- Logging all failures for later inspection  
+- Automatic retries  
+- Channel switching  
+- Graceful degradation  
+- Structured error reporting  
+- Comprehensive logging  
 
-Fallback ensures that content remains deliverable even under censorship or infrastructure instability.
+These mechanisms ensure that content remains deliverable even under
+adversarial or unstable network conditions.
 
 ---
 
@@ -64,10 +99,10 @@ Fallback ensures that content remains deliverable even under censorship or infra
 
 The Publisher pipeline ensures:
 
-- Reliable and censorship‑resistant content delivery  
-- Flexible formatting and channel support  
-- Strong fallback and redundancy  
-- Clean separation from upstream processing  
+- Reliable, censorship‑resistant content delivery  
+- Clean separation between formatting, packaging, and delivery  
+- Strong fallback and redundancy mechanisms  
+- Deterministic, metadata‑safe output  
 - Extensibility for future publishing mechanisms  
 
 It is the final step that brings verified content to real users.
