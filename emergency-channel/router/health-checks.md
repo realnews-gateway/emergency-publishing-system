@@ -122,4 +122,3 @@ All signals must be authenticated.
 - Correlate Router failover events with probe history.
 
 ---
-```
