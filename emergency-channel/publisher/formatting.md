@@ -2,11 +2,17 @@
 
 ## Overview
 
-The formatting layer of the Publisher module is responsible for transforming internal, sanitized content into publishable artifacts.  
-Each publishing channel requires a specific output format, and the formatting layer ensures that content is correctly structured, styled, and packaged before delivery.
+The formatting layer transforms sanitized internal content into
+publishable artifacts.  
+Each publishing channel requires a specific output format, and the
+formatting layer ensures that content is correctly structured, styled,
+and packaged before delivery.
 
-Formatting is strictly non-destructive:  
+Formatting is strictly **non-destructive**:  
 it does not alter the meaning of the content, only its representation.
+
+Formatting is **deterministic and reproducible**, ensuring consistent
+output across deployments.
 
 ---
 
@@ -18,7 +24,7 @@ The formatting subsystem performs:
   Converting internal objects into channel‑specific layouts.
 
 - **Template rendering**  
-  Applying HTML, RSS, JSON, or Markdown templates.
+  Applying HTML, RSS, JSON, Markdown, or micro‑feed templates.
 
 - **Metadata shaping**  
   Including only safe, non-sensitive metadata.
@@ -29,7 +35,8 @@ The formatting subsystem performs:
 - **Validation**  
   Ensuring the output conforms to channel specifications.
 
-Formatting is deterministic and reproducible, ensuring consistent output across deployments.
+Formatting is transport‑agnostic:  
+it prepares artifacts without knowing which adapter will deliver them.
 
 ---
 
@@ -97,4 +104,5 @@ The formatting subsystem provides:
 - Modular templates for easy customization  
 - Compatibility with both rich and minimal publishing channels  
 
-It ensures that sanitized content is transformed into safe, high‑quality artifacts ready for delivery.
+It ensures that sanitized content is transformed into safe, high‑quality
+artifacts ready for delivery.
