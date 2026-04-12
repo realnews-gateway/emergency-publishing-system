@@ -67,10 +67,10 @@ This directory contains the following files:
 
 Publisher is the final stage of the Emergency Channel pipeline:
 
-```
+`
 Ingest → Sanitizer → Core → Router → Distributor → Publisher
                      ↘ Storage
-```
+`
 
 Publisher receives fully processed content from the Distributor and
 prepares it for external delivery.
