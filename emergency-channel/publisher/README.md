@@ -69,7 +69,7 @@ Publisher is the final stage of the Emergency Channel pipeline:
 
 ```
 Ingest → Sanitizer → Core → Router → Distributor → Publisher
-                     ↘ Storage
+                       ↘ Storage
 ```
 
 Publisher receives fully processed content from the Distributor and
