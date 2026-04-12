@@ -2,10 +2,15 @@
 
 ## Overview
 
-The Publisher module includes a robust fallback system designed to ensure that content remains deliverable even under severe network degradation, censorship, or partial infrastructure failure.  
-Fallback mechanisms operate automatically and transparently, without requiring upstream modules to change their behavior.
+The Publisher module includes a dedicated fallback subsystem designed to
+ensure that content remains deliverable even under severe network
+degradation, censorship, or partial infrastructure failure.  
+Fallback mechanisms operate automatically and transparently, without
+requiring upstream modules to change their behavior.
 
-The fallback layer is designed to be modular, allowing deployments to customize or extend fallback strategies based on operational needs.
+The fallback layer is **modular, deterministic, and extensible**, allowing
+deployments to customize or extend fallback strategies based on
+operational needs.
 
 ---
 
@@ -20,7 +25,8 @@ Fallback is activated when any of the following conditions occur:
   Delivery exceeds configured thresholds.
 
 - **Censorship indicators**  
-  Repeated connection resets, TLS interference, or content filtering patterns.
+  Repeated connection resets, TLS interference, or content filtering
+  patterns.
 
 - **Network instability**  
   Packet loss, intermittent connectivity, or degraded bandwidth.
@@ -28,7 +34,8 @@ Fallback is activated when any of the following conditions occur:
 - **Channel health check failures**  
   Scheduled probes indicate that a channel is unhealthy.
 
-Fallback triggers are logged for later analysis but do not interrupt the publishing pipeline.
+Fallback triggers are logged for later analysis but do not interrupt the
+publishing pipeline.
 
 ---
 
@@ -37,19 +44,24 @@ Fallback triggers are logged for later analysis but do not interrupt the publish
 The Publisher module supports multiple fallback strategies:
 
 ### 1. Channel Switching
-Automatically switches from a primary channel (e.g., HTML publishing) to an alternative channel (e.g., RSS, JSON API, IPFS).
+Automatically switches from a primary channel (e.g., HTML publishing) to
+an alternative channel (e.g., RSS, JSON API, IPFS).
 
 ### 2. Multi-Channel Broadcasting
-Delivers content through several channels simultaneously to maximize reach.
+Delivers content through several channels simultaneously to maximize
+reach.
 
 ### 3. Minimal Payload Mode
-Generates a text-only micro-feed optimized for extreme censorship environments.
+Generates a text-only micro-feed optimized for extreme censorship
+environments.
 
 ### 4. Opportunistic Delivery
-Attempts delivery when temporary network windows appear, useful in unstable or high-risk regions.
+Attempts delivery when temporary network windows appear, useful in
+unstable or high-risk regions.
 
 ### 5. Offline Export
-Packages content into bundles that can be distributed manually or through offline networks.
+Packages content into bundles that can be distributed manually or through
+offline networks.
 
 ---
 
@@ -62,7 +74,8 @@ The fallback system relies on continuous health monitoring:
 - TLS handshake anomaly detection  
 - Endpoint availability checks  
 
-Health data is used to determine when to switch channels or degrade gracefully.
+Health data is used to determine when to switch channels or degrade
+gracefully.
 
 ---
 
@@ -76,4 +89,5 @@ The fallback subsystem ensures:
 - Compatibility with both online and offline environments  
 - Strong resilience against censorship and interference  
 
-It guarantees that verified content reaches users even when the network is hostile or unstable.
+It guarantees that verified content reaches users even when the network
+is hostile or unstable.
