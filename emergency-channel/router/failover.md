@@ -2,169 +2,195 @@
 
 ## 1. Purpose
 
-Failover ensures that content continues to flow through the Emergency Channel even when individual nodes or entire regions experience failures.  
-The failover system must be fast, deterministic, and capable of handling partial outages without interrupting the publishing pipeline.  
-Failover is a core reliability mechanism and must operate automatically without human intervention.
+Router failover ensures that **content continues to flow through the
+Emergency Channel** even when internal content‑handling components
+(distributors, storage backends, micro‑feed paths) experience failures.
+
+Failover operates at the **content layer**, not the network layer.  
+It does not handle network nodes, regions, or transport‑level outages —
+those belong to the `network-access-layer`.
+
+Router failover must be:
+
+- Fast  
+- Deterministic  
+- Automatic  
+- Non‑disruptive to upstream modules  
+
+It guarantees that sanitized content is never silently dropped.
 
 ---
 
 ## 2. Failure Types
 
-The Router recognizes several categories of failures, each requiring different handling strategies.
+The Router recognizes several categories of **content‑path failures**.
 
-### 2.1 Node-Level Failures
+### 2.1 Distributor‑Level Failures
 
-- Node becomes unreachable  
-- Node fails health checks  
-- Node enters a degraded state  
-- Node storage or processing capacity is exhausted  
+- Distributor becomes unreachable  
+- Distributor fails health checks  
+- Distributor backlog exceeds safe thresholds  
+- Distributor enters a degraded state  
 
-### 2.2 Region-Level Failures
+### 2.2 Storage‑Level Failures
 
-- Multiple nodes in the same region fail simultaneously  
-- Regional latency spikes beyond acceptable thresholds  
-- Regional storage backend becomes unavailable  
-- Network partition isolates the region  
+- Storage backend unavailable  
+- Storage write failures  
+- Storage quota or capacity exhaustion  
+- Storage health signals indicate degradation  
 
-### 2.3 Transient Failures
+### 2.3 Micro‑Feed Failures
 
-- Short-lived network instability  
-- Temporary queue congestion  
-- Brief spikes in CPU or memory usage  
-- Intermittent heartbeat failures  
+- Micro‑feed channel unavailable  
+- Minimal‑path encoder errors  
+- Micro‑feed backend not ready  
 
-Transient failures must be handled gracefully without overreacting.
+### 2.4 Transient Failures
+
+- Temporary backlog spikes  
+- Short‑lived distributor slowdowns  
+- Intermittent health‑check anomalies  
+
+Transient failures require graceful handling without overreaction.
 
 ---
 
 ## 3. Detection Mechanisms
 
-Failover is triggered based on real-time signals from multiple modules:
+Failover is triggered based on signals from multiple internal modules:
 
-- Health check failures  
-- Latency measurements  
-- Queue depth thresholds  
-- Storage availability reports  
-- Monitoring alerts  
-- Distributor delivery failures  
+- Distributor health reports  
+- Storage availability signals  
+- Backlog / queue depth thresholds  
+- Micro‑feed readiness indicators  
+- Delivery failure reports  
+- Router‑level scoring penalties  
 
-The Router aggregates these signals to determine when failover is necessary.
+The Router aggregates these signals to determine when failover is
+necessary.
+
+---
 
 ## 4. Failover Process
 
-Failover follows a structured, deterministic sequence to ensure predictable behavior during outages.
+Failover follows a deterministic sequence to ensure predictable behavior.
 
 ### 4.1 Step 1 — Detect Failure
 
-The Router identifies a failure through:
+A failure is confirmed when:
 
-- Health check timeouts  
-- Latency exceeding configured thresholds  
-- Queue depth surpassing safe limits  
-- Storage backend reporting errors  
-- Monitoring alerts indicating node degradation  
+- Health checks fail repeatedly  
+- Backlog exceeds configured thresholds  
+- Storage reports write errors  
+- Distributor returns structured failure codes  
+- Micro‑feed path reports unavailability  
 
-Only confirmed failures trigger failover; transient anomalies require multiple signals.
+Only confirmed failures trigger failover.
 
-### 4.2 Step 2 — Penalize Failed Node
+### 4.2 Step 2 — Penalize Failed Content Node
 
-Once a node is marked as failed:
+Once a content node is marked as failed:
 
 - Its score is reduced significantly  
-- It is temporarily excluded from routing decisions  
-- A cooldown timer prevents immediate re-selection  
-- Failure metadata is recorded for later analysis  
+- It is excluded from routing decisions  
+- A cooldown timer prevents immediate re‑selection  
+- Failure metadata is recorded for analysis  
 
-Penalization prevents repeated routing attempts to unstable nodes.
+This prevents repeated attempts to use unstable components.
 
-### 4.3 Step 3 — Select Next Candidate
+### 4.3 Step 3 — Select Next Content Path
 
-The Router selects the next highest-scoring node from the candidate list.  
-If no nodes remain in the current region, the Router expands the search to other regions.
+The Router selects the next viable content path:
+
+- Another distributor  
+- Storage fallback  
+- Micro‑feed fallback  
+- Minimal‑path routing  
+
+If no primary paths remain, the Router escalates to degraded mode.
 
 ### 4.4 Step 4 — Retry Routing
 
-The Router attempts to route the content to the new node.  
-If this node also fails, the process repeats until a healthy node is found or all options are exhausted.
+The Router attempts to route the content through the new path.  
+If this path also fails, the process repeats until a healthy path is
+found or all options are exhausted.
 
 ### 4.5 Step 5 — Escalate if Necessary
 
-If all nodes fail:
+If all content paths fail:
 
-- The Router escalates to system-level failover  
 - Content may be queued for retry  
-- A degraded-mode pipeline may be activated  
-- Alerts are sent to operators (if configured)  
+- Minimal‑path micro‑feed may be activated  
+- System‑level degraded mode may be entered  
+- Alerts may be emitted (if configured)  
 
-Failover escalation ensures that content is never silently dropped.
+Escalation ensures content is never silently lost.
+
+---
 
 ## 5. Coordination with Other Modules
 
-Failover does not operate in isolation. It relies on close coordination with other modules in the Emergency Channel.
+Router failover relies on coordination with:
 
-- Monitoring provides health, latency, and queue depth signals  
-- Storage reports backend availability and capacity issues  
-- Distributor reports delivery failures and regional problems  
-- Analytics aggregates failure patterns and long-term trends  
-- Core pipeline components expose backpressure and overload signals  
+- **Distributor** — delivery failures, backlog, health  
+- **Storage** — availability, write errors, capacity  
+- **Micro‑feed subsystem** — readiness, fallback availability  
+- **Analytics** — long‑term failure patterns  
+- **Core pipeline** — backpressure and overload signals  
 
-This coordination ensures that failover decisions are based on accurate, system-wide information rather than isolated symptoms.
+Failover decisions are based on system‑wide signals, not isolated
+symptoms.
 
 ---
 
 ## 6. Recovery and Reintegration
 
-Once a failed node or region recovers, it must rejoin the routing pool safely and gradually.
+When a failed content node recovers, it must rejoin the routing pool
+gradually.
 
 ### 6.1 Recovery Detection
 
 A node is considered recovered when:
 
 - It passes multiple consecutive health checks  
-- Latency returns to normal ranges  
-- Queue depth stabilizes  
-- Storage backend reports full availability  
-- No new errors are detected within a defined window  
+- Backlog returns to normal  
+- No new errors occur within a defined window  
+- Storage or distributor reports full availability  
 
 ### 6.2 Gradual Reintegration
 
-Recovered nodes are not immediately treated as fully healthy.  
-Instead, the Router applies a staged reintegration process:
+Recovered nodes are reintegrated cautiously:
 
 - Start with a low initial score  
-- Gradually increase score as successful requests accumulate  
-- Monitor for regression or repeated failures  
-- Fully restore score only after sustained stability  
+- Increase score as successful operations accumulate  
+- Monitor for regression  
+- Restore full score only after sustained stability  
 
-This prevents unstable nodes from re-entering the pool too aggressively.
-
-### 6.3 Region Reintegration
-
-If an entire region recovers:
-
-- Nodes are reintegrated individually  
-- Region-level penalties are removed gradually  
-- Latency and availability metrics must stabilize  
-- Routing policies may temporarily limit traffic to the region  
-
-Region reintegration ensures global stability during large-scale recoveries.
+This prevents unstable nodes from re‑entering too aggressively.
 
 ---
 
 ## 7. Degraded Mode
 
-If no healthy nodes are available, the Router enters degraded mode:
+If no healthy content paths are available, the Router enters degraded
+mode:
 
 - Content may be queued for delayed processing  
-- Only minimal validation is performed  
-- Non-critical analytics events may be dropped  
-- The system prioritizes essential operations over optional ones  
+- Only essential routing logic is executed  
+- Optional analytics or non‑critical tasks may be skipped  
+- Minimal‑path micro‑feed may be used as last resort  
 
-Degraded mode ensures the Emergency Channel remains operational under extreme conditions.
+Degraded mode ensures the Emergency Channel remains operational under
+extreme conditions.
 
 ---
 
 ## 8. Summary
 
-Failover is a structured, deterministic process that ensures routing continuity during node or region failures.  
-Through detection, penalization, retry logic, coordination with other modules, and controlled reintegration, the Router maintains system reliability even under severe or unpredictable conditions.
+Router failover is a deterministic, content‑layer mechanism that ensures
+routing continuity when distributors, storage backends, or micro‑feed
+paths fail.
+
+Through structured detection, penalization, retry logic, coordination
+with other modules, and controlled reintegration, the Router maintains
+system reliability even under severe or unpredictable conditions.
