@@ -2,119 +2,152 @@
 
 ## 1. Purpose
 
-The Router is responsible for selecting the optimal processing path for each piece of content entering the Emergency Channel.  
-It ensures that messages are delivered reliably, efficiently, and with minimal latency, even under unstable network conditions or partial system failures.  
-The Router does not modify content; it only determines where and how the content should be processed and stored.
+The Router is the **content‑level decision engine** of the Emergency
+Channel.  
+Its purpose is to determine the optimal **content processing path** for
+each sanitized item, selecting which internal component should handle it
+next (e.g., distributor, storage, micro‑feed).
+
+The Router does **not** perform network routing, proxy selection, or
+transport‑layer decisions.  
+Those responsibilities belong to the `network-access-layer`.
+
+The Router is strictly **representation‑agnostic** and **non‑destructive**:
+it does not modify content, only determines its internal path.
 
 ---
 
 ## 2. Responsibilities
 
-The Router performs several key functions:
+The Router performs several key content‑routing functions:
 
-### 2.1 Path Selection
+### 2.1 Content Path Selection
 
-- Choose the most suitable processing path based on content type, size, and priority  
-- Select nodes or regions with the lowest latency and highest availability  
-- Adapt routing decisions dynamically based on real-time system metrics  
+- Selects the appropriate internal path based on content type, urgency,
+  and system state  
+- Chooses between distributor, storage, micro‑feed, or fallback paths  
+- Ensures deterministic routing decisions for auditability  
 
-### 2.2 Load Balancing
+### 2.2 Content Load Distribution
 
-- Distribute traffic evenly across available nodes  
-- Prevent overload on any single node or region  
-- Shift traffic away from congested or degraded nodes  
+- Distributes content across multiple distributors  
+- Prevents overload of any single content‑handling component  
+- Balances throughput across available content paths  
 
-### 2.3 Fault Tolerance
+### 2.3 Content‑Level Fault Tolerance
 
-- Detect node failures or degraded performance  
-- Automatically reroute content to healthy nodes  
-- Ensure no single point of failure in the routing layer  
+- Detects failures in content‑handling components (e.g., distributor
+  unavailable)  
+- Automatically reroutes content to healthy alternatives  
+- Ensures no single point of failure in the content pipeline  
 
 ### 2.4 Policy Enforcement
 
-- Apply routing rules based on system configuration  
-- Enforce priority handling for critical content  
-- Support region-based or content-type-based routing policies
+- Applies routing rules defined by system configuration  
+- Supports priority‑based or content‑type‑based routing policies  
+- Ensures compliance with operational constraints  
+
+All responsibilities operate strictly at the **content layer**, not the
+network layer.
+
+---
 
 ## 3. Routing Architecture
 
-The Router is designed as a lightweight, stateless component that makes fast routing decisions based on real-time system conditions.  
-It does not store content or maintain long-term state; instead, it relies on metrics and signals from other modules to determine the optimal path.
+The Router is designed as a lightweight, stateless component that makes
+fast, deterministic routing decisions.  
+It does not store content or maintain long‑term state; instead, it relies
+on signals from other modules (Distributor, Storage, Health subsystem).
 
 ### 3.1 Stateless Core
 
 - Routing decisions are computed per request  
 - No persistent state is stored inside the Router  
-- All stateful information (health, load, availability) is fetched from external modules  
+- All stateful information (health, availability, backlog) is fetched
+  from external modules  
 
-### 3.2 Metrics-Driven Decision Making
+### 3.2 Signal‑Driven Decision Making
 
 Routing decisions are influenced by:
 
-- Node health and heartbeat signals  
-- Latency measurements across regions  
-- Storage backend availability  
-- Sanitizer load and queue depth  
-- Distributor performance metrics  
+- Distributor health signals  
+- Storage availability  
+- Micro‑feed readiness  
+- Backlog or queue depth of content‑handling components  
+- System‑wide routing policies  
+
+No network‑layer metrics (latency, region, bandwidth, link health) are
+used.
 
 ### 3.3 Modular Routing Pipeline
 
-The routing pipeline consists of several independent stages:
+The routing pipeline consists of several isolated stages:
 
 - Input normalization  
 - Policy evaluation  
-- Node scoring  
+- Content‑node scoring  
 - Path selection  
 - Failover evaluation  
 - Final routing decision  
 
-Each stage is isolated and testable, allowing the Router to evolve without breaking the entire system.
+Each stage is testable and replaceable, allowing the Router to evolve
+without affecting the rest of the Emergency Channel.
+
+---
 
 ## 4. Routing Strategies
 
-The Router supports multiple routing strategies to accommodate different system conditions and content types.  
-Strategies can be combined or switched dynamically based on real-time metrics.
+The Router supports multiple **content‑level** routing strategies.  
+These strategies can be combined or switched based on system state.
 
-### 4.1 Latency-Optimized Routing
+### 4.1 Priority‑Based Routing
 
-- Prioritizes nodes with the lowest measured latency  
-- Continuously updates latency scores based on recent requests  
-- Ideal for time-sensitive content and high-traffic periods  
+- Routes urgent or critical content through fast‑path distributors  
+- Defers low‑priority content to slower or batch‑oriented paths  
 
-### 4.2 Availability-Optimized Routing
+### 4.2 Availability‑Optimized Routing
 
-- Prefers nodes with the highest uptime and stability  
-- Avoids nodes with recent failures or degraded performance  
-- Suitable for large or critical content that must not fail  
+- Prefers distributors or storage backends that are currently healthy  
+- Avoids components with recent failures or degraded performance  
 
-### 4.3 Load-Aware Routing
+### 4.3 Load‑Aware Routing
 
-- Distributes traffic based on current node load  
-- Prevents overload by shifting traffic away from congested nodes  
-- Uses queue depth and CPU/memory metrics to estimate load  
+- Distributes content based on backlog or queue depth  
+- Prevents overload of any single distributor  
+- Ensures smooth throughput under high load  
 
-### 4.4 Policy-Based Routing
+### 4.4 Policy‑Driven Routing
 
-- Applies administrator-defined routing rules  
-- Supports region-based, content-type-based, or priority-based policies  
-- Ensures compliance with system-wide operational constraints  
+- Applies administrator‑defined routing rules  
+- Supports content‑type‑based or urgency‑based routing  
+- Ensures compliance with operational constraints  
+
+All strategies operate strictly on **content‑handling components**, not
+network nodes.
 
 ---
 
 ## 5. Extensibility
 
-The Router is designed to be easily extensible:
+The Router is designed for long‑term extensibility:
 
 - New routing strategies can be added without modifying existing ones  
-- Node scoring algorithms can be replaced or enhanced  
-- Additional metrics can be integrated into the decision pipeline  
-- Failover logic can be extended to support multi-region redundancy  
+- Content‑node scoring algorithms can be replaced or enhanced  
+- Additional health or backlog signals can be integrated  
+- Failover logic can be extended to support new content paths  
 
-The modular architecture ensures that improvements to routing logic do not disrupt the rest of the Emergency Channel.
+The modular architecture ensures that improvements to routing logic do
+not disrupt the rest of the Emergency Channel.
 
 ---
 
 ## 6. Summary
 
-The Router is a stateless, metrics-driven, and highly extensible component that determines the optimal processing path for all content.  
-Its design ensures reliability, low latency, and fault tolerance across the entire Emergency Channel pipeline.
+The Router is a stateless, deterministic, and highly extensible
+content‑routing component.  
+Its design ensures reliable path selection, strong fault tolerance, and
+clean separation from the network layer.
+
+It forms a critical part of the Emergency Channel pipeline, ensuring that
+sanitized content flows through the correct internal paths before
+distribution and publication.
