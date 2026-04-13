@@ -3,194 +3,212 @@
 ## 1. Purpose
 
 The Text Sanitizer ensures that all incoming textual content is safe, valid, and compliant with the Emergency Channel’s publishing rules.  
-It removes harmful elements, normalizes formatting, and prepares content for downstream processing such as routing, storage, and distribution.
+It removes harmful elements, normalizes formatting, extracts minimal metadata required by downstream systems, and prepares content for routing, storage, and distribution.
 
-The sanitizer must operate deterministically, with predictable transformations and no ambiguity.
+The sanitizer must operate deterministically, produce predictable transformations, and avoid ambiguity or lossy heuristics that could change meaning.
 
 ---
 
 ## 2. Responsibilities
 
-The Text Sanitizer is responsible for:
-
 ### 2.1 Content Safety
 
-- Remove malicious scripts or embedded code  
-- Strip dangerous HTML elements  
-- Neutralize harmful payloads (XSS, injection attempts, etc.)  
-- Prevent execution of unintended behaviors  
+- Remove or neutralize embedded scripts and executable code fragments.  
+- Strip dangerous HTML elements and attributes that can trigger execution.  
+- Neutralize payloads used for XSS, SQL/command injection, or other injection classes.  
+- Detect and block obfuscated or encoded payloads intended to bypass filters.
 
-### 2.2 Format Normalization
+### 2.2 Encoding and Normalization
 
-- Normalize whitespace and line breaks  
-- Convert unsupported encodings to UTF‑8  
-- Standardize punctuation and special characters  
-- Remove invisible or control characters  
+- Convert all input to UTF-8.  
+- Normalize line endings and whitespace.  
+- Normalize punctuation and canonicalize common character variants.  
+- Remove invisible control characters and BOM markers.
 
-### 2.3 Policy Enforcement
+### 2.3 Structural Normalization
 
-- Enforce maximum content length  
-- Validate allowed MIME types  
-- Reject unsupported or corrupted text formats  
-- Apply language‑specific rules when required  
+- Preserve structural markers (headings, lists, blockquotes) while removing unsupported or unsafe markup.  
+- Flatten or normalize nested formatting to a stable, deterministic representation.  
+- Convert allowed lightweight markup (basic Markdown subset) into a canonical internal representation.
 
-### 2.4 Metadata Extraction
+### 2.4 Policy Enforcement
 
-- Extract title, summary, and keywords (if present)  
-- Detect language and character set  
-- Identify structural markers (headings, lists, quotes)  
-- Provide metadata to downstream modules
+- Enforce maximum content length and per-field limits.  
+- Validate allowed MIME types and reject mixed or ambiguous formats.  
+- Apply language-specific rules and content policies where required.  
+- Enforce domain rules (for example: allowed HTML subset, permitted links, or banned domains).
+
+### 2.5 Metadata Extraction
+
+- Extract minimal metadata useful for routing and display: title, summary, language, and structural markers.  
+- Provide deterministic extraction results (same input → same metadata).  
+- Avoid extracting or retaining PII unless explicitly required and authorized.
 
 ---
 
 ## 3. Architecture
 
-The Text Sanitizer is designed as a deterministic, modular pipeline.  
-Each stage performs a specific transformation, and the output of one stage becomes the input of the next.
+The Text Sanitizer is a deterministic, modular pipeline. Each stage performs a focused transformation; outputs are immutable and passed to the next stage.
 
 ### 3.1 Processing Stages
 
-The sanitizer pipeline consists of:
-
 1. **Input Normalization**  
-   - Convert encoding to UTF‑8  
-   - Normalize line endings  
-   - Remove BOM markers  
+   - Detect and convert character encodings to UTF-8.  
+   - Normalize line endings and remove BOM.  
+   - Reject inputs with unsupported encodings or binary/mixed content.
 
-2. **Structural Cleaning**  
-   - Remove unsupported markup  
-   - Flatten nested formatting  
-   - Strip embedded scripts or styles  
+2. **Lexical Cleaning**  
+   - Remove control characters and non-printable codepoints.  
+   - Normalize whitespace and collapse excessive runs.  
+   - Replace problematic Unicode sequences with safe equivalents.
 
-3. **Content Filtering**  
-   - Remove malicious payloads  
-   - Sanitize HTML tags  
-   - Reject disallowed MIME types  
+3. **Markup and Structural Sanitization**  
+   - Parse allowed markup (basic Markdown, safe HTML subset) into a canonical AST.  
+   - Remove disallowed tags and attributes (for example: iframe, embed, script, style, inline event handlers).  
+   - Flatten or normalize nested constructs to a deterministic form.
 
-4. **Policy Enforcement**  
-   - Enforce length limits  
-   - Validate language and charset  
-   - Apply domain‑specific rules  
+4. **Content Filtering**  
+   - Detect and remove malicious payloads (XSS vectors, injection patterns, obfuscated scripts).  
+   - Validate and sanitize URLs and link targets; optionally rewrite or remove disallowed links.  
+   - Apply domain and policy checks (banned words, prohibited domains, content length).
 
-5. **Metadata Extraction**  
-   - Identify title, summary, keywords  
-   - Detect language  
-   - Extract structural markers  
+5. **Policy Enforcement and Truncation**  
+   - Enforce length and quota limits; apply deterministic truncation rules when needed.  
+   - Validate language and charset constraints.  
+   - Reject content that cannot be safely sanitized.
 
-Each stage is isolated and testable.
+6. **Metadata Extraction and Annotation**  
+   - Extract title, summary, language, and structural markers.  
+   - Annotate sanitized output with deterministic metadata for downstream consumers.
+
+7. **Output Generation**  
+   - Emit sanitized text in a canonical, stable encoding and format.  
+   - Include a processing report describing applied transformations and any policy violations.
+
+Each stage is independently testable and instrumented for observability.
 
 ---
 
 ### 3.2 Deterministic Output
 
-The sanitizer must always produce the same output for the same input:
+Sanitizer output must be identical for identical input:
 
-- No randomness  
-- No environment‑dependent behavior  
-- No time‑dependent transformations  
-- No heuristic‑based rewriting  
+- No randomness or non-deterministic ordering.  
+- No environment-dependent behavior (fonts, locale, time).  
+- No time-dependent metadata embedded in outputs.  
+- No heuristic rewriting that can vary between runs.
 
-Determinism ensures predictable downstream processing.
+Determinism guarantees reproducible downstream behavior and simplifies debugging.
 
 ---
 
 ### 3.3 Error Handling
 
-Errors are categorized into:
+Errors are classified and handled deterministically:
 
 - **Recoverable errors**  
-  - Invalid characters  
-  - Minor formatting corruption  
-  - Missing metadata  
-  - These are corrected automatically  
+  - Invalid characters or minor encoding issues → corrected and logged.  
+  - Unsupported but convertible markup → converted to canonical form.  
+  - Missing metadata → best-effort extraction.
 
 - **Unrecoverable errors**  
-  - Unsupported MIME type  
-  - Malicious payloads that cannot be safely removed  
-  - Severely corrupted text  
-  - These result in rejection  
+  - Embedded payloads that cannot be safely removed.  
+  - Mixed binary/text formats or corrupted encodings.  
+  - Policy violations that mandate rejection (e.g., banned content).  
+  - These cause rejection with a structured rejection reason.
 
-All errors are logged for analytics and debugging.
+All errors and transformation steps are recorded in a processing report for auditing and analytics.
 
 ---
 
 ### 3.4 Performance Considerations
 
-The sanitizer is optimized for:
+The Text Sanitizer is optimized for:
 
-- Low latency  
-- Linear-time processing  
-- Minimal memory overhead  
-- High throughput under load  
+- Low latency and minimal added processing time.  
+- Linear-time processing relative to input size.  
+- Minimal memory overhead; streaming where possible.  
+- High throughput and graceful degradation under load.
 
-It must handle large volumes of text without blocking the pipeline.
+Instrumentation must expose processing time, rejection rates, and common failure modes.
 
 ---
 
 ## 4. Security Considerations
 
-The Text Sanitizer is a critical security boundary.  
-It must defend the Emergency Channel against malformed, malicious, or intentionally crafted inputs.
+The Text Sanitizer is a primary defense against content-borne attacks. Treat all text as untrusted.
 
 ### 4.1 Threat Model
 
-The sanitizer protects against:
+Protect against:
 
-- Script injection (XSS, JS payloads)  
-- HTML/Markdown injection  
-- Unicode-based attacks (homoglyphs, RTL overrides)  
-- Hidden control characters  
-- Oversized payloads intended to exhaust resources  
-- Embedded phishing or malicious URLs  
-
-The sanitizer assumes all incoming text is untrusted.
-
----
+- Script injection and XSS vectors.  
+- Markup-based attacks (malicious attributes, data URLs).  
+- Unicode attacks (homoglyphs, bidirectional override).  
+- Obfuscated or encoded payloads intended to bypass filters.  
+- Oversized or resource-exhausting payloads.  
+- Phishing links and malicious redirects.
 
 ### 4.2 Allowed and Disallowed Content
 
-**Allowed:**
+**Allowed:**  
+- Plain text and UTF-8 content.  
+- Basic Markdown and a restricted, safe subset of HTML.  
+- Deterministic, canonicalized outputs within policy limits.
 
-- Plain text  
-- Basic Markdown  
-- Safe HTML subsets  
-- UTF‑8 encoded characters  
-- Standard punctuation and whitespace  
+**Disallowed:**  
+- Executable scripts and inline event handlers (for example: attributes like onclick=).  
+- Iframes, embeds, and external script references.  
+- Binary or mixed-format payloads masquerading as text.  
+- Obfuscated or encoded payloads that cannot be safely decoded and validated.
 
-**Disallowed:**
-
-- Executable scripts  
-- Inline event handlers (e.g., `onclick=`)  
-- Iframes, embeds, or external scripts  
-- Obfuscated or encoded payloads  
-- Binary or mixed‑format text  
-
-Disallowed content is removed or the entire submission is rejected.
+Disallowed content is removed when safe to do so; otherwise the submission is rejected.
 
 ---
 
 ### 4.3 Logging and Auditing
 
-The sanitizer logs:
+Log entries include:
 
-- Rejected submissions  
-- Sanitization errors  
-- Metadata extraction failures  
-- Policy violations  
-- Suspicious patterns  
+- Rejected submissions and rejection reasons.  
+- Sanitization actions (tags/attributes removed, truncation applied).  
+- Detected malicious patterns and suspicious encodings.  
+- Metadata extraction results and any anomalies.
 
-Logs are anonymized and used for analytics, debugging, and threat detection.
+Logs are anonymized and structured to support analytics, incident response, and compliance reviews.
 
 ---
 
-## 5. Summary
+## 5. Observability and Metrics
 
-The Text Sanitizer ensures that all textual content entering the Emergency Channel is:
+Instrument the sanitizer to emit metrics such as:
 
-- Safe  
-- Clean  
-- Deterministic  
-- Policy‑compliant  
-- Ready for routing, storage, and distribution  
+- Processing latency distribution.  
+- Throughput (items/sec).  
+- Rejection rate and rejection reasons breakdown.  
+- Counts of specific sanitization actions (tags removed, links rewritten).  
+- Error rates by category.
 
-It is the foundation of content safety and reliability across the entire system.
+Expose traces and processing reports to enable cross-correlation with Router and Storage telemetry.
+
+---
+
+## 6. Testing and Validation
+
+- Provide unit tests for each pipeline stage with deterministic fixtures.  
+- Maintain a corpus of adversarial test cases (XSS, Unicode attacks, obfuscated payloads).  
+- Run fuzzing and regression tests as part of CI.  
+- Validate that identical inputs always produce identical outputs across environments.
+
+---
+
+## 7. Summary
+
+The Text Sanitizer guarantees that textual content entering the Emergency Channel is:
+
+- Safe and free of executable payloads.  
+- Deterministic and reproducible.  
+- Policy-compliant and properly annotated.  
+- Instrumented for observability and auditable for security.
+
+It is a core component of the Emergency Channel’s content safety and reliability model.
