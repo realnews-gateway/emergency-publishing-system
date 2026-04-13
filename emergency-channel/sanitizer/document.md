@@ -11,8 +11,6 @@ The sanitizer must operate deterministically and must never execute embedded scr
 
 ## 2. Responsibilities
 
-The Document Sanitizer is responsible for:
-
 ### 2.1 Security Filtering
 
 - Remove or block embedded scripts, macros, and executable payloads  
