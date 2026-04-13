@@ -1,7 +1,7 @@
 # Metrics and Telemetry
 
 ## Purpose
-Define the metrics, telemetry, and observability requirements for the Sanitizer component under `emergency-publishing-system/emergency-channel/sanitizer`. This document specifies what to measure, how to instrument, privacy and aggregation rules, retention policies, alerting thresholds, and example schemas for structured telemetry artifacts.
+Define the metrics, telemetry, and observability requirements for the Sanitizer component. This document specifies what to measure, how to instrument, privacy and aggregation rules, retention policies, alerting thresholds, and example schemas for structured telemetry artifacts.
 
 ---
 
