@@ -1,232 +1,234 @@
 ## Sanitizer Overview
 
-The Sanitizer module is responsible for removing all metadata, fingerprints, and embedded identifiers from incoming content. It ensures that no device, location, software, or user trace remains before the content enters the processing pipeline.
+The Sanitizer module removes metadata, fingerprints, and embedded identifiers from incoming content. It guarantees that no device, location, software, or user trace remains before content enters the processing pipeline.
 
-Sanitization is mandatory for all submissions and operates in a secure sandbox to prevent leakage or correlation. The module supports text, image, video, and document formats, applying format‑specific routines to guarantee anonymity.
+Sanitization is mandatory for all submissions and runs inside a secure sandbox to prevent leakage or correlation. The module supports text, image, video, and document formats, applying format‑specific routines to guarantee anonymity, determinism, and policy compliance.
+
+---
+
+## Purpose
+
+- **Provide a strong privacy and security boundary** for all inbound content.  
+- **Ensure deterministic, reproducible outputs** suitable for routing, storage, and distribution.  
+- **Prevent covert channels, fingerprinting, and metadata leakage.**  
+- **Fail safely:** ambiguous or unremovable traces cause rejection rather than partial sanitization.
+
+---
 
 ## Sanitization Stages
 
-The Sanitizer module performs four specialized stages to eliminate metadata, fingerprints, and embedded identifiers from all incoming content. Each stage operates inside a secure sandbox to prevent correlation or leakage.
+The Sanitizer executes a multi‑stage pipeline inside an isolated sandbox. Each stage is deterministic, auditable, and independently testable.
 
-### 1. Format Detection
-- Identifies the true file type using magic‑byte inspection.
-- Rejects ambiguous or unsupported formats.
-- Selects the appropriate sanitization routine based on content type.
+### 1 Format Detection
+- Identify true file type using magic‑byte inspection and lightweight structural checks.  
+- Reject ambiguous, encrypted, or unsupported formats.  
+- Select the appropriate format‑specific sanitization routine.
 
-### 2. Metadata Removal
-- Strips EXIF, IPTC, XMP, PDF metadata, and embedded thumbnails.
-- Removes GPS coordinates, device identifiers, and software signatures.
-- Normalizes file headers to eliminate hidden markers.
+### 2 Metadata Removal
+- Strip EXIF, IPTC, XMP, PDF metadata, embedded thumbnails, and revision histories.  
+- Remove GPS coordinates, device identifiers, software signatures, and encoder fingerprints.  
+- Normalize headers and container fields to eliminate hidden markers.
 
-### 3. Re‑Encoding & Fingerprint Neutralization
-- Re‑encodes images, videos, and documents to remove latent fingerprints.
-- Converts proprietary formats into safe, open formats.
-- Applies deterministic encoding to prevent correlation attacks.
+### 3 Reencoding and Fingerprint Neutralization
+- Reencode images, videos, and documents with deterministic settings to remove latent fingerprints.  
+- Convert proprietary or opaque formats into safe, open formats when permitted.  
+- Apply deterministic encoding parameters to prevent correlation attacks.
 
-### 4. Content Normalization
-- Ensures consistent output structure across all sanitized files.
-- Compresses or resizes media when necessary for safety.
-- Produces a sanitized blob ready for downstream processing.
+### 4 Content Normalization
+- Produce consistent output structure across sanitized files.  
+- Resize, recompress, or rewrap media when required by policy.  
+- Emit a sanitized blob and a structured processing report for downstream consumers.
+
+---
 
 ## Supported Formats
 
-The Sanitizer module supports a controlled set of formats to ensure reliable metadata removal and fingerprint neutralization. Unsupported or ambiguous formats are rejected during validation.
+Sanitizer supports a controlled set of formats to ensure reliable metadata removal and fingerprint neutralization. Unsupported or ambiguous formats are rejected.
 
-### 1. Text Formats
-Supported:
-- TXT (UTF‑8 only)
-- Markdown (MD)
-- Plain JSON
+### Text
+**Supported:** TXT (UTF‑8), Markdown, plain JSON.  
+Notes: All text is normalized to UTF‑8; hidden Unicode markers and directionality controls are removed.
 
-Notes:
-- All text is normalized to UTF‑8.
-- Hidden Unicode markers and directionality controls are removed.
+### Images
+**Supported:** JPEG (reencoded), PNG (reencoded), WebP (static).  
+Notes: All EXIF, XMP, IPTC metadata removed; images may be recompressed to eliminate latent fingerprints.
 
-### 2. Image Formats
-Supported:
-- JPEG (re‑encoded to baseline JPEG)
-- PNG (re‑encoded to sanitized PNG)
-- WebP (lossless or lossy)
+### Video
+**Supported:** MP4 (H.264/AAC), WebM (VP9/Opus) where conversion is permitted.  
+Notes: Container metadata, thumbnails, and encoder fingerprints are stripped; reencoding applied as needed.
 
-Notes:
-- All EXIF, XMP, IPTC metadata is removed.
-- Images may be recompressed to eliminate latent fingerprints.
+### Documents
+**Supported:** PDF (sanitized PDF/A), DOCX and ODT converted to PDF/A when permitted.  
+Notes: Object streams, revision history, embedded macros, and application metadata are removed.
 
-### 3. Video Formats
-Supported:
-- MP4 (H.264/AAC)
-- WebM (VP9/Opus)
+### Unsupported Formats
+**Rejected:** RAW camera formats, encrypted PDFs, DRM protected documents, executables, archives and scripts, proprietary containers that cannot be safely inspected.  
+Rationale: These formats either resist deterministic sanitization or present unacceptable risk for metadata leakage.
 
-Notes:
-- Videos are re‑encoded to remove embedded GPS, device IDs, and encoder signatures.
-- Thumbnails and container metadata are stripped.
-
-### 4. Document Formats
-Supported:
-- PDF (converted to sanitized PDF/A)
-- DOCX (converted to PDF/A)
-- ODT (converted to PDF/A)
-
-Notes:
-- All embedded metadata, object streams, and revision history are removed.
-- Proprietary formats are converted to safe, open formats.
-
-### 5. Unsupported Formats
-Rejected:
-- RAW camera formats (CR2, NEF, ARW)
-- Encrypted PDFs
-- DRM‑protected documents
-- Executables, archives, and scripts
-
-These restrictions ensure that sanitization remains deterministic, safe, and resistant to correlation attacks.
+---
 
 ## Data Contracts
 
-The Sanitizer module exchanges data with upstream validation and downstream processing components using strict, versioned data contracts. These contracts ensure deterministic behavior and prevent metadata leakage.
+Sanitizer exchanges strict, versioned data contracts with upstream validation and downstream processing. Contracts are stable and designed to avoid leaking sensitive details.
 
-### 1. SanitizerInput
-Represents the validated content passed from the Validation module.
+### SanitizerInput
+Represents validated content passed from the Validation module.
 
-Fields:
-- `normalized_type` — Detected file type (text/image/video/document).
-- `safe_blob` — Raw content requiring sanitization.
-- `metadata_flags` — Indicators of metadata presence.
-- `submission_id` — Unique identifier for tracking.
+```json
+{
+  "version": "string",
+  "normalized_type": "text | image | video | document",
+  "safe_blob": "binary",
+  "metadata_flags": ["string"],
+  "submission_id": "string",
+  "received_at": "ISO8601 string"
+}
+```
 
-### 2. SanitizationReport
-Represents the internal report generated during sanitization.
+### SanitizationReport
+Internal report generated during sanitization.
 
-Fields:
-- `removed_metadata` — List of metadata categories removed.
-- `reencoded` — Boolean indicating whether re‑encoding occurred.
-- `format_conversion` — Any format changes applied.
-- `risk_score` — Internal heuristic score for anomaly detection.
+```json
+{
+  "version": "string",
+  "submission_id": "string",
+  "removed_metadata": ["string"],
+  "reencoded": true,
+  "format_conversion": "string or null",
+  "processing_steps": [
+    { "stage": "string", "status": "ok | recoverable_error | unrecoverable_error", "notes": "string" }
+  ],
+  "risk_score": 0.0,
+  "timestamp": "ISO8601 string"
+}
+```
 
-### 3. SanitizedContent
-Represents the final sanitized output ready for processing.
+### SanitizedContent
+Final sanitized output ready for downstream processing.
 
-Fields:
-- `content_type` — text | image | video | document.
-- `sanitized_blob` — Fully cleaned and normalized content.
-- `sanitization_report` — Summary of transformations applied.
-- `size_bytes` — Final size after sanitization.
+```json
+{
+  "version": "string",
+  "content_type": "text | image | video | document",
+  "sanitized_blob": "binary",
+  "sanitization_report": { "ref": "SanitizationReport" },
+  "size_bytes": 0,
+  "checksum": "anonymized_hash"
+}
+```
 
-### 4. RejectionRecord
+### RejectionRecord
 Represents content that failed sanitization.
 
-Fields:
-- `submission_id` — Identifier of rejected content.
-- `reason` — Generic rejection reason (non‑diagnostic).
-- `anonymized_hash` — Hash of the unsafe blob.
-- `notes` — Minimal internal notes for debugging.
+```json
+{
+  "version": "string",
+  "submission_id": "string",
+  "reason": "string",
+  "anonymized_hash": "string",
+  "notes": "string",
+  "timestamp": "ISO8601 string"
+}
+```
+
+---
 
 ## Error Handling
 
-The Sanitizer module is designed to fail safely and deterministically. Any ambiguity, corruption, or unremovable metadata results in immediate rejection to protect user anonymity and downstream components.
+Sanitizer is designed to fail safely and deterministically. Any ambiguity, corruption, or unremovable metadata results in rejection.
 
-### 1. Format Errors
-Triggered when the file type is unsupported or ambiguous.
+### Format Errors
+- Triggered when file type is unsupported, ambiguous, or encrypted.  
+- Handling: reject without attempting risky transformations; do not disclose detected format to clients.
 
-Examples:
-- RAW camera formats
-- Encrypted PDFs
-- Files with mismatched magic bytes
+### Metadata Removal Errors
+- Triggered when metadata cannot be fully removed (proprietary blocks, embedded GPS tracks).  
+- Handling: reject with a generic unsafe response; log anonymized indicators.
 
-Handling:
-- Reject without attempting sanitization
-- Do not reveal detected format to the client
+### Reencoding Failures
+- Triggered when media cannot be safely reencoded (corrupted frames, unsupported codec profiles).  
+- Handling: attempt deterministic fallback reencoding; reject if all fallbacks fail.
 
-### 2. Metadata Removal Errors
-Triggered when metadata cannot be fully removed.
+### Fingerprint Neutralization Errors
+- Triggered when latent fingerprints or watermarks cannot be reliably removed.  
+- Handling: reject to prevent correlation attacks; flag for internal monitoring.
 
-Examples:
-- Proprietary EXIF blocks
-- Embedded GPS tracks
-- PDF object streams that resist stripping
+### Size and Resource Errors
+- Triggered when content exceeds safe processing limits.  
+- Handling: reject with a generic size-related response; do not reveal internal thresholds.
 
-Handling:
-- Reject with a generic “unsafe content” response
-- Log anonymized metadata indicators
+### Adversarial Inputs
+- Triggered for steganographic payloads, crafted crash vectors, or repeated malformed submissions.  
+- Handling: reject, apply rate limiting, and log anonymized adversarial indicators.
 
-### 3. Re‑Encoding Failures
-Triggered when media cannot be safely re‑encoded.
-
-Examples:
-- Corrupted video frames
-- Unsupported codec profiles
-- Invalid container structures
-
-Handling:
-- Attempt fallback re‑encoding
-- Reject only after all fallback paths fail
-
-### 4. Fingerprint Neutralization Errors
-Triggered when latent fingerprints cannot be reliably removed.
-
-Examples:
-- Encoder‑specific noise patterns
-- Watermarked frames
-- Deterministic compression artifacts
-
-Handling:
-- Reject to prevent correlation attacks
-- Flag for internal monitoring
-
-### 5. Size or Resource Errors
-Triggered when content exceeds safe processing limits.
-
-Examples:
-- Extremely large video files
-- Oversized images requiring excessive memory
-
-Handling:
-- Reject with a generic size‑related message
-- Do not reveal internal thresholds
-
-### 6. Adversarial Inputs
-Triggered when content appears intentionally crafted to bypass sanitization.
-
-Examples:
-- Steganographic payloads
-- Files designed to crash re‑encoding routines.
-- Repeated malformed submissions
-
-Handling:
-- Reject and apply temporary rate limiting
-- Log anonymized adversarial indicators.
+---
 
 ## Security Notes
 
-The Sanitizer module enforces strict security guarantees to ensure that no metadata, fingerprints, or identifiers survive the sanitization process. These safeguards must never be bypassed.
+Sanitizer enforces strict guarantees to prevent metadata leakage and correlation.
 
-### 1. Zero Metadata Leakage
-- All EXIF, XMP, IPTC, PDF metadata must be removed.
-- No original headers or container metadata may remain.
-- Hidden thumbnails, GPS tracks, and revision histories must be stripped.
+### Zero Metadata Leakage
+- Remove all EXIF, XMP, IPTC, PDF metadata, thumbnails, and revision histories.  
+- No original headers or container metadata may remain in sanitized outputs.
 
-### 2. Deterministic Output
-- Sanitized content must be produced using deterministic encoding.
-- Identical inputs must yield identical sanitized outputs.
-- Non‑deterministic encoders or compression routines are prohibited.
+### Deterministic Output
+- Use deterministic encoding parameters.  
+- Identical inputs must yield identical sanitized outputs under the same configuration.  
+- Non‑deterministic encoders are prohibited unless their behavior is fully documented and versioned.
 
-### 3. Secure Sandbox Execution
-- All sanitization routines must run inside an isolated sandbox.
-- No external network access is permitted during sanitization.
-- Temporary files must be wiped immediately after use.
+### Secure Sandbox Execution
+- Run all routines in isolated sandboxes with no external network access.  
+- Wipe temporary files immediately after use.  
+- Enforce strict resource quotas and timeouts.
 
-### 4. No Partial Sanitization
-- If any metadata or fingerprint cannot be removed, the content must be rejected.
-- Partial or best‑effort sanitization is not allowed.
-- Rejection must not reveal internal sanitization logic.
+### No Partial Sanitization
+- If any metadata or fingerprint cannot be removed, reject the submission.  
+- Partial or best‑effort sanitization that leaves traces is not permitted.
 
-### 5. Minimal Logging
-- Only anonymized operational metrics may be logged.
-- No content, metadata details, or hashes may appear in logs.
-- Logs must be purgeable and non‑persistent in hostile deployments.
+### Minimal Logging
+- Log only anonymized operational metrics and structured processing reports.  
+- Do not include raw content, metadata details, or unhashed identifiers in logs.  
+- Ensure logs are purgeable and non‑persistent in hostile deployments.
 
-### 6. Defense Against Correlation Attacks
-- Re‑encoding must remove encoder signatures and deterministic artifacts.
-- Proprietary formats must be converted to safe, open formats.
-- Fingerprint neutralization must be applied consistently across all media.
+### Defense Against Correlation Attacks
+- Reencoding must remove encoder signatures and deterministic artifacts.  
+- Convert proprietary formats to safe, open formats when possible.  
+- Apply fingerprint neutralization consistently across all media types.
 
-These rules ensure that the Sanitizer module provides strong anonymity guarantees and prevents any form of user traceability.
+---
+
+## Observability and Metrics
+
+Instrument sanitization with metrics and traces to monitor health and detect adversarial patterns.
+
+Recommended metrics:
+- Processing latency distribution and percentiles.  
+- Throughput and queue depth.  
+- Rejection rate and breakdown by reason.  
+- Counts of reencodes, format conversions, and metadata removals.  
+- Adversarial detection counts and false positive rates.
+
+Expose traces and processing reports for cross-correlation with Router and Storage telemetry while preserving anonymity.
+
+---
+
+## Testing and Validation
+
+- Unit tests for each pipeline stage with deterministic fixtures.  
+- Maintain an adversarial test corpus for XSS, steganography, malformed containers, and codec spoofing.  
+- Run fuzzing and regression tests in CI.  
+- Validate that identical inputs produce identical outputs across environments and documented toolchain versions.
+
+---
+
+## Governance and Versioning
+
+- All sanitization rules, regexes, and policy thresholds must be versioned and documented in rules.md.  
+- Processing toolchain versions (encoders, muxers, libraries) must be recorded in processing reports.  
+- Changes to sanitization behavior require review, regression testing, and a documented migration path.
+
+---
+
+## Summary
+
+The Sanitizer module provides a deterministic, auditable, and secure pipeline that removes metadata and fingerprints from inbound content. It enforces strict privacy guarantees, prevents correlation attacks, and produces stable outputs ready for downstream processing. Rejection is preferred over partial sanitization to preserve anonymity and system integrity.
