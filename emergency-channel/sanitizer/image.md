@@ -11,8 +11,6 @@ The sanitizer must operate deterministically and avoid altering the visual meani
 
 ## 2. Responsibilities
 
-The Image Sanitizer is responsible for:
-
 ### 2.1 Security Filtering
 
 - Strip all embedded scripts or executable payloads  
