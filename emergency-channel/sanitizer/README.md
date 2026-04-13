@@ -56,6 +56,14 @@ This directory contains the following files:
 - **document.md**  
   Sanitization rules for PDF, DOCX, PPTX, and other document formats.
 
+### Additional Specifications
+
+- **rules.md**  
+  Defines sanitization rules, regex patterns, and policy enforcement schema.
+
+- **metrics-and-telemetry.md**  
+  Provides monitoring, metrics, and telemetry for sanitizer performance and reliability.
+
 ---
 
 ## Deterministic Processing
@@ -94,5 +102,6 @@ The Sanitizer module provides:
 - Deterministic, reproducible transformations  
 - Format‑specific sanitization pipelines  
 - Strong protection against malicious or malformed inputs  
+- Monitoring and rule enforcement for long‑term reliability
 
 It is a core component of the Emergency Channel’s trust and security model.
