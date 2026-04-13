@@ -1,10 +1,5 @@
 # Sanitizer Rules
 
-## Version and Effective Date
-- **Rule version**: v1.0  
-- **Effective date**: 2026-04-14  
-- **Owner**: Emergency Publishing System — Sanitizer Team
-
 ---
 
 ## Purpose and Scope
