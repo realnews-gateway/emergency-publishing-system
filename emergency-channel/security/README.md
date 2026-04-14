@@ -1,13 +1,13 @@
 ---
 owner: "@Empus/security"
-oncall: "security-oncall@Company.com"
+oncall: "security-oncall@company.com"
 last-reviewed: "2026-04-15"
 ---
 
 # Security Module
 
 **Owner:** @Empus/security  
-**Oncall:** security-oncall@empus.org  
+**Oncall:** security-oncall@company.com  
 **Last-reviewed:** 2026-04-15
 
 The Security module provides system‑wide protections for the Emergency Channel architecture. It is a cross‑cutting layer that enforces confidentiality, integrity, authenticity, and operational safety across all components. Security is implemented as a multi‑layered architecture combining cryptography, metadata minimization, trust boundaries, transport protection, and runtime safeguards.
@@ -55,22 +55,22 @@ This directory contains the following documents. Each document includes a top‑
 - **README.md**  
   This index, governance, and owner contacts.
 
-- **key-management.md** 
+- **key-management.md**   
   Key lifecycle, storage, rotation, and KMS usage.
 
-- **access-control.md** 
+- **access-control.md**   
   RBAC, service‑to‑service auth, least‑privilege, and break‑glass procedures.
 
-- **audit-and-logging.md** 
+- **audit-and-logging.md**   
   Audit event model, log retention, anonymization, and export rules.
 
-- **incident-response.md** 
+- **incident-response.md**   
   Incident classification, triage, containment, forensics, and postmortem process.
 
-- **threat-model.md** 
+- **threat-model.md**   
   Threat scenarios, attack surface matrix, and mitigation priorities.
 
-- **security-ci-checks.md** 
+- **security-ci-checks.md**   
   Automated checks for docs, config, and secret scanning in PRs.
 
 Each file represents a layer of the defense‑in‑depth model and is governed as described below.
