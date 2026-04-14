@@ -1,6 +1,6 @@
 ---
 owner: "@Empus/security"
-oncall: "security-oncall@empus.org"
+oncall: "security-oncall@Company.com"
 last-reviewed: "2026-04-15"
 ---
 
@@ -55,22 +55,22 @@ This directory contains the following documents. Each document includes a top‑
 - **README.md**  
   This index, governance, and owner contacts.
 
-- **key-management.md** *(NEW)*  
+- **key-management.md** 
   Key lifecycle, storage, rotation, and KMS usage.
 
-- **access-control.md** *(NEW)*  
+- **access-control.md** 
   RBAC, service‑to‑service auth, least‑privilege, and break‑glass procedures.
 
-- **audit-and-logging.md** *(NEW)*  
+- **audit-and-logging.md** 
   Audit event model, log retention, anonymization, and export rules.
 
-- **incident-response.md** *(NEW)*  
+- **incident-response.md** 
   Incident classification, triage, containment, forensics, and postmortem process.
 
-- **threat-model.md** *(NEW)*  
+- **threat-model.md** 
   Threat scenarios, attack surface matrix, and mitigation priorities.
 
-- **security-ci-checks.md** *(NEW)*  
+- **security-ci-checks.md** 
   Automated checks for docs, config, and secret scanning in PRs.
 
 Each file represents a layer of the defense‑in‑depth model and is governed as described below.
@@ -81,8 +81,10 @@ Each file represents a layer of the defense‑in‑depth model and is governed a
 
 Security applies to every stage of the Emergency Channel pipeline:
 
+```
 Ingest → Sanitizer → Core → Router → Distributor → Publisher  
-                     ↘ Storage
+                           ↘ Storage
+```
 
 Each module enforces its own trust boundaries while relying on shared cryptographic and metadata‑hygiene primitives. The goal is that compromise of a single component does not expose the entire system.
 
