@@ -1,7 +1,7 @@
 ---
-owner: "Empus/security"
+owner: "@Empus/security"
 oncall: "security-oncall@company.com"
-last-reviewed: "2026-04-14"
+last-reviewed: "2026-04-15"
 ---
 
 Access Control
@@ -30,7 +30,7 @@ Principles
 Roles and Responsibilities
 
 Example Roles
-- Empus/security — policy approver and incident authority.
+- @Empus/security — policy approver and incident authority.
 - service-admin — deploy and manage service runtime; limited to specific services.
 - service-operator — perform operational tasks (restart, scale) with scoped permissions.
 - developer — push code to non-production; limited production access via PRs and approvals.
@@ -61,7 +61,7 @@ Scoping
 
 Policy Management
 - Store RBAC policies as code where supported (policy-as-code).
-- Require PRs for policy changes with automated policy linting and mandatory reviewers from Empus/security.
+- Require PRs for policy changes with automated policy linting and mandatory reviewers from @Empus/security.
 - Maintain a changelog of policy updates with rationale and risk assessment.
 
 ---
@@ -102,7 +102,7 @@ Break Glass and Emergency Access
 - Define a documented break-glass process for emergency access with:
   - Time-limited credentials
   - Mandatory justification and post-facto review
-  - Immediate notification to Empus/security
+  - Immediate notification to @Empus/security
   - Full audit trail of actions taken during break-glass
 - Break-glass events must trigger a post-incident review and remediation plan.
 
@@ -129,7 +129,7 @@ Approval Workflows and Change Control
 
 - Policy changes that widen privileges require:
   - A PR with risk assessment and test plan
-  - Approval from Empus/security and the affected service owner
+  - Approval from @Empus/security and the affected service owner
   - Automated CI checks passing (policy lint, least-privilege heuristics)
 - Emergency policy changes may be applied with post-facto review and must be documented.
 
@@ -158,7 +158,7 @@ CI and Automation Controls
 - PRs that modify access control or IAM policies must trigger:
   - Policy-as-code linting
   - Secret scanning
-  - Approval from Empus/security
+  - Approval from @Empus/security
 - Prevent merges that introduce wildcard or overly broad permissions.
 
 ---
@@ -189,7 +189,7 @@ Governance
 - Define role owners and maintain an authoritative role registry.
 - Review access-control policies quarterly or after incidents.
 - Document mapping between roles and responsibilities in architecture docs.
-- Changes to core access-control patterns require approval from Empus/security.
+- Changes to core access-control patterns require approval from @Empus/security.
 
 ---
 
@@ -213,7 +213,7 @@ review-cadence: "90d"
 Example approval flow
 1. Developer opens PR to change IAM policy.
 2. CI runs policy lint and secret scan.
-3. PR requests review from Empus/security and service owner.
+3. PR requests review from @Empus/security and service owner.
 4. After approvals, merge triggers staged rollout and audit entry.
 
 ---
