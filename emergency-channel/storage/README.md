@@ -1,88 +1,45 @@
 # Emergency Channel — Storage Module
 
 ## Overview
-
-The Storage module defines how sanitized content is persisted within the Emergency Channel.  
-It provides multiple backend options for storing content securely, durably, and in a censorship‑resistant manner.
-
-Supported storage backends include:
-
-- Arweave (permanent decentralized storage)  
-- IPFS (distributed content‑addressable storage)  
-- Local storage (for constrained or offline environments)  
-
-Each backend offers different tradeoffs in durability, availability, and decentralization.
+The Storage module for the **Emergency Channel** defines how sanitized content is persisted for this channel specifically.  
+This directory contains channel‑specific implementation notes, examples, and operational constraints. For global storage policies (retention, encryption, backups, cost models, and governance), see the repository root **/storage/README.md**.
 
 ---
 
-## Goals
+## Supported Backends
+- **Arweave** — permanent decentralized storage; one‑time fees and permanence tradeoffs. See `arweave.md` for channel integration notes.  
+- **IPFS** — content‑addressable storage; requires pinning and gateway considerations. See `ipfs.md`.  
+- **Local** — local filesystem or ephemeral object store for constrained/offline environments and testing. See `local.md`.
 
-The Storage module ensures:
-
-- Reliable persistence of sanitized content  
-- Compatibility with decentralized and centralized environments  
-- Flexibility in backend selection based on deployment context  
-- Strong integrity guarantees through signature enforcement  
-- Extensibility for future storage backends  
-
-It is the foundation for long‑term content availability and archival.
+Each backend has different tradeoffs in durability, availability, cost, and decentralization; choose per deployment context.
 
 ---
 
-## Module Structure
-
-This directory contains the following files:
-
-- **arweave.md**  
-  Describes integration with Arweave, including transaction flow, signature handling, and permanence guarantees.
-
-- **ipfs.md**  
-  Documents IPFS integration, including pinning strategies, gateway usage, and content addressing.
-
-- **local.md**  
-  Defines local storage behavior, including file layout, retention policies, and offline access.
-
-Future expansions may include:
-
-- S3‑compatible object storage  
-- Hybrid decentralized + centralized models  
-- Encrypted storage backends  
-- Region‑aware storage policies  
+## Channel Guarantees and Constraints
+- **Signature verification**: All content must be signed and verified before persistence.  
+- **Immutable storage**: Treat persisted content as immutable; do not modify stored payloads or canonical content addresses.  
+- **Minimal retention in channel**: Keep only what is necessary for channel operation; rely on global archival policies for long‑term retention.  
+- **No duplicate policy text**: This directory is intentionally lightweight — authoritative policies live at `/storage/README.md`.
 
 ---
 
-## Storage Guarantees
-
-All storage backends must enforce:
-
-- Signature verification before persistence  
-- Immutable content storage  
-- No metadata injection or modification  
-- Deterministic content addressing (where applicable)  
-
-These guarantees ensure that stored content remains trustworthy and auditable.
+## Operational Notes (Channel Specific)
+- **Cost awareness**: For Arweave writes, estimate one‑time fees before bulk publishing.  
+- **Pinning policy**: For IPFS, use a managed pinset or internal pinning service; document pin TTL and re‑pin procedures.  
+- **Local usage**: Local storage is for development and constrained deployments only; do not use for production data.  
+- **Forensics**: Preserve channel‑specific request IDs and ephemeral correlation tokens for debugging, but avoid storing raw submission content in logs.
 
 ---
 
-## Trust Boundaries
-
-Storage backends operate under different trust models:
-
-- **Arweave**: High decentralization, low trust in infrastructure  
-- **IPFS**: Medium decentralization, requires pinning and gateway trust  
-- **Local**: High control, low decentralization, suitable for constrained environments  
-
-All backends must treat content as untrusted until verified.
+## Files in this Directory
+- `arweave.md` — channel integration details and operational reminders.  
+- `ipfs.md` — pinning, gateway, and availability notes.  
+- `local.md` — local storage layout, test data handling, and cleanup guidance.  
+- `README.md` — this file (channel overview and pointers).
 
 ---
 
 ## Summary
+This directory contains concise, Emergency Channel–specific storage guidance and operational notes. It is intentionally lightweight and implementation‑focused; global storage policies (retention, encryption, backups, cost models, and detailed operational playbooks) are maintained at the repository root `/storage/README.md`. Use the channel files for quick integration details, deployment constraints, and short operational reminders; avoid duplicating global policy text here.
 
-The Storage module provides:
-
-- Flexible, multi‑backend content persistence  
-- Strong integrity and immutability guarantees  
-- Compatibility with decentralized and offline environments  
-- A stable foundation for long‑term content availability  
-
-It ensures that sanitized content remains accessible, verifiable, and censorship‑resistant across diverse deployment contexts.
+---
