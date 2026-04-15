@@ -65,13 +65,6 @@ This file contains channel‑specific implementation notes, operational constrai
 
 ---
 
-## Files and Responsibilities (channel)
-- local.md — this file (channel implementation and quick ops notes).  
-- Channel owner: Empus/storage  
-- Oncall: storage-oncall@company.com
-
----
-
 ## Summary
 Local Storage in the Emergency Channel is a short‑lived, high‑performance buffer and cache layer. Keep the implementation lightweight, resilient, and tightly integrated with asynchronous replication to distributed backends. Defer long‑term retention, encryption policy, and cost considerations to the global /storage/README.md.
 ```
