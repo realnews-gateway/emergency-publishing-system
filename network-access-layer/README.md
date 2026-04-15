@@ -70,12 +70,12 @@ Transport selection adapts dynamically to measured censorship intensity and netw
 
 ```
 network-access-layer/
-├── entrypoints/          # Entrypoint routing and protocol negotiation
-├── camouflage/           # Protocol mimicry and traffic shaping
-├── session-init/         # Session establishment and validation
-├── fallback/             # Fallback chains and alternate transports
-├── client-profiles/      # Platform-specific behavior profiles
-└── security/             # Integrity checks and probing resistance
+├── entrypoints/      # Entrypoint routing and protocol negotiation
+├── camouflage/       # Protocol mimicry and traffic shaping
+├── session-init/     # Session establishment and validation
+├── fallback/         # Fallback chains and alternate transports
+├── client-profiles/  # Platform-specific behavior profiles
+└── security/         # Integrity checks and probing resistance
 ```
 
 - **entrypoints**: Entrypoint implementations, routing rules, ALPN and negotiation strategies.  
