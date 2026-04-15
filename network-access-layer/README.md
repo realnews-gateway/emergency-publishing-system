@@ -1,5 +1,4 @@
-
-##**Empus** Network Access Layer
+# Empus Network Access Layer
 
 Provides end-to-end foundational transport capabilities.  
 This layer handles secure, indistinguishable, and fallback-capable data transport from clients to overseas servers (Singapore and Japan dual-line), and it carries all system communications (publishing, browsing, account registration, session management). It ensures data can reach storage and delivery nodes under strong censorship and interference.
