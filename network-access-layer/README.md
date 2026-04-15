@@ -1,5 +1,3 @@
-```markdown
-# Network Access Layer
 
 **Empus** Network Access Layer provides end-to-end foundational transport capabilities.  
 This layer handles secure, indistinguishable, and fallback-capable data transport from clients to overseas servers (Singapore and Japan dual-line), and it carries all system communications (publishing, browsing, account registration, session management). It ensures data can reach storage and delivery nodes under strong censorship and interference.
@@ -121,5 +119,3 @@ The Network Access Layer is Empus’s foundational transport layer. It carries a
 ## Summary
 
 By combining six base transports and three fixed operational layers with robust session security, protocol camouflage, and fallback mechanisms, the Network Access Layer forms Empus’s transport foundation, enabling reliable, covert, and observable communication across adversarial networks.
-```
-```
