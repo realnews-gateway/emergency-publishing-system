@@ -17,6 +17,7 @@ Authentication enables:
 - Covert embedding inside existing protocol structures  
 - Region‑aware authentication strategies  
 - Compatibility with domain‑fronted and CDN-backed entrypoints  
+- Replay protection and timing camouflage  
 
 This ensures secure access control without creating detectable patterns.
 
@@ -43,6 +44,7 @@ Authentication relies on:
 - One-time session tickets  
 - Time‑windowed credentials  
 - Server-issued challenges  
+- Replay-resistant nonces  
 
 This prevents replay attacks and fingerprint collection.
 
@@ -52,7 +54,7 @@ This prevents replay attacks and fingerprint collection.
 Authentication data is embedded inside:
 
 - TLS extensions  
-- QUIC transport parameters  
+- QUIC (tuic v5) transport parameters  
 - HTTP/2 pseudo-headers  
 - CDN-compatible metadata  
 
@@ -67,6 +69,7 @@ Authentication strategy adapts to:
 - Environments with active probing  
 - Networks with TLS/SNI filtering  
 - CDN-only access paths  
+- Mobile and enterprise environments with unique constraints  
 
 Different regions may require different authentication modes.
 
@@ -207,6 +210,9 @@ Authentication integrates with:
 - **client-profiles/**  
   Platform-specific authentication behavior is defined here.
 
+- **security/**  
+  Replay protection, timing camouflage, probing resistance.
+
 ---
 
 ## Security Considerations
@@ -219,10 +225,12 @@ Authentication must:
 - Resist active probing  
 - Support region-aware strategies  
 - Blend into TLS/QUIC traffic patterns  
+- Provide indistinguishability across platforms  
 
 ---
 
 ## Summary
 
 The Authentication subsystem provides secure, covert, and censorship‑resistant client verification.  
-By relying on ephemeral tokens, session tickets, and optional challenge/response flows, it ensures strong access control while remaining indistinguishable from legitimate encrypted traffic.
+By relying on ephemeral tokens, session tickets, and optional challenge/response flows, it ensures strong access control while remaining indistinguishable from legitimate encrypted traffic.  
+Extensions for **replay protection** and **timing camouflage** further strengthen resilience against diverse adversarial conditions.
