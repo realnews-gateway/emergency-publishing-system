@@ -1,9 +1,9 @@
+
 # SNI Randomization
 
-SNI (Server Name Indication) randomization is a critical camouflage technique that prevents censors from blocking VPN traffic based on domain names observed during the TLS handshake.  
-By rotating, obfuscating, or fronting SNI values, the system avoids static domain fingerprints and reduces the effectiveness of SNI-based filtering.
-
-SNI randomization is essential in regions where SNI filtering is widely deployed.
+SNI (Server Name Indication) randomization is a camouflage technique that prevents censors from blocking Empus traffic based on domain names observed during the TLS handshake.  
+By rotating, obfuscating, or fronting SNI values, the system avoids static domain fingerprints and reduces the effectiveness of SNI-based filtering.  
+This is essential in regions where SNI filtering is widely deployed.
 
 ---
 
@@ -22,113 +22,69 @@ This ensures that TLS traffic cannot be easily classified or blocked based on SN
 
 ---
 
-## SNI Randomization Techniques
+## Techniques
 
-### **1. Static SNI (Baseline Mimicry)**
-Used when mimicking a specific real website:
-
-- SNI matches the real domain  
+### 1. Static SNI (Baseline Mimicry)
+- SNI matches the real domain being mimicked  
 - Certificate chain matches the domain  
 - Traffic patterns align with the real site  
 
-This is the simplest form of mimicry.
+### 2. Rotating SNI (Dynamic Mimicry)
+- SNI selected from a pool of legitimate domains (news, e-commerce, CDN assets, global services)  
+- Rotation strategies: per-connection, per-session, time-based, region-aware  
+- Prevents static fingerprints and domain blacklisting  
 
----
-
-### **2. Rotating SNI (Dynamic Mimicry)**
-SNI is selected from a pool of legitimate domains:
-
-- News websites  
-- E-commerce platforms  
-- CDN-hosted assets  
-- Popular global services  
-
-Rotation strategies:
-
-- Per-connection rotation  
-- Per-session rotation  
-- Time-based rotation  
-- Region-aware rotation  
-
-This prevents static SNI fingerprints.
-
----
-
-### **3. Domain-Fronted SNI**
-Used with CDN-backed entrypoints:
-
-- SNI → front domain (e.g., `cdn.example.com`)  
-- Host header → hidden backend  
+### 3. Domain-Fronted SNI
+- SNI points to a front domain (e.g., `cdn.example.com`)  
+- Host header points to hidden backend  
 - TLS terminates at CDN edge nodes  
+- Extremely stealthy, widely used in high-risk regions  
 
-This technique is extremely stealthy and widely used in high-risk regions.
-
----
-
-### **4. Decoy SNI**
-SNI is set to a harmless domain while real traffic is tunneled inside:
-
+### 4. Decoy SNI
+- SNI set to a harmless domain while real traffic is tunneled inside  
 - Appears as normal HTTPS traffic  
-- Backend routing is hidden  
+- Backend routing hidden  
 - Works well with HTTP/2 and CDN flows  
 
 ---
 
 ## Domain Pool Management
 
-A robust SNI randomization system requires:
-
-- A large pool of legitimate domains  
-- Region-specific domain lists  
+A robust system requires:
+- Large pool of legitimate domains  
+- Region-specific lists  
 - Automatic removal of blocked domains  
-- Periodic domain refresh  
-- CDN-compatible domain selection  
+- Periodic refresh  
+- CDN-compatible selection  
 
-Domains must be:
-
-- High-value  
-- Frequently accessed  
-- Difficult to block without collateral damage  
+Domains must be high-value, frequently accessed, and difficult to block without collateral damage.
 
 ---
 
 ## Integration
 
 SNI randomization integrates with:
-
-- **real-site-mimicry.md**  
-  Ensures SNI matches real domains when mimicking.
-
-- **tls-fingerprint.md**  
-  Ensures SNI behavior matches browser expectations.
-
-- **handshake-obfuscation.md**  
-  Protects SNI behavior from active probing.
-
-- **entrypoints/tls/**  
-  TLS entrypoints rely heavily on SNI camouflage.
-
-- **entrypoints/cdn/**  
-  Domain-fronted SNI is essential for CDN-backed flows.
-
-- **fallback/**  
-  Region-specific fallback may switch SNI strategies.
+- **real-site-mimicry.md** — ensures SNI matches real domains when mimicking  
+- **tls-fingerprint.md** — ensures SNI behavior matches browser expectations  
+- **handshake-obfuscation.md** — protects SNI behavior from active probing  
+- **entrypoints/tls/** — TLS entrypoints rely heavily on SNI camouflage  
+- **entrypoints/cdn/** — domain-fronted SNI is essential for CDN-backed flows  
+- **fallback/** — region-specific fallback may switch SNI strategies  
 
 ---
 
 ## Security Considerations
 
 SNI randomization must:
-
-- Avoid static SNI values  
+- Avoid static values  
 - Prevent predictable rotation patterns  
 - Use domain pools that are difficult to block  
+- Reject malformed or suspicious SNI values  
 - Avoid exposing backend infrastructure  
-- Resist active probing by rejecting malformed SNI values  
 
 ---
 
 ## Summary
 
-SNI randomization prevents censors from blocking VPN traffic based on domain names observed during the TLS handshake.  
-By rotating SNI values, using domain-fronted flows, and aligning with real-site mimicry, the system becomes highly resistant to SNI-based filtering and domain blacklisting.
+SNI randomization prevents censors from blocking Empus traffic based on domain names observed during the TLS handshake.  
+By rotating values, using domain-fronted flows, and aligning with real-site mimicry, the system becomes highly resistant to SNI-based filtering and domain blacklisting.
