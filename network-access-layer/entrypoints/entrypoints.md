@@ -1,6 +1,6 @@
 # Entrypoints Specification
 
-The Entrypoints subsystem defines all inbound access paths into the VPN Access Layer.  
+The Entrypoints subsystem defines all inbound access paths into the **network-access-layer**.  
 Each entrypoint represents a transport mechanism designed to bypass censorship, blend into legitimate traffic, and provide a stable foundation for session initialization.
 
 Entrypoints are the first component a user interacts with when connecting to the system.
@@ -25,7 +25,6 @@ Entrypoints must:
 The system supports four major entrypoint categories:
 
 ### **1. TLS Entrypoints**
-- Trojan  
 - XTLS  
 - Reality-style TLS mimicry  
 - Browser-grade TLS fingerprints  
@@ -36,7 +35,7 @@ Used when TLS-based DPI is dominant or QUIC is heavily throttled.
 ---
 
 ### **2. QUIC Entrypoints**
-- Hysteria2  
+- tuic v5  
 - QUIC obfuscation  
 - Traffic normalization to resemble video streaming or gaming traffic  
 
