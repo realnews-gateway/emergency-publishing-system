@@ -1,9 +1,9 @@
 # TLS Entrypoints
 
-TLS entrypoints provide covert access to the VPN Access Layer using encrypted HTTPS‑like traffic.  
+TLS entrypoints provide covert access to the **network-access-layer** using encrypted HTTPS‑like traffic.  
 They are designed to blend into legitimate TLS flows, resist DPI fingerprinting, and survive active probing.
 
-This subsystem includes Trojan‑style TLS, XTLS variants, and Reality‑style real‑site mimicry.
+This subsystem includes XTLS variants and Reality‑style real‑site mimicry.
 
 ---
 
@@ -24,18 +24,12 @@ TLS is the most widely accepted and least suspicious transport on the modern int
 
 ## TLS Entrypoint Types
 
-### **1. Trojan‑style TLS**
-- Standard HTTPS handshake  
-- Encrypted payload after handshake  
-- Mimics normal web traffic  
-- Easy to deploy and widely compatible  
-
-### **2. XTLS / XTLS‑Vision**
+### **1. XTLS / XTLS‑Vision**
 - Optimized for performance  
 - Reduces overhead for encrypted streams  
 - Can mimic browser TLS behavior  
 
-### **3. Reality‑style TLS (Real‑site mimicry)**
+### **2. Reality‑style TLS (Real‑site mimicry)**
 - Uses genuine certificates from real domains  
 - Matches real websites’ TLS fingerprints  
 - Extremely difficult for DPI to distinguish  
@@ -108,5 +102,5 @@ TLS entrypoints must:
 
 ## Summary
 
-TLS entrypoints provide the most universal and stealthy access path into the VPN Access Layer.  
+TLS entrypoints provide the most universal and stealthy access path into the **network-access-layer**.  
 By combining real‑site mimicry, browser‑grade TLS fingerprints, and active probing resistance, they offer a resilient and highly covert transport suitable for hostile network environments.
