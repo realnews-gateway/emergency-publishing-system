@@ -1,9 +1,9 @@
 # Active Probing Defense
 
 This document describes the system’s defenses against active probing, replay attacks, and protocol fingerprinting attempts performed by state-level censorship infrastructures.  
-Active probing is one of the most powerful censorship techniques: adversaries send synthetic traffic to suspected endpoints and observe whether the server responds in a way that reveals VPN behavior.
+Active probing is one of the most powerful censorship techniques: adversaries send synthetic traffic to suspected endpoints and observe whether the server responds in a way that reveals covert behavior.
 
-The VPN access layer is designed to remain silent, indistinguishable, or fully mimic legitimate services under all probing conditions.
+The **network-access-layer** is designed to remain silent, indistinguishable, or fully mimic legitimate services under all probing conditions.
 
 ---
 
@@ -13,7 +13,7 @@ The system assumes adversaries may perform:
 
 ### 1. Synthetic Handshake Probing
     - Sending fake TLS ClientHello messages
-    - Sending malformed QUIC Initial packets
+    - Sending malformed QUIC (tuic v5) Initial packets
     - Attempting to trigger protocol-specific responses
 
 ### 2. Replay Attacks
@@ -32,7 +32,7 @@ The system assumes adversaries may perform:
     - Observing retry behavior
 
 ### 5. CDN/HTTP Probing
-    - Sending HTTP/2 or HTTP/3 requests to VPN endpoints
+    - Sending HTTP/2 or HTTP/3 requests to endpoints
     - Expecting CDN-like behavior
     - Checking for inconsistencies in headers or status codes
 
@@ -42,7 +42,7 @@ The system must not reveal itself under any of these probing attempts.
 
 ## Defense Mechanisms
 
-The VPN access layer uses multiple layers of defense:
+The **network-access-layer** uses multiple layers of defense:
 
 ---
 
@@ -62,7 +62,7 @@ This prevents adversaries from distinguishing the server from a closed port or a
 
 ### 2. Challenge/Response Authentication
 
-Before revealing any VPN-specific behavior, the server requires:
+Before revealing any covert behavior, the server requires:
 
     - A cryptographic challenge embedded inside the handshake
     - A valid response derived from client-side secrets
@@ -71,7 +71,7 @@ Before revealing any VPN-specific behavior, the server requires:
 If the challenge is missing or invalid:
 
     - The server behaves like a normal HTTPS/CDN endpoint
-    - No VPN-specific behavior is exposed
+    - No covert behavior is exposed
 
 ---
 
@@ -88,7 +88,7 @@ Replayed handshakes produce:
 
     - Normal TLS alerts
     - Normal QUIC close frames
-    - No VPN-specific errors
+    - No covert-specific errors
 
 ---
 
@@ -125,7 +125,7 @@ The server mimics real-world timing patterns:
     - QUIC retry timing
     - Randomized jitter
 
-Timing does not reveal VPN behavior.
+Timing does not reveal covert behavior.
 
 ---
 
@@ -133,9 +133,11 @@ Timing does not reveal VPN behavior.
 
 Different regions require different strategies:
 
-    - High-risk regions: strict silent-drop policy
-    - Moderate-risk regions: CDN mimicry
-    - Low-risk regions: relaxed behavior with fallback support
+    - High-risk regions: strict silent-drop policy  
+    - Moderate-risk regions: CDN mimicry  
+    - Low-risk regions: relaxed behavior with fallback support  
+    - Mobile-priority regions: wider jitter ranges, adaptive retry intervals  
+    - Enterprise regions: TLS Reality-style mimicry with API-like responses  
 
 This prevents region-specific probing heuristics from succeeding.
 
@@ -166,5 +168,6 @@ Active probing defense is embedded across all layers of the system.
 
 ## Summary
 
-The active probing defense subsystem ensures that VPN endpoints do not reveal themselves under synthetic traffic, replay attacks, or protocol deviation tests.  
-By combining silent-drop behavior, challenge/response authentication, replay protection, CDN mimicry, and timing camouflage, the system remains resilient against state-level active probing infrastructures.
+The active probing defense subsystem ensures that endpoints do not reveal themselves under synthetic traffic, replay attacks, or protocol deviation tests.  
+By combining silent-drop behavior, challenge/response authentication, replay protection, CDN mimicry, timing camouflage, and region-aware strategies, the **network-access-layer** remains resilient against state-level active probing infrastructures.  
+Extensions for **mobile** and **enterprise** environments further strengthen defenses against diverse adversarial conditions.
