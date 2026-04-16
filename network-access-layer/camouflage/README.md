@@ -1,90 +1,97 @@
+
 # Camouflage Layer
 
-The Camouflage Layer provides all mechanisms that make VPN access indistinguishable from legitimate traffic.  
-It is responsible for TLS fingerprint shaping, real‑site mimicry, SNI randomization, handshake obfuscation, and traffic pattern normalization.
-
-This subsystem is essential for bypassing DPI, active probing, and traffic classification systems.
+This layer defines the protocol-level and traffic-shape techniques that make Empus access indistinguishable from legitimate Internet traffic. It covers TLS/QUIC fingerprint shaping, SNI strategies, handshake obfuscation, real-site behavior templates, and traffic normalization used to resist DPI, active probing, and protocol classification.
 
 ---
 
-## Purpose
+## Purpose and scope
 
-The Camouflage Layer enables:
+**Purpose:** enable covert, robust access by ensuring client↔server flows resemble benign services while remaining compatible with Empus entrypoints and session initialization.
 
-- Real‑site mimicry using genuine TLS certificates  
-- TLS fingerprint shaping to match popular browsers  
-- SNI randomization and domain rotation  
-- Obfuscated handshakes that evade protocol classifiers  
-- Traffic pattern normalization to resemble real HTTPS or QUIC  
-- Integration with CDN‑backed entrypoints  
+**Scope:** design and implementation guidance for:
+- TLS/QUIC ClientHello shaping and fingerprint selection  
+- SNI rotation and domain selection policies  
+- Handshake obfuscation primitives and validation vectors  
+- Real-site mimicry templates (certificates, HTTP/3 behavior, timing)  
+- Traffic pattern normalization (packet sizes, pacing, stream behavior)  
+- Local test vectors and smoke tests for CI
 
-It ensures that access to the system cannot be reliably distinguished from normal internet usage.
-
----
-
-## Directory Structure
-
-This directory includes:
-
-- **real-site-mimicry.md**  
-  Techniques for mimicking real websites using legitimate TLS handshakes.
-
-- **tls-fingerprint.md**  
-  Methods for matching Chrome/Firefox TLS fingerprints.
-
-- **sni-randomization.md**  
-  Strategies for rotating SNI values and avoiding static fingerprints.
-
-- **handshake-obfuscation.md**  
-  Obfuscation of TLS/QUIC handshakes to evade DPI classifiers.
-
-- **camouflage.md**  
-  High-level specification of camouflage behavior and integration.
+This directory contains high-level strategy plus concrete artifacts for implementation, testing, and review.
 
 ---
 
-## Key Features
+## Key responsibilities
 
-- **Genuine TLS mimicry**  
-  Uses real certificates and domain‑fronted traffic patterns.
-
-- **Browser‑grade fingerprints**  
-  Matches TLS ClientHello fingerprints of major browsers.
-
-- **Dynamic SNI rotation**  
-  Prevents static blocking and fingerprint accumulation.
-
-- **Obfuscated handshakes**  
-  Makes protocol identification significantly harder.
-
-- **Traffic normalization**  
-  Ensures packet sizes, timing, and flows resemble real HTTPS/QUIC.
-
-- **CDN compatibility**  
-  Works seamlessly with Cloudflare, Fastly, and Akamai entrypoints.
+- **Fingerprint shaping:** provide selectable TLS/QUIC fingerprints and safe mapping rules to client profiles.  
+- **Handshake obfuscation:** define obfuscation transforms, replay protection, and verification vectors.  
+- **SNI management:** define rotation, randomness bounds, and domain selection constraints.  
+- **Real-site mimicry:** maintain a small, auditable template library for certificate and HTTP/QUIC behavior.  
+- **Traffic normalization:** specify packet/stream size distributions and timing profiles to match target services.  
+- **Testability:** supply minimal reproducible examples and smoke tests for CI and local validation.  
+- **Auditability:** document risks, allowed deviations, and logging constraints.
 
 ---
 
-## Integration
+## Files (simplified layout)
 
-The Camouflage Layer connects to:
+```
+camouflage/
+├── README.md
+├── camouflage.md                # High-level strategy and design principles
+├── tls-fingerprint.md           # Fingerprint sets, selection rules, risks
+├── sni-randomization.md         # SNI rotation policy and parameters
+├── handshake-obfuscation.md     # Obfuscation transforms and test vectors
+├── real-site-mimicry.md         # Templates for certs, HTTP/QUIC behavior
+├── examples/
+│   └── minimal-handshake.md     # Minimal reproducible handshake example
+└── tests/
+    └── smoke-handshake.md       # CI smoke test: handshake success/fallback
+```
 
-- **entrypoints/**  
-  Provides camouflage for TLS/QUIC/HTTP/CDN entrypoints.
-
-- **session-init/**  
-  Ensures handshake obfuscation is compatible with key exchange.
-
-- **fallback/**  
-  Adjusts camouflage strategies based on regional blocking behavior.
-
-It is the system’s primary defense against DPI and active probing.
+Each file contains a short summary at the top and a clear “what to change” section for implementers.
 
 ---
 
-## Summary
+## Minimal run example (quick verification)
 
-The Camouflage Layer ensures that all access to the system appears indistinguishable from normal internet traffic.  
-By combining real‑site mimicry, TLS fingerprint shaping, SNI randomization, and handshake obfuscation, it provides strong resistance against censorship and traffic classification.
+**Purpose:** locally verify a shaped ClientHello and a successful obfuscated handshake.
 
-This subsystem is essential for operating safely in hostile network environments.
+**Steps (high level):**
+1. Select a `client-profile` (e.g., `chrome-115`) from `tls-fingerprint.md`.  
+2. Apply SNI from `sni-randomization.md` (example domain).  
+3. Run the minimal handshake script in `examples/minimal-handshake.md`.  
+
+**Example snippet (pseudo):**
+```bash
+# choose profile and target
+PROFILE=chrome-115
+SNI=example-mimic.com
+# run minimal handshake (script provided in examples/)
+./examples/run_minimal_handshake.sh --profile $PROFILE --sni $SNI --target 127.0.0.1:4433
+```
+
+The script emits a pass/fail summary and a short trace suitable for CI smoke tests.
+
+---
+
+## Tests and CI
+
+- **smoke-handshake.md**: single-step test that validates:
+  - shaped ClientHello accepted by a test entrypoint  
+  - handshake obfuscation round-trip correctness  
+  - fallback activation when primary path blocked
+
+CI should run smoke tests on PRs that modify camouflage artifacts. Tests must be deterministic and fast.
+
+---
+
+## Security and operational notes
+
+- **No raw payload logging:** only hashes/references allowed for debugging.  
+- **Key handling:** private keys used for mimicry must be managed per ops policy; never commit keys.  
+- **Risk disclosure:** document which fingerprints/templates are high-risk and require rotation.  
+- **Compatibility:** all camouflage transforms must be validated against `session-init` to avoid breaking key exchange.  
+- **Auditability:** include a short changelog in each file when templates or fingerprints change.
+
+---
