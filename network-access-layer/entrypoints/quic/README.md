@@ -1,9 +1,9 @@
 # QUIC Entrypoints
 
-QUIC entrypoints provide high‑performance, censorship‑resistant access to the VPN Access Layer using UDP‑based encrypted transport.  
+QUIC entrypoints provide high‑performance, censorship‑resistant access to the **network-access-layer** using UDP‑based encrypted transport.  
 They are designed to mimic legitimate QUIC traffic—such as video streaming, gaming, and CDN traffic—while offering strong resistance to throttling and DPI interference.
 
-This subsystem includes Hysteria2‑based QUIC, obfuscated QUIC flows, and traffic‑normalized QUIC variants.
+This subsystem includes **tuic v5‑based QUIC**, obfuscated QUIC flows, and traffic‑normalized QUIC variants.
 
 ---
 
@@ -24,11 +24,12 @@ QUIC is ideal for regions where TLS is heavily inspected or throttled.
 
 ## QUIC Entrypoint Types
 
-### **1. Hysteria2 QUIC**
-- High‑performance QUIC transport  
-- Congestion control optimized for unstable networks  
-- Traffic patterns similar to video streaming  
+### **1. tuic v5 QUIC**
+- Modern QUIC transport implementation  
+- Congestion control optimized for unstable and mobile networks  
+- Traffic patterns similar to video streaming and interactive applications  
 - Strong DPI evasion due to QUIC’s encrypted headers  
+- Improved multiplexing and adaptive performance compared to legacy designs  
 
 ### **2. Obfuscated QUIC**
 - Adds timing jitter, padding, and packet shaping  
@@ -56,7 +57,7 @@ QUIC is ideal for regions where TLS is heavily inspected or throttled.
   Supports:
   - BBR  
   - Cubic  
-  - Hysteria2 adaptive mode  
+  - tuic v5 adaptive mode  
 
 - **Active probing resistance**  
   QUIC entrypoints must:
@@ -106,5 +107,5 @@ QUIC entrypoints must:
 
 ## Summary
 
-QUIC entrypoints provide a fast, resilient, and stealthy access path into the VPN Access Layer.  
-By combining Hysteria2 performance, QUIC traffic normalization, and strong DPI resistance, they offer a powerful alternative to TLS—especially in regions where TLS is throttled or heavily inspected.
+QUIC entrypoints provide a fast, resilient, and stealthy access path into the **network-access-layer**.  
+By combining tuic v5 performance, QUIC traffic normalization, and strong DPI resistance, they offer a powerful alternative to TLS—especially in regions where TLS is throttled or heavily inspected.
