@@ -1,6 +1,6 @@
 # Threat Model
 
-This document defines the threat model for the VPN access layer, including adversary capabilities, attack surfaces, and the security guarantees provided by the system.  
+This document defines the threat model for the **network-access-layer**, including adversary capabilities, attack surfaces, and the security guarantees provided by the system.  
 The threat model focuses on state-level adversaries, network-level attackers, and censorship infrastructures capable of deep packet inspection, active probing, and traffic analysis.
 
 The goal is to ensure that the system remains secure, stealthy, and censorship-resistant under hostile network conditions.
@@ -32,7 +32,7 @@ The system considers the following adversary classes:
 
 ### 4. Traffic Analysis Adversary
     - Performs statistical analysis on packet sizes, timing, and flow patterns
-    - Attempts to distinguish VPN traffic from normal TLS/QUIC traffic
+    - Attempts to distinguish covert traffic from normal TLS/QUIC traffic
     - Uses machine learning classifiers
 
 ### 5. Endpoint Compromise Adversary (Out of Scope)
@@ -40,7 +40,7 @@ The system considers the following adversary classes:
     - Malware with root access
     - Kernel-level monitoring
 
-    These threats are explicitly out of scope for the VPN access layer.
+    These threats are explicitly out of scope for the **network-access-layer**.
 
 ---
 
@@ -50,7 +50,7 @@ The system exposes the following potential attack surfaces:
 
 ### 1. Transport Layer
     - TLS handshake fingerprinting
-    - QUIC version negotiation
+    - QUIC (tuic v5) version negotiation
     - HTTP/2 frame patterns
     - CDN domain-fronting behavior
 
@@ -129,6 +129,11 @@ The system provides the following guarantees:
     - Challenge/response authentication
     - Replay-resistant handshake
 
+### 6. Traffic Analysis Resistance
+    - Timing camouflage and packet size padding
+    - Flow burstiness aligned with real applications
+    - Mobile/enterprise-specific adaptations
+
 ---
 
 ## Out-of-Scope Threats
@@ -141,7 +146,7 @@ The system does not attempt to defend against:
     - Side-channel attacks on hardware
     - Global adversaries with full end-to-end visibility
 
-These threats require solutions beyond the VPN access layer.
+These threats require solutions beyond the **network-access-layer**.
 
 ---
 
@@ -170,5 +175,6 @@ Security is embedded across all layers of the system.
 
 ## Summary
 
-The threat model defines adversary capabilities, attack surfaces, and security guarantees for the VPN access layer.  
-By assuming state-level adversaries with DPI, active probing, and traffic analysis capabilities, the system is designed to remain stealthy, resilient, and censorship-resistant under hostile network conditions.
+The threat model defines adversary capabilities, attack surfaces, and security guarantees for the **network-access-layer**.  
+By assuming state-level adversaries with DPI, active probing, and traffic analysis capabilities, the system is designed to remain stealthy, resilient, and censorship-resistant under hostile network conditions.  
+Extensions for **traffic analysis resistance** and **mobile/enterprise adaptations** further strengthen resilience against diverse adversarial environments.
