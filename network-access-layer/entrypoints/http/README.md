@@ -1,6 +1,6 @@
 # HTTP Entrypoints
 
-HTTP entrypoints provide covert access to the VPN Access Layer using HTTP/1.1 and HTTP/2 traffic patterns.  
+HTTP entrypoints provide covert access to the **network-access-layer** using HTTP/1.1 and HTTP/2 traffic patterns.  
 They are designed to blend into normal web traffic, support domain‑fronting techniques, and offer a fallback path when TLS or QUIC are blocked.
 
 This subsystem includes XHTTP, HTTP/2 domain‑fronted access, and CDN‑compatible HTTP flows.
@@ -112,5 +112,5 @@ HTTP entrypoints must:
 
 ## Summary
 
-HTTP entrypoints provide a stealthy and resilient fallback path into the VPN Access Layer.  
+HTTP entrypoints provide a stealthy and resilient fallback path into the **network-access-layer**.  
 By mimicking real browser traffic, supporting domain‑fronting, and encapsulating encrypted payloads inside HTTP flows, they remain effective even in environments where TLS and QUIC are heavily restricted.
