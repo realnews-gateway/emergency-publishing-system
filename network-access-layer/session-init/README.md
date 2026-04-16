@@ -3,7 +3,7 @@
 The Session Initialization subsystem defines how clients and servers establish a secure, covert, and censorship‑resistant communication session.  
 It provides the negotiation, key exchange, authentication, and bootstrap mechanisms used across all entrypoints (TLS, QUIC, HTTP, CDN).
 
-Session initialization is designed to resist active probing, fingerprinting, replay attacks, and metadata leakage.
+Session initialization is designed to resist active probing, fingerprinting, replay attacks, traffic analysis, and metadata leakage.
 
 ---
 
@@ -17,6 +17,7 @@ Session initialization enables:
 - Authentication without exposing identifiers  
 - Integration with TLS, QUIC, and HTTP entrypoints  
 - Region‑aware session bootstrap strategies  
+- Timing camouflage and replay protection  
 
 This subsystem ensures that every session begins in a stealthy and secure manner.
 
@@ -28,12 +29,12 @@ This subsystem ensures that every session begins in a stealthy and secure manner
 Determines which entrypoint and transport to use:
 
 - TLS-first (macOS/iOS)  
-- QUIC-first (Android/Linux)  
+- QUIC-first (Android/Linux, tuic v5 optimized)  
 - Hybrid strategy (Windows: TLS-first with optional QUIC)  
 - HTTP fallback  
 - CDN-backed negotiation  
 
-Negotiation must avoid detectable patterns.
+Negotiation must avoid detectable patterns and mimic real-world browser/app behavior.
 
 ---
 
@@ -44,6 +45,7 @@ Provides secure session keys using:
 - Hybrid post-quantum options (optional)  
 - One-time ephemeral keys  
 - Replay-resistant handshake tokens  
+- Forward secrecy with key rotation  
 
 Key exchange must be indistinguishable from normal TLS/QUIC behavior.
 
@@ -61,6 +63,7 @@ Supported methods:
 - Ephemeral tokens  
 - Time-limited session tickets  
 - Domain-fronted authentication flows  
+- Region-aware authentication strategies  
 
 ---
 
@@ -73,7 +76,7 @@ Defines how a client begins communication:
 - Key exchange  
 - Session confirmation  
 
-Bootstrap must mimic real browser or app behavior.
+Bootstrap must mimic real browser or app behavior, including timing and packet size camouflage.
 
 ---
 
@@ -89,6 +92,28 @@ This prevents active probing from detecting anomalies.
 
 ---
 
+### **6. Replay Protection (Extension)**
+Replay attempts are rejected using:
+
+- Nonces  
+- Ephemeral keys  
+- One-time tokens  
+- Timestamp-based validation  
+
+Replayed handshakes produce only normalized TLS/QUIC errors.
+
+---
+
+### **7. Timing Camouflage (Extension)**
+Session-init traffic must blend into real-world timing:
+
+- Browser-like handshake delays  
+- Mobile jitter profiles  
+- CDN-like response pacing  
+- Randomized retry intervals  
+
+---
+
 ## Platform Defaults
 
 Different platforms require different negotiation strategies:
@@ -97,7 +122,7 @@ Different platforms require different negotiation strategies:
   Safari-style TLS fingerprints; TLS-first negotiation for maximum compatibility.
 
 - **Android/Linux**  
-  QUIC-first negotiation; optimized for mobile networks and modern transports.
+  QUIC-first negotiation (tuic v5); optimized for mobile networks and modern transports.
 
 - **Windows**  
   Hybrid strategy:  
@@ -112,20 +137,19 @@ Different platforms require different negotiation strategies:
 Session initialization integrates with:
 
 - **camouflage/**  
-  - TLS fingerprint matching  
-  - SNI randomization  
-  - Handshake obfuscation  
+  TLS fingerprint matching, SNI randomization, handshake obfuscation.
 
 - **entrypoints/**  
-  - Transport negotiation  
-  - Entry protocol selection  
+  Transport negotiation, entry protocol selection.
 
 - **fallback/**  
-  - Region-specific fallback chains  
-  - Transport downgrade logic  
+  Region-specific fallback chains, transport downgrade logic.
 
 - **client-profiles/**  
-  - Platform-specific negotiation behavior  
+  Platform-specific negotiation behavior.
+
+- **security/**  
+  Replay protection, timing camouflage, probing resistance.
 
 ---
 
@@ -139,10 +163,12 @@ Session initialization must:
 - Resist active probing  
 - Avoid exposing backend infrastructure  
 - Support region-aware negotiation strategies  
+- Provide indistinguishability across platforms  
 
 ---
 
 ## Summary
 
 The Session Initialization subsystem provides the secure and covert foundation for all communication.  
-By combining transport negotiation, key exchange, authentication, and camouflage-aware bootstrap flows, it ensures that every session begins in a way that is indistinguishable from legitimate internet traffic and resilient to censorship.
+By combining transport negotiation, key exchange, authentication, replay protection, and camouflage-aware bootstrap flows, it ensures that every session begins in a way that is indistinguishable from legitimate internet traffic and resilient to censorship.  
+Extensions for **timing camouflage** and **region-aware replay protection** further strengthen resilience in diverse environments.
