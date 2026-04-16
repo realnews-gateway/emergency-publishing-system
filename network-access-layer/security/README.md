@@ -1,9 +1,9 @@
 # Security Architecture
 
-The security subsystem defines the threat model, DPI evasion strategies, active probing defenses, and overall security guarantees of the VPN access layer.  
+The security subsystem defines the threat model, DPI evasion strategies, active probing defenses, and overall security guarantees of the **network-access-layer**.  
 This module ensures that the system remains resilient against state-level adversaries, network-level attackers, and active probing systems while maintaining stealth and indistinguishability from legitimate traffic.
 
-Security is integrated across all layers of the VPN access layer, including camouflage, session initialization, fallback logic, and transport behavior.
+Security is integrated across all layers of the **network-access-layer**, including camouflage, session initialization, fallback logic, and transport behavior.
 
 ---
 
@@ -18,6 +18,7 @@ The security subsystem provides:
 - Protocol-level obfuscation  
 - Error normalization and timing camouflage  
 - Region-aware security adaptations  
+- Key management and replay protection  
 
 These components ensure that the system remains robust under adversarial conditions.
 
@@ -33,10 +34,16 @@ The security subsystem consists of:
 - **dpi-evasion.md**  
   Describes techniques for evading deep packet inspection, including TLS/QUIC camouflage and handshake obfuscation.
 
-- **active-probing-defense.md**  
+- **active-probing-defenses.md**  
   Defines defenses against active probing, replay attacks, and protocol fingerprinting.
 
-These documents collectively define the security posture of the VPN access layer.
+- **traffic-analysis-resistance.md** *(optional extension)*  
+  Describes strategies for resisting traffic analysis, including timing camouflage and packet size normalization.
+
+- **key-management.md** *(optional extension)*  
+  Defines secure key exchange, rotation, and replay protection strategies.
+
+These documents collectively define the security posture of the **network-access-layer**.
 
 ---
 
@@ -85,9 +92,16 @@ Endpoints must not reveal themselves under probing or replay attempts.
 ### Error Normalization
 All failures must resemble real-world browser or CDN errors.
 
+### Traffic Analysis Resistance
+Timing, packet size, and flow behavior must blend into normal application traffic.
+
+### Key Management
+Keys must be rotated securely, with replay protection and forward secrecy.
+
 ---
 
 ## Summary
 
-The security subsystem defines the threat model, DPI evasion strategies, and active probing defenses that protect the VPN access layer from state-level adversaries.  
-By integrating security across camouflage, session initialization, fallback logic, and transport behavior, the system maintains strong censorship resistance and stealth under hostile network conditions.
+The security subsystem defines the threat model, DPI evasion strategies, active probing defenses, and traffic analysis resistance that protect the **network-access-layer** from state-level adversaries.  
+By integrating security across camouflage, session initialization, fallback logic, and transport behavior, the system maintains strong censorship resistance and stealth under hostile network conditions.  
+Extensions such as **traffic-analysis-resistance.md** and **key-management.md** provide additional depth, ensuring resilience against evolving threats.
