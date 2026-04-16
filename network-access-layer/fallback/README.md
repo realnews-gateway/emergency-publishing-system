@@ -40,8 +40,8 @@ Fallback chains are defined per region.
 ### **2. Progressive Downgrade**
 Fallback follows a structured downgrade path:
 
-1. QUIC-first (if supported)  
-2. TLS (Chrome/Safari fingerprints)  
+1. QUIC-first (tuic v5 preferred)  
+2. TLS (Chrome/Safari fingerprints, Reality-style mimicry)  
 3. HTTP/2 (browser-like)  
 4. CDN-backed domain-fronted mode  
 5. Final minimal HTTP-only mode  
