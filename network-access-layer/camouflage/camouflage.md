@@ -1,132 +1,88 @@
 # Camouflage Specification
 
-The Camouflage subsystem provides the core techniques that make all VPN traffic indistinguishable from legitimate internet traffic.  
-It defines the fingerprinting, mimicry, randomization, and obfuscation strategies used across TLS, QUIC, HTTP, and CDN entrypoints.
-
-Camouflage is the foundation of censorship resistance in the VPN Access Layer.
+This subsystem defines the protocol, fingerprinting, mimicry, randomization, and obfuscation strategies used across TLS, QUIC, HTTP, and CDN entrypoints to make Empus traffic blend with legitimate Internet traffic. It provides concrete guidance, templates, and test vectors for implementers and operators.
 
 ---
 
 ## Purpose
 
-The Camouflage subsystem enables:
+**Goal:** ensure client↔server flows are indistinguishable from benign services while remaining compatible with Empus entrypoints, session initialization, and fallback chains.
 
-- Real-site mimicry for high-value domain alignment  
-- TLS fingerprint camouflage to match real browsers  
-- SNI randomization to evade domain-based filtering  
-- Handshake obfuscation to resist active probing  
-- Traffic normalization to resemble legitimate web traffic  
-- Integration with entrypoints and fallback strategies  
-
-This subsystem ensures that all traffic blends into the surrounding network environment.
-
----
-
-## Camouflage Components
-
-The subsystem is composed of four major components:
-
-### **1. Real-Site Mimicry**
-Defined in `real-site-mimicry.md`.
-
-Provides:
-
-- Genuine certificate alignment  
-- Real website TLS fingerprint matching  
-- Traffic pattern simulation  
-- Indistinguishable error behavior  
-
-Used heavily by TLS and CDN entrypoints.
+**Capabilities enabled**
+- Real-site mimicry for domain alignment and certificate behavior  
+- TLS and QUIC fingerprint shaping to match mainstream clients  
+- SNI rotation and domain selection to avoid static blocking  
+- Handshake obfuscation to resist active probing and protocol classifiers  
+- Traffic normalization to match packet sizes, timing, and stream behavior  
+- Integration points for entrypoints, session-init, and fallback logic
 
 ---
 
-### **2. TLS Fingerprint Camouflage**
-Defined in `tls-fingerprint.md`.
+## Components
 
-Provides:
+### Real Site Mimicry
+- Maintain a small, auditable template library for high-value domains: certificate chains, HTTP/3 behavior, error responses, and timing profiles.  
+- Templates include: certificate metadata, ALPN/HTTP behavior, resource timing, and error semantics.  
+- Templates are versioned and require a short changelog on modification.
 
-- Chrome/Safari/Firefox fingerprint matching  
-- Cipher suite ordering  
-- Extension ordering  
-- ALPN behavior  
-- GREASE values  
-- Key share behavior  
+### TLS Fingerprint Camouflage
+- Provide selectable fingerprint profiles (Chrome, Firefox, Safari) with safe mapping rules to client profiles.  
+- Specify cipher ordering, extension ordering, ALPN sequences, GREASE usage, and key share behavior.  
+- Document risk levels for each profile and rotation cadence.
 
-Prevents JA3/JA4 fingerprinting and TLS-based DPI.
+### SNI Randomization
+- Define SNI pools, rotation policies, randomness bounds, and region-aware selection rules.  
+- Support decoy SNI and domain-fronting patterns where operationally required.  
+- Include constraints to avoid predictable or easily correlated SNI sequences.
 
----
+### Handshake Obfuscation
+- Define obfuscation transforms applicable to TLS and QUIC handshakes: delayed initiation, padding, fragmentation, conditional acceptance, and protocol confusion layers.  
+- Include replay protection, verification vectors, and deterministic test vectors for CI.  
+- Specify safe limits for padding and fragmentation to avoid breaking middleboxes.
 
-### **3. SNI Randomization**
-Defined in `sni-randomization.md`.
-
-Provides:
-
-- Static SNI mimicry  
-- Rotating SNI pools  
-- Domain-fronted SNI for CDN flows  
-- Decoy SNI behavior  
-- Region-aware domain selection  
-
-Prevents SNI-based blocking and domain blacklisting.
+### Traffic Normalization
+- Specify packet size distributions, inter-packet timing profiles, stream multiplexing behavior, and pacing rules to match target services.  
+- Provide profiles for common targets (e.g., mainstream HTTPS, video streaming, lightweight API traffic).  
+- Include guidance for adaptive normalization under mobile or lossy networks.
 
 ---
 
-### **4. Handshake Obfuscation**
-Defined in `handshake-obfuscation.md`.
+## Integration Points
 
-Provides:
-
-- Delayed handshake initiation  
-- Padding and fragmentation  
-- Conditional handshake acceptance  
-- Error behavior normalization  
-- Replay protection  
-- Protocol confusion layer  
-
-Protects against active probing and handshake-based detection.
+- **Entrypoints**: camouflage artifacts are applied at TLS/QUIC/HTTP/CDN entrypoints to present the chosen profile to the network.  
+- **Session Init**: handshake transforms must be validated against session-init to preserve key exchange semantics.  
+- **Fallback**: region-aware fallback chains may switch profiles, SNI pools, or transports; camouflage must support seamless profile switching.  
+- **Client Profiles**: client-side selection maps user platform and version to an appropriate fingerprint and timing profile.
 
 ---
 
-## Integration with Other Subsystems
+## Testing and Validation
 
-Camouflage integrates with:
-
-### **Entrypoints**
-- TLS entrypoints rely on real-site mimicry and TLS fingerprint camouflage.  
-- QUIC entrypoints use traffic normalization and handshake obfuscation.  
-- HTTP entrypoints use header randomization and domain-fronted SNI.  
-- CDN entrypoints rely on domain-fronting and real-site mimicry.
-
-### **Session Initialization**
-- Negotiation flows must align with browser-like behavior.  
-- Key exchange must avoid detectable patterns.
-
-### **Fallback**
-- Region-specific fallback chains may switch camouflage profiles.  
-- SNI pools and fingerprints must adapt to local blocking patterns.
-
-### **Client Profiles**
-- Platform-specific fingerprints (Chrome, Safari, Firefox).  
-- OS-specific TLS/QUIC behavior alignment.
+- Provide minimal reproducible examples and smoke tests for local validation and CI.  
+- Required tests:
+  - Shaped ClientHello acceptance by a test entrypoint  
+  - Handshake obfuscation round-trip correctness  
+  - Fallback activation and profile switching behavior  
+- Tests must be deterministic, fast, and suitable for automated CI on PRs that modify camouflage artifacts.
 
 ---
 
-## Security Considerations
+## Security and Operational Constraints
 
-Camouflage must:
+- **No raw payload logging**: only hashes or references for debugging.  
+- **Key handling**: private keys used for mimicry must be managed per ops policy and never committed.  
+- **Rotation**: rotate high-risk fingerprints, SNI pools, and templates on a defined cadence.  
+- **Fail-safe behavior**: prefer safe termination over silent acceptance on ambiguous failures.  
+- **Auditability**: each template or fingerprint change must include a short rationale and changelog entry.
 
-- Avoid static fingerprints or mimicry profiles  
-- Rotate domains, fingerprints, and timing patterns  
-- Prevent replayable handshake flows  
-- Normalize error behavior  
-- Resist active probing and DPI classification  
-- Avoid exposing backend infrastructure  
+---
 
-Camouflage is a dynamic subsystem and must evolve with browser updates and censorship techniques.
+## File Guidance
+
+Each file in this directory should start with a one-paragraph summary and a short "what to change" section for implementers. Keep templates small, auditable, and versioned.
 
 ---
 
 ## Summary
 
-The Camouflage subsystem provides the core techniques that make VPN traffic indistinguishable from legitimate internet traffic.  
-By combining real-site mimicry, TLS fingerprint camouflage, SNI randomization, and handshake obfuscation, the system achieves strong resistance to DPI, active probing, and domain-based filtering across all entrypoints.
+Camouflage is a dynamic, auditable subsystem that combines real-site mimicry, fingerprint shaping, SNI strategies, handshake obfuscation, and traffic normalization. It is the primary technical layer that enables Empus to operate under active censorship and protocol classification while remaining compatible with entrypoints and fallback mechanisms.
