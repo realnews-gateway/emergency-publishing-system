@@ -1,7 +1,7 @@
 # CDN Entrypoints
 
-CDN entrypoints provide the most stealthy and globally resilient access path into the VPN Access Layer.  
-By routing traffic through major Content Delivery Networks (CDNs) such as Cloudflare, Fastly, and Akamai, these entrypoints make VPN traffic indistinguishable from normal CDN‑served web content.
+CDN entrypoints provide the most stealthy and globally resilient access path into the **network-access-layer**.  
+By routing traffic through major Content Delivery Networks (CDNs) such as Cloudflare, Fastly, and Akamai, these entrypoints make traffic indistinguishable from normal CDN‑served web content.
 
 CDN entrypoints are essential for high‑risk regions where direct TLS or QUIC traffic is aggressively blocked or fingerprinted.
 
@@ -113,5 +113,5 @@ CDN entrypoints must:
 
 ## Summary
 
-CDN entrypoints provide the highest level of stealth and resilience in the VPN Access Layer.  
-By leveraging Cloudflare, Fastly, and Akamai as the visible access points, they make VPN traffic indistinguishable from normal CDN‑served content—offering unmatched protection in hostile network environments.
+CDN entrypoints provide the highest level of stealth and resilience in the **network-access-layer**.  
+By leveraging Cloudflare, Fastly, and Akamai as the visible access points, they make traffic indistinguishable from normal CDN‑served content—offering unmatched protection in hostile network environments.
