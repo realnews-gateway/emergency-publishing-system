@@ -1,6 +1,6 @@
 # Entrypoints
 
-The Entrypoints subsystem defines all inbound access paths into the VPN Access Layer.  
+The Entrypoints subsystem defines all inbound access paths into the **network-access-layer**.  
 Each entrypoint represents a different transport mechanism—TLS, QUIC, HTTP, or CDN-backed—designed to bypass censorship and blend into legitimate traffic patterns.
 
 Entrypoints are the first component a user interacts with when connecting to the system.
@@ -30,7 +30,7 @@ This directory includes:
   TLS-based entrypoints (Trojan, XTLS, Reality-style TLS).
 
 - **quic/**  
-  QUIC-based entrypoints (Hysteria2, QUIC obfuscation).
+  QUIC-based entrypoints (tuic v5, QUIC obfuscation).
 
 - **http/**  
   HTTP-based entrypoints (XHTTP, domain-fronted HTTP).
@@ -75,7 +75,7 @@ Entrypoints connect directly to:
 - **fallback/**  
   For automatic switching when an entrypoint is blocked.
 
-Entrypoints are the outermost layer of the VPN Access Layer.
+Entrypoints are the outermost layer of the **network-access-layer**.
 
 ---
 
