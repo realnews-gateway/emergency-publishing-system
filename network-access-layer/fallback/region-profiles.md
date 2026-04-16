@@ -17,7 +17,7 @@ Region profiles provide:
 - SNI filtering behavior  
 - CDN accessibility  
 - Recommended fallback chains  
-- Risk classification (low, moderate, high, active-probing)  
+- Risk classification (open, moderate, high, active-probing, mobile, enterprise)  
 
 Profiles are updated as censorship conditions evolve.
 
@@ -25,12 +25,14 @@ Profiles are updated as censorship conditions evolve.
 
 ## Region Classification Model
 
-Regions are classified into four categories:
+Regions are classified into six categories:
 
 1. **Open Regions**  
 2. **Moderate Censorship Regions**  
 3. **High Censorship Regions**  
-4. **Active Probing Regions**
+4. **Active Probing Regions**  
+5. **Mobile Priority Regions**  
+6. **Enterprise/Corporate Regions**
 
 Each category maps to a specific fallback chain.
 
@@ -62,13 +64,6 @@ Each region profile includes:
     recommended_chain: global-default
     notes: Normal browser behavior is safe.
 
-Characteristics:
-
-- QUIC widely available  
-- No TLS fingerprint filtering  
-- No SNI filtering  
-- CDN optional  
-
 ---
 
 ### **2. QUIC‑Blocking Region Profile**
@@ -80,12 +75,6 @@ Characteristics:
     cdn_access: available
     recommended_chain: quic-blocking
     notes: QUIC is throttled or silently dropped.
-
-Characteristics:
-
-- QUIC packets dropped or delayed  
-- TLS allowed but fingerprint-sensitive  
-- SNI filtering may occur intermittently  
 
 ---
 
@@ -99,12 +88,6 @@ Characteristics:
     recommended_chain: tls-fingerprint-rotation
     notes: Chrome fingerprints may be blocked; rotation required.
 
-Characteristics:
-
-- DPI blocks specific TLS fingerprints  
-- QUIC may be degraded  
-- SNI filtering inconsistent  
-
 ---
 
 ### **4. SNI‑Blocking Region Profile**
@@ -116,12 +99,6 @@ Characteristics:
     cdn_access: required
     recommended_chain: sni-blocking
     notes: ECH or CDN domain-fronting required.
-
-Characteristics:
-
-- Strict SNI filtering  
-- QUIC often throttled  
-- CDN domain-fronting required  
 
 ---
 
@@ -135,13 +112,41 @@ Characteristics:
     recommended_chain: active-probing
     notes: Challenge/response authentication required.
 
+---
+
+### **6. Mobile Priority Region Profile**
+
+    risk_level: mobile
+    quic_status: allowed but unstable
+    tls_fingerprint_safety: mobile-browser fingerprints
+    sni_filtering: partial
+    cdn_access: available
+    recommended_chain: mobile-priority
+    notes: Wider retry intervals and jitter handling required.
+
 Characteristics:
 
-- Aggressive DPI  
-- Active probing of suspected endpoints  
-- QUIC unsafe  
-- TLS must use low-entropy fingerprints  
-- Authentication must use challenge/response  
+- High latency and jitter  
+- QUIC tuic v5 preferred  
+- Retry timing randomized with wider ranges  
+
+---
+
+### **7. Enterprise/Corporate Region Profile**
+
+    risk_level: enterprise
+    quic_status: throttled or proxied
+    tls_fingerprint_safety: reality-style mimicry
+    sni_filtering: partial
+    cdn_access: available
+    recommended_chain: enterprise
+    notes: DPI and proxy filtering common; TLS Reality preferred.
+
+Characteristics:
+
+- Corporate DPI and proxy interception  
+- TLS Reality with genuine certificates  
+- HTTP/2 API-like camouflage  
 
 ---
 
@@ -175,4 +180,5 @@ Region profiles integrate with:
 ## Summary
 
 Region profiles define censorship characteristics and guide the fallback subsystem in selecting the safest and most effective downgrade strategy.  
-By modeling QUIC/TLS/SNI/CDN behavior and mapping regions to fallback chains, the system adapts dynamically to local censorship conditions while maintaining stealth and reliability.
+By modeling QUIC/TLS/SNI/CDN behavior and mapping regions to fallback chains, the system adapts dynamically to local censorship conditions while maintaining stealth and reliability.  
+Extensions for **Mobile Priority Regions** and **Enterprise Regions** provide specialized strategies for mobile networks and corporate environments, ensuring resilience across diverse conditions.
