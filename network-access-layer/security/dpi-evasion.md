@@ -1,8 +1,8 @@
 # DPI Evasion
 
 This document describes the techniques used to evade Deep Packet Inspection (DPI) systems deployed by state-level censorship infrastructures.  
-DPI systems analyze packet contents, metadata, timing, and protocol behavior to identify and block VPN traffic.  
-The VPN access layer is designed to remain indistinguishable from legitimate TLS, QUIC, HTTP/2, and CDN traffic under both passive and active inspection.
+DPI systems analyze packet contents, metadata, timing, and protocol behavior to identify and block covert traffic.  
+The **network-access-layer** is designed to remain indistinguishable from legitimate TLS, QUIC, HTTP/2, and CDN traffic under both passive and active inspection.
 
 DPI evasion is achieved through camouflage, handshake obfuscation, error normalization, and transport-level mimicry.
 
@@ -14,7 +14,7 @@ The system assumes that DPI systems may perform:
 
 ### 1. Protocol Fingerprinting
     - TLS ClientHello fingerprinting
-    - QUIC Initial packet fingerprinting
+    - QUIC (tuic v5) Initial packet fingerprinting
     - HTTP/2 frame sequence analysis
     - CDN domain-fronting detection
 
@@ -46,7 +46,7 @@ The system must remain functional and stealthy under all of these conditions.
 
 ## Evasion Techniques
 
-The VPN access layer uses multiple layers of DPI evasion:
+The **network-access-layer** uses multiple layers of DPI evasion:
 
 ---
 
@@ -67,13 +67,11 @@ Techniques include:
     - KeyShare group selection
     - Session ticket behavior mimicry
 
-This prevents TLS fingerprint-based blocking.
-
 ---
 
 ### 2. QUIC Initial Packet Camouflage
 
-QUIC Initial packets mimic:
+QUIC Initial packets (tuic v5) mimic:
 
     - Chrome QUIC (desktop/mobile)
     - Safari QUIC (iOS/macOS)
@@ -86,8 +84,6 @@ Techniques include:
     - Retry token behavior
     - Stream frame ordering
 
-This prevents QUIC fingerprint-based blocking.
-
 ---
 
 ### 3. SNI Randomization and Fronting
@@ -99,8 +95,6 @@ The system uses region-aware SNI strategies:
     - Domain fronting (CDN-based)
     - ECH (Encrypted ClientHello) when available
 
-This prevents SNI-based blocking and classification.
-
 ---
 
 ### 4. Real-Site Mimicry
@@ -110,9 +104,7 @@ The system mimics real websites:
     - Certificates match real-world patterns
     - ALPN matches expected services
     - Traffic patterns resemble legitimate browsing
-    - CDN behavior is replicated when applicable
-
-This prevents DPI from distinguishing VPN traffic from normal HTTPS traffic.
+    - CDN behavior replicated when applicable
 
 ---
 
@@ -125,8 +117,6 @@ Session initialization is obfuscated:
     - No custom protocol identifiers
     - No unusual handshake timing
 
-This prevents DPI from detecting custom protocols.
-
 ---
 
 ### 6. Error Normalization
@@ -137,8 +127,6 @@ All errors are normalized to real-world equivalents:
     - QUIC close frames (CONNECTION_TIMEOUT)
     - HTTP/2 502/503 responses
     - CDN 504 Gateway Timeout
-
-This prevents DPI from detecting fallback transitions.
 
 ---
 
@@ -151,20 +139,18 @@ Traffic patterns mimic real applications:
     - Packet size padding
     - Flow burstiness matching real TLS/QUIC traffic
 
-This prevents ML-based traffic classification.
-
 ---
 
 ### 8. Region-Aware Behavior
 
 The system adapts to regional censorship:
 
-    - QUIC-first in permissive regions
-    - TLS-first in high-risk regions
+    - QUIC-first (tuic v5) in permissive regions
+    - TLS Reality-first in high-risk regions
     - CDN-fronting in extreme censorship environments
     - SNI rotation frequency adjusted per region
-
-This prevents region-specific DPI heuristics from triggering blocks.
+    - Mobile regions: wider jitter ranges and adaptive retry intervals
+    - Enterprise regions: TLS Reality mimicry with API-like traffic
 
 ---
 
@@ -193,5 +179,6 @@ DPI evasion is not a standalone feature; it is embedded across all layers.
 
 ## Summary
 
-The DPI evasion subsystem ensures that VPN traffic remains indistinguishable from legitimate TLS, QUIC, HTTP/2, and CDN traffic.  
-By combining fingerprint camouflage, handshake obfuscation, error normalization, and region-aware behavior, the system resists state-level DPI systems and maintains strong censorship resistance under hostile network conditions.
+The DPI evasion subsystem ensures that traffic remains indistinguishable from legitimate TLS, QUIC, HTTP/2, and CDN flows.  
+By combining fingerprint camouflage, handshake obfuscation, error normalization, timing camouflage, and region-aware strategies, the **network-access-layer** resists state-level DPI systems and maintains strong censorship resistance under hostile network conditions.  
+Extensions for **mobile** and **enterprise** environments further strengthen resilience against diverse adversarial conditions.
