@@ -1,4 +1,5 @@
-# Transport and Camouflage Negotiation
+
+# Negotiation
 
 The negotiation phase determines how a client and server agree on the transport protocol, camouflage profile, and fallback strategy before establishing a full session.  
 This phase is designed to be covert, adaptive, and resistant to fingerprinting or active probing.
