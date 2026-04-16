@@ -27,7 +27,7 @@ They ensure users can always reach the system, even under aggressive censorship.
 This directory includes:
 
 - **tls/**  
-  TLS-based entrypoints (Trojan, XTLS, Reality-style TLS).
+  TLS-based entrypoints (XTLS, Reality-style TLS).
 
 - **quic/**  
   QUIC-based entrypoints (tuic v5, QUIC obfuscation).
