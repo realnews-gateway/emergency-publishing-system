@@ -38,7 +38,7 @@ All errors must map to real-world equivalents.
 ### **2. Transport-Specific Normalization**
 Each transport layer has its own error model:
 
-- QUIC → close frames  
+- QUIC (tuic v5) → close frames  
 - TLS → alerts  
 - HTTP/2 → HTTP error pages  
 - CDN → gateway responses  
@@ -62,7 +62,7 @@ Timing randomness prevents fingerprinting.
 
 ## Normalized Error Types
 
-### **1. QUIC Error Normalization**
+### **1. QUIC Error Normalization (tuic v5)**
 
 QUIC failures must resemble:
 
@@ -76,8 +76,6 @@ Example normalized errors:
     quic_close: CONNECTION_TIMEOUT
     quic_close: INTERNAL_ERROR
     quic_close: IDLE_TIMEOUT
-
-No custom QUIC error codes are allowed.
 
 ---
 
@@ -96,8 +94,6 @@ Example normalized alerts:
     tls_alert: protocol_version
     tls_alert: internal_error
 
-TLS alerts must match real browser behavior.
-
 ---
 
 ### **3. HTTP/2 Error Normalization**
@@ -115,8 +111,6 @@ Example normalized responses:
     http2_error: 503 Service Unavailable
     http2_error: stream_reset
 
-These errors must be indistinguishable from real server failures.
-
 ---
 
 ### **4. CDN Error Normalization**
@@ -132,8 +126,6 @@ Example normalized responses:
     cdn_error: 504 Gateway Timeout
     cdn_error: 502 Bad Gateway
     cdn_error: origin_unreachable
-
-CDN fallback must never reveal backend infrastructure.
 
 ---
 
@@ -151,8 +143,6 @@ Example normalized responses:
     http_error: 500 Internal Server Error
     http_error: dns_failure
 
-These errors must appear generic and unremarkable.
-
 ---
 
 ## Retry Behavior Normalization
@@ -166,7 +156,7 @@ Retry behavior must:
 
 Examples:
 
-    retry_interval_quic: 200–600 ms
+    retry_interval_quic: 200–600 ms (mobile: 300–900 ms)
     retry_interval_tls: 300–900 ms
     retry_interval_http2: 500–1200 ms
     retry_interval_cdn: 800–1500 ms
@@ -214,4 +204,5 @@ Errors must never reveal internal state.
 ## Summary
 
 Error normalization ensures that all failures resemble legitimate TLS, QUIC, HTTP, or CDN errors.  
-By standardizing error behavior across transports and regions, the system prevents censors from fingerprinting fallback transitions and maintains strong censorship resistance.
+By standardizing error behavior across transports and regions, the system prevents censors from fingerprinting fallback transitions and maintains strong censorship resistance.  
+Updates include **tuic v5 QUIC normalization** and **mobile-aware retry intervals**, further strengthening resilience in diverse environments.
