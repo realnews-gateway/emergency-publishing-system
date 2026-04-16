@@ -1,7 +1,7 @@
 # Bootstrap Flow
 
 The Bootstrap Flow defines the complete sequence a client follows to establish a secure, covert, and censorship‑resistant session with the server.  
-It orchestrates negotiation, key exchange, authentication, and camouflage alignment into a unified initialization pipeline.
+It orchestrates negotiation, key exchange, authentication, replay protection, and camouflage alignment into a unified initialization pipeline.
 
 The bootstrap process is designed to mimic legitimate application behavior, resist active probing, and adapt to regional censorship conditions.
 
@@ -15,6 +15,7 @@ The bootstrap flow enables:
 - Transport and camouflage negotiation  
 - Secure key exchange  
 - Authentication without static identifiers  
+- Replay protection and timing camouflage  
 - Region‑aware fallback behavior  
 - Seamless transition into a fully established session  
 
@@ -24,13 +25,14 @@ This ensures that every connection begins in a stealthy and secure manner.
 
 ## High-Level Overview
 
-The bootstrap flow consists of five major phases:
+The bootstrap flow consists of six major phases:
 
 1. **Initial Probe**  
 2. **Transport Negotiation**  
 3. **Camouflage Profile Selection**  
 4. **Key Exchange**  
-5. **Authentication and Session Confirmation**
+5. **Authentication and Replay Protection**  
+6. **Session Confirmation**
 
 Each phase is designed to blend into normal TLS/QUIC/HTTP traffic patterns.
 
@@ -54,7 +56,7 @@ If the probe fails, the client triggers region‑specific fallback logic.
 Client and server negotiate the transport layer:
 
 - TLS-first (macOS/iOS)  
-- QUIC-first (Android/Linux)  
+- QUIC-first (Android/Linux, tuic v5 optimized)  
 - Hybrid strategy (Windows)  
 - HTTP/2 fallback  
 - CDN-backed negotiation  
@@ -74,7 +76,7 @@ No custom protocol signatures are exposed.
 Client and server agree on:
 
 - TLS fingerprint profile (Chrome/Safari/Firefox)  
-- SNI strategy (static, rotating, domain-fronted)  
+- SNI strategy (static, rotating, domain-fronted, ECH when available)  
 - Handshake obfuscation level  
 - Traffic normalization mode  
 
@@ -90,12 +92,13 @@ Client and server perform:
 - Optional hybrid post‑quantum KEM  
 - Replay-resistant token validation  
 - HKDF-based session key derivation  
+- Forward secrecy with key rotation  
 
 Key exchange is embedded inside TLS/QUIC handshake structures to avoid detection.
 
 ---
 
-## Phase 5: Authentication and Session Confirmation
+## Phase 5: Authentication and Replay Protection
 
 Client authenticates using:
 
@@ -110,7 +113,18 @@ Server validates:
 - Replay protection  
 - Camouflage alignment  
 
-Once confirmed, the session transitions into the fully established state.
+Invalid attempts produce normalized TLS/QUIC/CDN errors.
+
+---
+
+## Phase 6: Session Confirmation
+
+Once authentication succeeds:
+
+- Replay protection is enforced  
+- Timing camouflage is aligned  
+- Transport consistency is validated  
+- Session transitions into the fully established state  
 
 ---
 
@@ -136,6 +150,7 @@ Bootstrap flow adapts to:
 - SNI filtering  
 - CDN interference  
 - HTTP-only environments  
+- Mobile jitter and enterprise proxy conditions  
 
 Fallback chains are defined in the **fallback/** subsystem.
 
@@ -152,7 +167,7 @@ Bootstrap flow integrates with:
   Key exchange begins after negotiation completes.
 
 - **authentication.md**  
-  Authentication finalizes the bootstrap process.
+  Authentication and replay protection finalize the bootstrap process.
 
 - **camouflage/**  
   Camouflage profiles influence every phase of bootstrap.
@@ -162,6 +177,9 @@ Bootstrap flow integrates with:
 
 - **client-profiles/**  
   Platform-specific bootstrap behavior is defined here.
+
+- **security/**  
+  Timing camouflage and probing resistance are enforced.
 
 ---
 
@@ -175,10 +193,12 @@ Bootstrap flow must:
 - Prevent replayable messages  
 - Blend into legitimate TLS/QUIC/HTTP traffic  
 - Support region-aware fallback strategies  
+- Provide indistinguishability across platforms  
 
 ---
 
 ## Summary
 
-The Bootstrap Flow orchestrates negotiation, key exchange, authentication, and camouflage alignment into a unified, censorship‑resistant session initialization pipeline.  
-By mimicking legitimate application behavior and adapting to regional conditions, it ensures that every session begins securely and covertly.
+The Bootstrap Flow orchestrates negotiation, key exchange, authentication, replay protection, and camouflage alignment into a unified, censorship‑resistant session initialization pipeline.  
+By mimicking legitimate application behavior and adapting to regional conditions, it ensures that every session begins securely and covertly.  
+Extensions for **timing camouflage** and **region-aware replay protection** further strengthen resilience in diverse environments.
