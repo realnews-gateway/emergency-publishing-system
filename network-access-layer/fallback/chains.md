@@ -35,14 +35,14 @@ Fallback chains must avoid static patterns and remain indistinguishable from nor
 This chain is used in regions without known aggressive censorship.
 
 ### **1. QUIC (Primary)**
-- Transport: QUIC  
+- Transport: QUIC (tuic v5)  
 - Camouflage: Chrome QUIC fingerprint  
 - Retry: randomized 200–600 ms  
 - Error normalization: QUIC close frames  
 
 ### **2. TLS (Secondary)**
 - Transport: TLS 1.3  
-- Camouflage: Chrome/Safari fingerprints  
+- Camouflage: Chrome/Safari fingerprints, Reality-style mimicry  
 - Retry: randomized 300–900 ms  
 - Error normalization: TLS alerts  
 
@@ -63,8 +63,6 @@ This chain is used in regions without known aggressive censorship.
 - Camouflage: generic browser headers  
 - Retry: randomized 1–3 seconds  
 - Error normalization: generic HTTP failures  
-
-This chain provides broad compatibility while maintaining stealth.
 
 ---
 
@@ -91,8 +89,6 @@ Used in regions where QUIC is throttled or blocked.
 - Transport: HTTP/1.1  
 - Retry: 1–3 seconds  
 
-QUIC is skipped entirely.
-
 ---
 
 ## TLS Fingerprint Filtering Region Chain
@@ -100,7 +96,7 @@ QUIC is skipped entirely.
 Used in regions where specific TLS fingerprints are blocked.
 
 ### **1. QUIC (Primary)**
-- Transport: QUIC  
+- Transport: QUIC (tuic v5)  
 - Camouflage: Chrome QUIC  
 
 ### **2. TLS (Alternate Fingerprint)**
@@ -117,8 +113,6 @@ Used in regions where specific TLS fingerprints are blocked.
 ### **5. Minimal HTTP‑Only Mode**
 - Transport: HTTP/1.1  
 
-This chain rotates TLS fingerprints to evade filtering.
-
 ---
 
 ## SNI‑Blocking Region Chain
@@ -126,7 +120,7 @@ This chain rotates TLS fingerprints to evade filtering.
 Used in regions where SNI filtering is active.
 
 ### **1. QUIC (Primary)**
-- Transport: QUIC  
+- Transport: QUIC (tuic v5)  
 - Camouflage: Encrypted ClientHello (ECH) if available  
 
 ### **2. TLS with ECH**
@@ -143,8 +137,6 @@ Used in regions where SNI filtering is active.
 
 ### **5. Minimal HTTP‑Only Mode**
 - Transport: HTTP/1.1  
-
-This chain prioritizes ECH and CDN-based evasion.
 
 ---
 
@@ -172,6 +164,51 @@ QUIC is avoided because it is easily probed.
 
 ---
 
+## Mobile Priority Chain (Extension)
+
+Optimized for unstable mobile networks with high latency and jitter.
+
+### **1. QUIC (tuic v5 Primary)**
+- Transport: QUIC tuic v5  
+- Camouflage: Chrome QUIC fingerprint  
+- Retry: 300–900 ms (wider range for jitter)  
+
+### **2. TLS (Secondary)**
+- Transport: TLS 1.3 Reality-style  
+- Camouflage: mobile browser fingerprints  
+- Retry: 500–1200 ms  
+
+### **3. CDN Fallback**
+- Transport: HTTPS via CDN  
+- Retry: 1–2 seconds  
+
+### **4. Minimal HTTP‑Only Mode**
+- Transport: HTTP/1.1  
+
+---
+
+## Enterprise Chain (Extension)
+
+Optimized for corporate networks with DPI and proxy filtering.
+
+### **1. TLS Reality (Primary)**
+- Transport: TLS 1.3 with real-site mimicry  
+- Camouflage: enterprise-grade fingerprints  
+- Retry: 200–600 ms  
+
+### **2. HTTP/2 (Secondary)**
+- Transport: HTTP/2  
+- Camouflage: API-like traffic  
+
+### **3. CDN Fallback**
+- Transport: HTTPS via CDN  
+- Retry: 800–1500 ms  
+
+### **4. Minimal HTTP‑Only Mode**
+- Transport: HTTP/1.1  
+
+---
+
 ## Retry Timing Rules
 
 Retry timing must:
@@ -183,13 +220,11 @@ Retry timing must:
 
 Examples:
 
-- QUIC retries: 200–600 ms  
+- QUIC retries: 200–600 ms (mobile: 300–900 ms)  
 - TLS retries: 300–900 ms  
 - HTTP/2 retries: 500–1200 ms  
 - CDN retries: 800–1500 ms  
 - Minimal HTTP retries: 1–3 seconds  
-
-Timing randomness prevents fingerprinting.
 
 ---
 
@@ -210,4 +245,5 @@ No custom error messages are allowed.
 ## Summary
 
 Fallback chains define the ordered, region-aware downgrade paths used to maintain connectivity under censorship.  
-By combining transport transitions, camouflage changes, randomized retry timing, and error normalization, fallback chains ensure that clients remain reachable while blending into legitimate traffic patterns.
+By combining transport transitions, camouflage changes, randomized retry timing, and error normalization, fallback chains ensure that clients remain reachable while blending into legitimate traffic patterns.  
+Extensions such as **Mobile Priority Chain** and **Enterprise Chain** provide specialized strategies for mobile and corporate environments, further strengthening resilience.
