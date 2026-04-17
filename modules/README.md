@@ -1,4 +1,4 @@
-§
+
 # Modules Directory
 
 The Modules directory contains all supporting runtime subsystems of Empus.  
@@ -50,7 +50,7 @@ All modules follow these architectural principles:
 
 Modules interact with the core system via shared interfaces and pipelines:
 
-- **Transport and fallback logic** are provided by `network-access-layer/`  
+- **Transport and fallback logic** are provided by the root‑level `network-access-layer/`  
 - **News ingestion and processing** are handled by `news-aggregation/`  
 - **User‑generated content** is handled by `anonymous-bbs/`  
 - **Emergency routing and distribution** are handled by the root‑level `emergency-channel/`  
