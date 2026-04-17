@@ -1,4 +1,4 @@
-§
+
 # Anonymous BBS Module
 
 The anonymous BBS module provides a censorship‑resistant, privacy‑preserving message board system designed for high‑risk environments.  
