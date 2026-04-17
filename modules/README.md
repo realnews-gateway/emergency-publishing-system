@@ -1,6 +1,7 @@
+§
 # Modules Directory
 
-The Modules directory contains all supporting runtime subsystems of the Emergency Publishing System.  
+The Modules directory contains all supporting runtime subsystems of Empus.  
 Each module represents a distinct functional layer, designed to be independently testable, deployable, and extensible.
 
 These modules provide ingestion, access, and content‑generation capabilities that feed into the core system: the **Emergency Channel**.
@@ -10,10 +11,6 @@ These modules provide ingestion, access, and content‑generation capabilities t
 ## Contents
 
 This directory includes the following modules:
-
-- **vpn-access-layer/**  
-  Provides covert access to the system via VPN‑like transports.  
-  Supports fallback routing, stealth entry points, protocol‑level obfuscation, and region‑aware transport selection.
 
 - **news-aggregation/**  
   Aggregates external news sources, normalizes content, removes duplicates, and classifies topics.  
@@ -53,7 +50,7 @@ All modules follow these architectural principles:
 
 Modules interact with the core system via shared interfaces and pipelines:
 
-- **Transport and fallback logic** are provided by `vpn-access-layer/`  
+- **Transport and fallback logic** are provided by `network-access-layer/`  
 - **News ingestion and processing** are handled by `news-aggregation/`  
 - **User‑generated content** is handled by `anonymous-bbs/`  
 - **Emergency routing and distribution** are handled by the root‑level `emergency-channel/`  
@@ -63,5 +60,5 @@ Modules interact with the core system via shared interfaces and pipelines:
 
 ## Summary
 
-The Modules directory defines the supporting runtime architecture of the Emergency Publishing System.  
+The Modules directory defines the supporting runtime architecture of Empus.  
 Each submodule implements a critical capability—transport, aggregation, or pseudonymous communication—and together they feed content into the core **Emergency Channel**.
