@@ -18,7 +18,7 @@ The gateway provides:
 - Rate limiting and abuse prevention  
 - Filtering of spam, adult material, and non‑emergency content (Empus is strictly for emergency publishing)  
 - **Mandatory removal of personally identifiable information (PII)** to protect user safety  
-- **用户引导与重定向**：在检测到救援需求时，主动提供官方或第三方专业救援机构的联络信息，并强化“本平台仅供信息发布”的属性。  
+- **User guidance and redirection**: when rescue needs are detected, provide official or third‑party emergency contacts, reinforcing that Empus is a publishing platform only  
 - Forwarding of valid messages to **storage** and **distribution**  
 
 ---
@@ -46,7 +46,7 @@ The gateway processes each incoming message through four stages:
 - Enforces maximum length  
 - Normalizes whitespace and punctuation  
 - Applies keyword moderation  
-- **强制移除个人身份信息 (PII)**：系统会自动检测并脱敏姓名、电话、精确地址等敏感信息，确保不会进入存储和分发环节。  
+- **Mandatory removal of PII**: names, phone numbers, and precise addresses are automatically detected and stripped before storage or distribution  
 
 ### 4. Content Filtering and Abuse Prevention
 - Delegates metadata cleaning and stripping to **emergency-channel**  
@@ -84,14 +84,14 @@ This ensures anonymity while maintaining conversational continuity.
 
 Before posting, users are reminded:
 
-- **非救援通道**：本平台仅用于匿名信息共享与发布。我们无法提供即时救援服务。  
-- **隐私安全**：请勿在正文中包含姓名、电话或精确地址。系统会自动脱敏，防止敏感信息在分发过程中被恶意第三方截获。  
-- **紧急求助**：若你处于生命危险中，请优先联系以下官方机构：  
-  - [机构 A 地址/热线]  
-  - [机构 B 镜像站]  
+- **Not a rescue channel**: this platform is only for anonymous information sharing and publishing. We cannot provide immediate rescue services.  
+- **Privacy protection**: do not include names, phone numbers, or precise addresses in your message. The system will automatically strip such information to prevent exposure.  
+- **Emergency help**: if you are in life‑threatening danger, please contact official institutions directly:  
+  - [Agency A address/hotline]  
+  - [Agency B mirror site]  
 
 This disclaimer reinforces that Empus is a **Publishing Platform**, not a **Response Center**.  
-Publishing personally identifiable information (PII) in expectation of rescue may expose users to malicious interception during distribution and increase personal risk.  
+Publishing PII in expectation of rescue may expose users to malicious interception during distribution and increase personal risk.  
 By providing clear redirection to official rescue channels, Empus ensures that users are guided toward professional help when needed.  
 
 ---
