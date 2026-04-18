@@ -16,6 +16,7 @@ The classification subsystem provides:
 - Source reliability scoring  
 - Content quality scoring  
 - Cluster-level classification for deduplicated articles  
+- Region-aware adjustments based on **region-config.md** definitions  
 
 ---
 
@@ -41,6 +42,7 @@ The classification subsystem provides:
 - Computes reliability and quality scores  
 - Adjusts based on historical performance  
 - Produces rankings for downstream modules  
+- Applies region-specific adjustments when sources are listed in **region-config.md**  
 
 ---
 
@@ -68,6 +70,7 @@ Reliability is based on:
 - Availability (fetch success, mirror performance)  
 - Content quality (parsing success, metadata completeness, duplicate ratio)  
 - Historical stability (outages, update consistency)  
+- Region-specific accessibility (cross-checked with **region-config.md**)  
 
 Scores range from 0.0 to 1.0 and influence prioritization and emergency publishing decisions.
 
@@ -93,6 +96,7 @@ High-quality articles are prioritized for publishing.
 - Cluster-level tags aggregated  
 - Topic labels propagated to all members  
 - Source reliability influences ranking  
+- **region-config.md** entries ensure blocked foreign sources are correctly flagged and classified  
 
 ---
 
@@ -105,11 +109,11 @@ The classification subsystem integrates with:
 - **publisher/** — Uses topics and tags for routing and prioritization  
 - **emergency-channel/** — Identifies urgent or high-impact content  
 - **sources.md** — Updates source reliability scores  
-- **region-config/** — Ensures classification respects country-specific blocked content handling  
+- **region-config.md** — Ensures classification respects country-specific blocked foreign sources and applies region-aware adjustments  
 
 ---
 
 ## Summary
 
 The classification subsystem assigns topics, extracts tags, and computes reliability and quality scores for aggregated news content.  
-By combining rule-based, statistical, and embedding-based methods, it produces structured metadata that drives publishing, prioritization, and emergency workflows across Empus.
+By combining rule-based, statistical, and embedding-based methods, and integrating **region-config.md** for country-specific blocked sources, it produces structured metadata that drives publishing, prioritization, and emergency workflows across Empus.
