@@ -33,7 +33,7 @@ The aggregation pipeline consists of four major stages:
 
 ### 2. Content Fetching
 - Fetches content using HTTP(S), CDN-backed endpoints, or proxy layers  
-- Supports fallback transports (TLS, QUIC, HTTP/2)  
+- Supports retries and fallback transports (TLS, QUIC, HTTP/2)  
 - Handles rate limits, retries, and network failures  
 
 ### 3. Normalization and Parsing
@@ -55,12 +55,13 @@ The aggregation pipeline consists of four major stages:
 ```
 news-aggregation/
 ├── README.md          # Overview and architecture
-├── sources.md         # Source registry and region-aware source sets
-├── fetcher.md         # Fetching logic, retries, fallback transports
-├── parser.md          # HTML parsing, metadata extraction, normalization
-├── deduplication.md   # Duplicate detection and clustering
 ├── classification.md  # Topic classification and source scoring
-└── config.md          # Configuration for fetch intervals, deduplication, classification rules
+├── config.md          # Configuration for fetch intervals, deduplication, classification rules
+├── deduplication.md   # Duplicate detection and clustering
+├── fetcher.md         # Fetching logic, retries, mirror rotation
+├── parser.md          # HTML parsing, metadata extraction, normalization
+├── region-config.md   # Mandatory file defining country-specific blocked foreign sources
+└── sources.md         # Source registry and global source sets
 ```
 
 ---
@@ -72,8 +73,8 @@ The news aggregation module integrates with:
 - **ingest/** — Provides raw content for ingestion and transformation  
 - **publisher/** — Supplies structured articles for publishing workflows  
 - **emergency-channel/** — Feeds verified content into emergency broadcast pipelines  
-- **network-access-layer/** — Ensures reliable fetching under censorship or network interference  
-- **region-config/** — Mandatory module for country-specific source sets, enabling retrieval of content blocked domestically  
+- **network-access-layer/** — Ensures reliable client-server communication under censorship or network interference  
+- **region-config.md** — Mandatory file defining which foreign sources are blocked in specific countries, enabling servers in free-network regions (e.g. Japan, Singapore) to fetch them  
 
 ---
 
@@ -89,7 +90,7 @@ All content is converted into a consistent internal format.
 Sources are continuously evaluated for accuracy and stability.  
 
 ### Censorship Resistance
-Fetching logic integrates with fallback transports and proxy layers.  
+Fetching logic integrates retries, mirror rotation, and proxy layers.  
 
 ### Minimal Metadata Leakage
 Requests avoid identifiable patterns or unnecessary headers.  
