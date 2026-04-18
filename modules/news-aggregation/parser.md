@@ -34,7 +34,7 @@ The parsing pipeline consists of four stages:
 - Handles malformed or mixed-encoding content  
 
 ### 2. Metadata Extraction
-- Extracts <title>, <meta>, <h1>, and OpenGraph fields  
+- Extracts `<title>`, `<meta>`, `<h1>`, and OpenGraph fields  
 - Parses timestamps from multiple formats  
 - Extracts author names when available  
 - Extracts tags or categories from RSS or HTML  
@@ -82,26 +82,26 @@ This format is consumed by deduplication and classification modules, ensuring th
 The parser extracts metadata from:
 
 ### HTML
-- <title>  
-- <meta name="description">  
-- <meta property="og:title">  
-- <meta property="article:published_time">  
-- <time> elements  
-- Author and copyright fields when available  
+- `<title>`  
+- `<meta name="description">`  
+- `<meta property="og:title">`  
+- `<meta property="article:published_time">`  
+- `<time>` elements  
+- Author and copyright fields (preserved)  
 
 ### RSS/XML
-- <item><title>  
-- <item><pubDate>  
-- <item><category>  
-- <item><description>  
-- Source attribution fields  
+- `<item><title>`  
+- `<item><pubDate>`  
+- `<item><category>`  
+- `<item><description>`  
+- Source attribution fields (preserved)  
 
 ### JSON APIs
-- title  
-- published_at  
-- tags  
-- author  
-- copyright/source attribution  
+- `title`  
+- `published_at`  
+- `tags`  
+- `author`  
+- `copyright` / source attribution (preserved)  
 
 Fallback strategies ensure metadata is extracted even when fields are missing or malformed.  
 
@@ -120,11 +120,11 @@ The parser uses multiple heuristics:
 - Filters out boilerplate  
 
 ### Tag-Based Filtering
-- Removes <script>, <style>, <nav>, <footer>, <aside>  
-- Preserves <p>, <h1>, <h2>, <blockquote>, <img alt>  
+- Removes `<script>`, `<style>`, `<nav>`, `<footer>`, `<aside>`  
+- Preserves `<p>`, `<h1>`, `<h2>`, `<blockquote>`, `<img alt>`  
 
 ### URL Cleaning
-- Removes tracking parameters (utm_*, fbclid, etc.)  
+- Removes tracking parameters (`utm_*`, `fbclid`, etc.)  
 - Normalizes canonical URLs  
 
 ---
@@ -134,7 +134,7 @@ The parser uses multiple heuristics:
 The parser determines language using:
 
 - Source metadata  
-- HTML lang attributes  
+- HTML `lang` attributes  
 - Statistical language detection  
 - Unicode range heuristics  
 
