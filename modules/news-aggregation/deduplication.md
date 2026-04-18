@@ -1,4 +1,3 @@
-
 # Deduplication and Content Clustering
 
 The deduplication subsystem identifies duplicate or near‑duplicate articles across heterogeneous news sources.  
@@ -62,7 +61,7 @@ The deduplication subsystem integrates with:
 - **publisher/** — Receives deduplicated content for distribution  
 - **emergency-channel/** — Receives only canonical, verified articles  
 - **sources.md** — Uses source reliability to prioritize canonical selection  
-- **region-config/** — Ensures deduplication respects country‑specific blocked content handling  
+- **region-config.md** — Mandatory file that guides deduplication logic, ensuring that when handling duplicate content, high‑value foreign sources blocked in specific countries are prioritized and preserved  
 
 ---
 
