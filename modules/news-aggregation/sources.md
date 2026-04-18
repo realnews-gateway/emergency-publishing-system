@@ -158,11 +158,11 @@ The source registry integrates with:
 - **parser.md** — Supplies metadata for parsing and normalization  
 - **deduplication.md** — Helps identify duplicates across sources  
 - **classification.md** — Provides category and language metadata  
-- **region-config.md** — Mandatory file defining which foreign sources are blocked in specific countries  
+- **region-config.md** — Defines region-specific blocking rules by referencing source IDs from this registry, ensuring no duplication of source attributes  
 
 ---
 
 ## Summary
 
 The source registry defines all news sources used by the aggregation pipeline, including global feeds, regional sources, and mirrors.  
-By maintaining region-aware source sets, reliability scoring, and automatic rotation, and integrating **region-config.md**, the system ensures continuous and censorship-resistant content ingestion.
+By maintaining region-aware source sets, reliability scoring, and automatic rotation, and integrating **region-config.md** (which references source IDs instead of duplicating attributes), the system ensures continuous and censorship-resistant content ingestion.
