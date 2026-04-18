@@ -3,7 +3,7 @@
 
 The fetcher is responsible for retrieving content from all registered news sources.  
 It runs on servers located in free‑network regions (e.g. Japan, Singapore), ensuring reliable ingestion of foreign sources that may be blocked in certain countries.  
-The fetcher implements retries, mirror rotation, and region‑aware source selection defined by **region‑config/**.
+The fetcher implements retries, mirror rotation, and region‑aware source selection defined by **region-config.md**.
 
 ---
 
@@ -14,7 +14,7 @@ The fetcher provides:
 - Reliable content retrieval from diverse sources  
 - Automatic retries with exponential backoff  
 - Mirror rotation for failing sources  
-- Region‑aware fetching strategies defined by **region‑config/**  
+- Region‑aware fetching strategies defined by **region-config.md**  
 - Minimal metadata leakage  
 - Integration with parser and deduplication modules  
 
@@ -23,7 +23,7 @@ The fetcher provides:
 ## Fetching Pipeline
 
 ### 1. Source Selection
-- Selects a source from the region‑config set  
+- Selects a source from the region‑config.md set  
 - Prioritizes high‑reliability sources  
 - Falls back to mirrors if the primary source fails  
 
@@ -87,11 +87,11 @@ The fetcher integrates with:
 - **parser.md** — Receives raw HTML/XML for normalization  
 - **deduplication.md** — Receives structured content for duplicate detection  
 - **classification.md** — Receives normalized content for topic classification  
-- **region‑config/** — Mandatory module defining which foreign sources are blocked in specific countries  
+- **region-config.md** — Mandatory file defining which foreign sources are blocked in specific countries  
 
 ---
 
 ## Summary
 
 The fetcher provides reliable content retrieval using retries, mirror rotation, and region‑aware source selection.  
-Running in free‑network regions (Japan, Singapore), it directly fetches foreign sources identified by **region‑config/** as blocked in certain countries, ensuring continuous ingestion of high‑value content.
+Running in free‑network regions (Japan, Singapore), it directly fetches foreign sources identified by **region-config.md** as blocked in certain countries, ensuring continuous ingestion of high‑value content.
