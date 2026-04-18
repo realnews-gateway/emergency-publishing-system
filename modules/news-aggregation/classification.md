@@ -1,9 +1,8 @@
+
 # Classification and Source Scoring
 
 The classification subsystem assigns topic labels, categories, and metadata to normalized articles.  
-It also evaluates source reliability and content quality, producing scores that influence downstream publishing and emergency workflows.
-
-This document describes the topic classification pipeline, scoring mechanisms, and integration with other modules.
+It also evaluates source reliability and content quality, producing scores that influence downstream publishing and emergency workflows in the Empus system.
 
 ---
 
@@ -11,133 +10,78 @@ This document describes the topic classification pipeline, scoring mechanisms, a
 
 The classification subsystem provides:
 
-- Topic classification (politics, world, economy, tech, etc.)
-- Multi-label tagging
-- Language-aware classification
-- Source reliability scoring
-- Content quality scoring
-- Cluster-level classification for deduplicated articles
-
-These capabilities ensure that the aggregation pipeline produces structured, meaningful, and prioritized content.
+- Topic classification (politics, world, economy, tech, etc.)  
+- Multi-label tagging  
+- Language-aware classification  
+- Source reliability scoring  
+- Content quality scoring  
+- Cluster-level classification for deduplicated articles  
 
 ---
 
 ## Classification Pipeline
 
-The classification process consists of four stages:
-
 ### 1. Preprocessing
-    - Receives canonical articles from deduplication
-    - Normalizes text for classification
-    - Removes boilerplate and noise
-    - Detects language and applies language-specific models
+- Receives canonical articles from deduplication  
+- Normalizes text for classification  
+- Removes boilerplate and noise  
+- Detects language and applies language-specific models  
 
 ### 2. Topic Classification
-    - Assigns one or more topic labels
-    - Uses statistical, rule-based, or ML-based classifiers
-    - Supports multi-label classification
+- Assigns one or more topic labels  
+- Supports rule-based, statistical, or ML-based classifiers  
+- Multi-label classification supported  
 
 ### 3. Tag Extraction
-    - Extracts keywords from titles and body text
-    - Uses TF-IDF, RAKE, or embedding-based keyword extraction
-    - Normalizes tags across languages
+- Extracts keywords from titles and body text  
+- Normalizes tags across languages  
+- Uses TF-IDF, RAKE, embeddings, or NER  
 
 ### 4. Source and Content Scoring
-    - Computes reliability and quality scores
-    - Adjusts scores based on historical performance
-    - Produces final ranking for downstream modules
+- Computes reliability and quality scores  
+- Adjusts based on historical performance  
+- Produces rankings for downstream modules  
 
 ---
 
-## Topic Classification
+## Topics
 
-The system supports a standard set of topics:
+Standard topic set includes:
 
-    - Politics
-    - World
-    - Economy
-    - Technology
-    - Society
-    - Health
-    - Environment
-    - Culture
-    - Science
-    - Breaking News
-
-Classification methods include:
-
-### Rule-Based Classification
-    - Keyword matching
-    - Title heuristics
-    - Source-specific patterns
-
-### Statistical Models
-    - TF-IDF + logistic regression
-    - Naive Bayes classifiers
-
-### Embedding-Based Models
-    - Sentence embeddings
-    - Cosine similarity to topic vectors
-
-The system selects the appropriate method based on region and language.
-
----
-
-## Tag Extraction
-
-Tags provide fine-grained metadata:
-
-### Extraction Methods
-    - TF-IDF keyword extraction
-    - RAKE (Rapid Automatic Keyword Extraction)
-    - Embedding-based keyword scoring
-    - Named entity recognition (NER)
-
-### Tag Normalization
-    - Lowercasing
-    - Removing duplicates
-    - Mapping synonyms to canonical tags
-    - Language normalization
-
-Tags are used by publisher and emergency-channel modules for content routing.
+- Politics  
+- World  
+- Economy  
+- Technology  
+- Society  
+- Health  
+- Environment  
+- Culture  
+- Science  
+- Breaking News  
 
 ---
 
 ## Source Reliability Scoring
 
-Source reliability is updated based on:
+Reliability is based on:
 
-### Availability
-    - Fetch success rate
-    - Mirror performance
-    - Response time
+- Availability (fetch success, mirror performance)  
+- Content quality (parsing success, metadata completeness, duplicate ratio)  
+- Historical stability (outages, update consistency)  
 
-### Content Quality
-    - Parsing success rate
-    - Metadata completeness
-    - Duplicate ratio
-
-### Historical Stability
-    - Frequency of outages
-    - Consistency of update intervals
-
-Scores range from 0.0 to 1.0 and influence:
-
-    - Source prioritization
-    - Canonical article selection
-    - Emergency publishing decisions
+Scores range from 0.0 to 1.0 and influence prioritization and emergency publishing decisions.
 
 ---
 
 ## Content Quality Scoring
 
-Each article receives a quality score based on:
+Articles are scored by:
 
-    - Body length
-    - Metadata completeness
-    - Parsing confidence
-    - Language detection confidence
-    - Duplicate cluster size
+- Body length  
+- Metadata completeness  
+- Parsing confidence  
+- Language detection confidence  
+- Duplicate cluster size  
 
 High-quality articles are prioritized for publishing.
 
@@ -145,14 +89,10 @@ High-quality articles are prioritized for publishing.
 
 ## Cluster-Level Classification
 
-For deduplicated clusters:
-
-    - The canonical article receives full classification
-    - Cluster-level tags are aggregated
-    - Topic labels are propagated to all cluster members
-    - Source reliability influences cluster ranking
-
-This ensures consistent classification across related articles.
+- Canonical article receives full classification  
+- Cluster-level tags aggregated  
+- Topic labels propagated to all members  
+- Source reliability influences ranking  
 
 ---
 
@@ -160,24 +100,16 @@ This ensures consistent classification across related articles.
 
 The classification subsystem integrates with:
 
-- **parser.md**  
-  Receives normalized article text and metadata.
-
-- **deduplication.md**  
-  Receives canonical articles for classification.
-
-- **publisher/**  
-  Uses topic labels and tags for routing and prioritization.
-
-- **emergency-channel/**  
-  Uses classification to identify urgent or high-impact content.
-
-- **sources.md**  
-  Updates source reliability scores.
+- **parser.md** — Receives normalized text and metadata  
+- **deduplication.md** — Provides canonical articles for classification  
+- **publisher/** — Uses topics and tags for routing and prioritization  
+- **emergency-channel/** — Identifies urgent or high-impact content  
+- **sources.md** — Updates source reliability scores  
+- **region-config/** — Ensures classification respects country-specific blocked content handling  
 
 ---
 
 ## Summary
 
 The classification subsystem assigns topics, extracts tags, and computes reliability and quality scores for aggregated news content.  
-By combining rule-based, statistical, and embedding-based methods, it produces structured metadata that drives publishing, prioritization, and emergency workflows.
+By combining rule-based, statistical, and embedding-based methods, it produces structured metadata that drives publishing, prioritization, and emergency workflows across Empus.
