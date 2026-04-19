@@ -9,7 +9,7 @@ Detailed objectives, milestones, and timelines are documented in the correspondi
 ## Phase Breakdown
 
 ### Phase 1 — Architecture and Documentation
-- Completed: System architecture design and documentation.
+- **Completed**: System architecture design and documentation.
 - Scope: Provide full design specifications, no code development.
 
 ### Phase 2 — Code Development  
