@@ -8,7 +8,7 @@ It provides a temporal framework for milestones defined in `milestones.md`.
 ---
 
 ## Phase 1 — Architecture and Documentation
-**Status: Completed (April 2026) **  
+**Status: Completed (April 2026)**  
 All architecture design and documentation deliverables have been finalized.
 
 ---
