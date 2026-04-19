@@ -1,64 +1,105 @@
 # Timeline
 
-This document provides a high-level timeline for the development of the Emergency Publishing System. The timeline is flexible and may adjust based on funding, collaboration, and regional requirements.
+> The project is expected to require a **6–7 person team**. If acceleration is needed, more people can be added, but efficiency and communication do not scale proportionally.
+
+This document outlines the chronological sequence of phases and sub‑phases for the Empus project.  
+It provides a temporal framework for milestones defined in `milestones.md`.
 
 ---
 
-## Phase 1 — Architecture (Weeks 1–3)
-
-Week 1  
-- System overview  
-- Data flow  
-- Module boundaries  
-
-Week 2  
-- Security design  
-- Protocol integration  
-
-Week 3  
-- Deployment models  
-- Repository structure  
+## Phase 1 — Architecture and Documentation
+**Status: Completed**  
+All architecture design and documentation deliverables have been finalized.
 
 ---
 
-## Phase 2 — Core Functionality (Weeks 4–10)
+## Phase 2 — Organizational Registration
+**Status: Pending Start**  
+This phase ensures legal and structural compliance, designed to protect **developers’ safety** rather than tax avoidance.  
 
-Weeks 4–6  
-- Emergency Channel skeleton  
-- Sanitization pipeline  
-- Storage and routing interfaces  
-
-Weeks 7–8  
-- News aggregation module  
-- Anonymous BBS module  
-
-Weeks 9–10  
-- Transport layer (standard + obfuscated)  
+- Register a **Wyoming (USA) parent company**, without opening a bank account.  
+- Register a **Swiss operating company** as a wholly‑owned subsidiary.  
+- Open banking facilities under the Swiss entity, leveraging Switzerland’s strict privacy protection regime.  
+- **Estimated Duration:** 1–3 months
 
 ---
 
-## Phase 3 — Resilience (Weeks 11–15)
+## Phase 3 — Office Leasing and Infrastructure Procurement
+**Status: Pending Start**  
+This phase establishes a physical workspace and secures isolated hardware environments.  
+**Note:** This phase can proceed **in parallel** with Phase 2.  
 
-Weeks 11–12  
-- Region-aware routing  
-- Fallback chains  
-
-Weeks 13–15  
-- Covert transports  
-- Offline sync mode  
+- Lease office space suitable for core team operations.  
+- Purchase independent, physically isolated development devices.  
+- Acquire dedicated testing equipment.  
+- **Estimated Duration:** 1–2 weeks
 
 ---
 
-## Phase 4 — Stabilization (Weeks 16–20)
+## Phase 4 — Developer Recruitment and Server Procurement
+**Status: Pending Start**  
+This phase builds the initial development team and secures baseline server infrastructure.  
 
-Weeks 16–17  
-- Security review  
-- Sanitization audit  
+- Recruit developers with expertise in storage, networking, and modular system design.  
+- Procure baseline servers for storage and networking.  
+- Ensure compliance with local labor and privacy regulations.  
+- **Estimated Duration:** 3–4 weeks + 20% buffer ≈ 3.6–4.8 weeks
 
-Weeks 18–19  
-- Performance testing  
-- Transport fingerprinting tests  
+---
 
-Week 20  
-- Funder-facing documentation package  
-- Final review
+## Phase 5 — Code Development  
+**Status: Pending Start**  
+This phase is divided into eight sub‑phases, each including testing, security review, and documentation updates.  
+Each sub‑phase duration includes an **extra reserved 20% buffer** for flexibility.
+
+- **Sub‑phase 1: Standards** → Define unified coding conventions and CI rules.  
+  - Estimated Duration: 1 week + 20% buffer ≈ 1.2 weeks  
+
+- **Sub‑phase 2: Storage Local** → Deploy first main server, establish minimal persistence.  
+  - Estimated Duration: 2 weeks + 20% buffer ≈ 2.4 weeks  
+
+- **Sub‑phase 3: Accounts** → Implement registration, authentication, and isolation logic.  
+  - Estimated Duration: 2 weeks + 20% buffer ≈ 2.4 weeks  
+
+- **Sub‑phase 4: Network‑access‑layer** → Core transport foundation, client-server linkage.  
+  - Estimated Duration: 8 weeks + 20% buffer ≈ 9.6 weeks  
+
+- **Sub‑phase 5: Modules — news aggregation / anonymous bbs** → Input channels, ensure real data sources.  
+  - Estimated Duration: 3 weeks + 20% buffer ≈ 3.6 weeks  
+
+- **Sub‑phase 6: Emergency Channel** → Core output, subject to strict testing and review.  
+  - Estimated Duration: 8 weeks + 20% buffer ≈ 9.6 weeks  
+
+- **Sub‑phase 7: Storage Extended** → Server mirroring, IPFS, Arweave integration.  
+  - Estimated Duration: 2 weeks + 20% buffer ≈ 2.4 weeks  
+
+- **Sub‑phase 8: Distribution** → Content delivery, mirroring, fallback mechanisms.  
+  - Estimated Duration: 2 weeks + 20% buffer ≈ 2.4 weeks  
+
+**Total Estimated Duration (Phase 5):** ~28 weeks baseline, ~34 weeks including extra reserved buffer.
+
+---
+
+## Phase 6 — Final Testing
+- Cross‑module integration tests  
+- Performance and resilience validation  
+- Internal security checks  
+- **Estimated Duration:** 1–2 months
+
+---
+
+## Phase 7 — Final Review
+- Consolidated internal review  
+- Third‑party security audit  
+- Documentation and compliance verification  
+- **Estimated Duration:** 1 month
+
+---
+
+## Phase 8 — Release
+- Build release packages  
+- Deployment guide  
+- Reviewer-facing package  
+- **Estimated Duration:** 1 month
+
+---
